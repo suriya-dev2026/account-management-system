@@ -1,0 +1,45 @@
+@local = http://localhost:8080
+
+@local-Token = 
+
+@token = {{local-Token}}
+
+@baseUrl = {{local}}
+
+###
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+
+{
+    "firstName":"Sanjay",
+    "lastName":"Ram",
+    "userName":"sanjay123",
+    "email":"sanjay@gmail.com",
+    "password":"Sanjay@123",
+    "phone":"8974563254"
+}
+
+###
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+    "userNameOrEmail":"suriya123",
+    "password":"Suriya@123"
+}
+
+###
+POST {{baseUrl}}/user/verify/otp
+Content-Type: application/json
+
+{
+    "email":"suriyasundarrajan340@gmail.com",
+    "otp":"851138"
+}
+
+###
+GET {{baseUrl}}/user
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+ 
