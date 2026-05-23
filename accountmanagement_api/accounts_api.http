@@ -11,12 +11,12 @@ POST {{baseUrl}}/user/register
 Content-Type: application/json
 
 {
-    "firstName":"Sanjay",
-    "lastName":"Ram",
-    "userName":"sanjay123",
-    "email":"sanjay@gmail.com",
-    "password":"Sanjay@123",
-    "phone":"8974563254"
+    "firstName":"Ragav",
+    "lastName":"Kumar",
+    "userName":"ragav123",
+    "email":"Ragav@gmail.com",
+    "password":"Ragav@123",
+    "phone":"+919563254189"
 }
 
 ###
@@ -24,8 +24,8 @@ POST {{baseUrl}}/user/login
 Content-Type: application/json
 
 {
-    "userNameOrEmail":"suriya123",
-    "password":"Suriya@123"
+    "userNameOrEmailOrPhone":"",
+    "password":"Ragav@123"
 }
 
 ###
@@ -34,11 +34,16 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"851138"
+    "otp":"9514"
 }
 
 ###
 GET {{baseUrl}}/user
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/user/refreshKey/a03b78f-ecac-4ec9-a649-7892956566e0
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

@@ -11,9 +11,7 @@ import lombok.Data;
 @Data
 public class UserRequest {
 
-    private Integer id;
-
-    @NotBlank(message = "First Name Required")
+    @NotBlank(message = "First Name is Required")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "first name should contain only alphabets")
     @Size(min = 3, max = 50, message = "First name must be between 3 to 50 characters")
     private String firstName;
@@ -21,7 +19,7 @@ public class UserRequest {
     @Pattern(regexp = "^[A-Za-z ]*$", message = "last name should contain only alphabets")
     private String lastName;
 
-    @NotBlank(message = "User Name Required")
+    @NotBlank(message = "User Name is Required")
     @Pattern(regexp = "^[a-z0-9 ]+$", message = "user name should contain only small letters and numbers")
     private String userName;
 
@@ -35,7 +33,7 @@ public class UserRequest {
     private String password;
 
     @NotBlank(message = "Phone Number is Required")
-    @ValidPhone(message = "phone number must be 10 digits only starts with 6,7,8 or 9 this digits")
+    @ValidPhone(message = "phone number must start with +91 and contain 10 digits starting from 6,7,8,9")
     private String phone;
 
 }

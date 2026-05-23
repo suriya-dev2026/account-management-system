@@ -26,7 +26,9 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers("/user/register",
                                         "/user/login",
-                                        "/user/verify/otp")
+                                        "/user/verify/otp",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

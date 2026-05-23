@@ -1,13 +1,15 @@
 package com.accountmanagement.service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import com.accountmanagement.exceptions.RecordNotFoundException;
+import com.accountmanagement.model.User;
+import com.accountmanagement.repository.UserRepository;
 
 @Service
 public class OtpService {
@@ -15,45 +17,40 @@ public class OtpService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    private Map<String, String> otpStorage = new HashMap<>();
-
-    private Map<String, LocalDateTime> otpExpiry = new HashMap<>();
+    @Autowired
+    private UserRepository userRepository;
 
     public String generateOtp() {
-        return String.valueOf((int) ((Math.random() * 900000) + 100000));
+        return String.valueOf((int) ((Math.random() * 9000) + 1000));
     }
 
-    public void sendOtp(String email) {
+    public void sendOtp(User user) {
         String otp = generateOtp();
-        otpStorage.put(email, otp);
-        otpExpiry.put(email, LocalDateTime.now().plusMinutes(2));
+        user.setOtp(otp);
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(2));
+        userRepository.save(user);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(email);
+        simpleMailMessage.setTo(user.getEmail());
         simpleMailMessage.setSubject("Login OTP");
         simpleMailMessage.setText("Your OTP is " + otp +
                 "\n\nOTP valid for 120 seconds.");
         javaMailSender.send(simpleMailMessage);
     }
 
-    public boolean verifyOtp(String email, String userOtp) {
-        String savedOtp = otpStorage.get(email);
-        if (savedOtp == null) {
-            throw new RuntimeException("OTP not found");
+    public void verifyOtp(String email, String enteredOtp) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RecordNotFoundException("Email not found"));
+        if (user.getOtp() == null) {
+            throw new RecordNotFoundException("Otp not found");
         }
-
-        LocalDateTime expiryTime = otpExpiry.get(email);
-        if (expiryTime.isBefore(LocalDateTime.now())) {
-            otpStorage.remove(email);
-            otpExpiry.remove(email);
-            throw new RuntimeException("OTP expired");
+        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+            throw new RecordNotFoundException("otp expired");
         }
-
-        if (!savedOtp.equals(userOtp)) {
-            throw new RuntimeException("Invalid Otp");
+        if (!user.getOtp().equals(enteredOtp)) {
+            throw new RecordNotFoundException("Invalid otp");
         }
-        otpStorage.remove(email);
-        otpExpiry.remove(email);
-
-        return true;
+        user.setOtp(null);
+        user.setOtpExpiry(null);
+        userRepository.save(user);
     }
+
 }

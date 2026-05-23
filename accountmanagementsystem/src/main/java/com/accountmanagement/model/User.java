@@ -1,10 +1,8 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
-
 import com.accountmanagement.model.listeners.UserListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -41,6 +39,14 @@ public class User {
 
     @Column(name = "phone")
     private String phone;
+
+    @JsonIgnore
+    @Column(name = "otp")
+    private String otp;
+
+    @JsonIgnore
+    @Column(name = "otp_expiry")
+    private LocalDateTime otpExpiry;
 
     @JsonIgnore
     @Column(name = "access_token")

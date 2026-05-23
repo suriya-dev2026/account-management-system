@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.dto.UserDto;
 import com.accountmanagement.messages.UserMessage;
-import com.accountmanagement.model.User;
 import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.UserRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
@@ -34,9 +34,8 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserRequest userRequest) {
         try {
-            User user = userService.registerUser(userRequest);
+            userService.registerUser(userRequest);
             ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_REGISTER, 200);
-            response.setRequestInfo(user);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, e.getMessage(), 500);
@@ -61,7 +60,8 @@ public class UserController {
         try {
             Map<String, String> tokenResponse = userService.verifyLoginOtp(verifyOtpRequest.getEmail(),
                     verifyOtpRequest.getOtp());
-            ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP_VERIFY, 200);
+            ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                    UserMessage.OTP_VERIFY, 200);
             response.setRequestInfo(tokenResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -76,10 +76,27 @@ public class UserController {
             List<UserDto> user = userService.getAllUsers();
             if (user == null || user.isEmpty()) {
                 ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, UserMessage.USER_NOT_FOUND, 404);
-                return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
             }
             ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USERS_RETRIEVED, 200);
             response.setData(user);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, e.getMessage(), 500);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/refreshKey/{refreshKey}")
+    public ResponseEntity<ApiResponse> refreshToken(@Valid @PathVariable String refreshKey) {
+        try {
+            String accessToken = userService.generateAccessToken(refreshKey);
+            if (accessToken == null) {
+                ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, UserMessage.ACCESS_TOKEN, 404);
+                return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+            }
+            ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.NEW_ACCESS_TOKEN, 200);
+            response.setAccessToken(accessToken);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, e.getMessage(), 500);

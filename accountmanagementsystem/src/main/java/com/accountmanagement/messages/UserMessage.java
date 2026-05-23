@@ -16,4 +16,8 @@ public class UserMessage {
 
     public static final String OTP = "Otp send successfully";
 
+    public static final String ACCESS_TOKEN = "access token not found";
+
+    public static final String NEW_ACCESS_TOKEN = "new access token generated successfully";
+
 }

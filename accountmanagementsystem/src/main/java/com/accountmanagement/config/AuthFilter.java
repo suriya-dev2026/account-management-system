@@ -43,7 +43,9 @@ public class AuthFilter extends OncePerRequestFilter {
     private static final List<String> PUBLIC_URLS = List.of(
             "/user/register",
             "/user/login",
-            "/user/verify/otp");
+            "/user/verify/otp",
+            "/swagger-ui/index.html",
+            "/v3/api-docs");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -64,12 +66,12 @@ public class AuthFilter extends OncePerRequestFilter {
             }
 
             final String userName = tokenUtility.extractSessionId(accessToken);
-            System.out.println("User Name ................." + userName);
 
             User user = userRepository.findByUserName(userName);
 
             if (user == null) {
-                sendError(response, "User Not Found", 400);
+                sendError(response, "User Not Found", 401);
+                return;
             }
 
             if (tokenUtility.isTokenExpired(accessToken)) {
