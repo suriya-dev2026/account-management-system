@@ -30,3 +30,6 @@ POST /user/login
 ### Verify OTP
 
 POSt /user/verify/otp
+
+### Swagger URL
+http://localhost:8080/swagger-ui/index.html
