@@ -26,9 +26,14 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers("/user/register",
                                         "/user/login",
+                                        "/user/refreshKey/{refreshKey}",
                                         "/user/verify/otp",
+                                        "/verify/reset/otp",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**")
+                                        "/v3/api-docs/**",
+                                        "/forgot/password/**",
+                                        "/verify/reset/otp",
+                                        "/change/password")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

@@ -4,7 +4,7 @@ public class UserMessage {
 
     public static final String USERS_RETRIEVED = "users retrieved successfully";
 
-    public static final String USER_NOT_FOUND = "users does not exists";
+    public static final String USER_NOT_FOUND = "user does not exists";
 
     public static final String USER_REGISTER = "user registered successfully";
 
@@ -20,4 +20,11 @@ public class UserMessage {
 
     public static final String NEW_ACCESS_TOKEN = "new access token generated successfully";
 
+    public static final String CHANGE_PASSWORD = "password changed successfully";
+
+    public static final String LOGOUT = "user logout successfully";
+
+    public static final String USER_LOGOUT = "User loggedout. Please login again";
+
+    public static final String SESSION_NOT_FOUND = "User session not found";
 }

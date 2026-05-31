@@ -1,13 +1,12 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
+import org.hibernate.annotations.UuidGenerator;
 import com.accountmanagement.model.listeners.UserListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -19,8 +18,9 @@ import lombok.Data;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @UuidGenerator
+    @Column(name = "id")
+    private String id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -40,21 +40,8 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
-    @JsonIgnore
-    @Column(name = "otp")
-    private String otp;
-
-    @JsonIgnore
-    @Column(name = "otp_expiry")
-    private LocalDateTime otpExpiry;
-
-    @JsonIgnore
-    @Column(name = "access_token")
-    private String accesstoken;
-
-    @JsonIgnore
-    @Column(name = "refresh_key")
-    private String refreshKey;
+    @Column(name = "role")
+    private String role;
 
     @Column(name = "status")
     private String status;

@@ -1,6 +1,6 @@
 @local = http://localhost:8080
 
-@local-Token = 
+@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjM0NSIsImlhdCI6MTc4MDI0MzU1NCwiZXhwIjoxNzgwMjQ0MTU0fQ.3cT2hq5Slo-Od9YVmZCFceR2rdkLHRtTUT-_zMQ9930Zmw1gNM-NyLBHixCdomCC56ytc4-rJ8yf7CdSKNFzPg
 
 @token = {{local-Token}}
 
@@ -11,12 +11,13 @@ POST {{baseUrl}}/user/register
 Content-Type: application/json
 
 {
-    "firstName":"Ragav",
-    "lastName":"Kumar",
-    "userName":"ragav123",
-    "email":"Ragav@gmail.com",
-    "password":"Ragav@123",
-    "phone":"+919563254189"
+    "firstName":"Suriya",
+    "lastName":"Prabhu",
+    "userName":"suriya12345",
+    "email":"suriya1993.je2026@gmail.com",
+    "password":"Prabhu@123",
+    "phone":"+919566642045",
+    "role":"user"
 }
 
 ###
@@ -24,17 +25,18 @@ POST {{baseUrl}}/user/login
 Content-Type: application/json
 
 {
-    "userNameOrEmailOrPhone":"",
-    "password":"Ragav@123"
+    "userNameOrEmailOrPhone":"suriya1993.je2026@gmail.com",
+    "password":"Prabhu@123"
 }
+
 
 ###
 POST {{baseUrl}}/user/verify/otp
 Content-Type: application/json
 
 {
-    "email":"suriyasundarrajan340@gmail.com",
-    "otp":"9514"
+    "email":"suriya1993.je2026@gmail.com",
+    "otp":"939563"
 }
 
 ###
@@ -46,5 +48,33 @@ Authorization: Bearer {{token}}
 POST {{baseUrl}}/user/refreshKey/a03b78f-ecac-4ec9-a649-7892956566e0
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/forgot/password/suriyasundarrajan340@gmail.com
+Content-Type: application/json
+
+###
+POST {{baseUrl}}/verify/reset/otp
+Content-Type: application/json
+
+{
+    "email":"suriyasundarrajan340@gmail.com",
+    "otp":"848884"
+}
+
+###
+POST {{baseUrl}}/change/password
+Content-Type: application/json
+
+{
+    "email":"suriyasundarrajan340@gmail.com",
+    "changedPassword":"Suriya@123"
+}
+
+###
+GET {{baseUrl}}/user/logout
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
 
  

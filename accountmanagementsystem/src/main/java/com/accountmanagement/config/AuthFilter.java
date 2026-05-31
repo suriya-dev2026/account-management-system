@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,13 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import com.accountmanagement.messages.UserMessage;
 import com.accountmanagement.model.User;
+import com.accountmanagement.model.UserSession;
 import com.accountmanagement.repository.UserRepository;
+import com.accountmanagement.repository.UserSessionRepository;
 import com.accountmanagement.utility.TokenUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,16 +35,23 @@ public class AuthFilter extends OncePerRequestFilter {
     private TokenUtility tokenUtility;
 
     @Autowired
-    private UserRepository userRepository;;
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserSessionRepository userSessionRepository;
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final List<String> PUBLIC_URLS = List.of(
             "/user/register",
             "/user/login",
+            "/user/refreshKey/{refreshKey}",
             "/user/verify/otp",
             "/swagger-ui/index.html",
-            "/v3/api-docs");
+            "/v3/api-docs",
+            "/forgot/password/**",
+            "/verify/reset/otp",
+            "/change/password");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -56,7 +62,6 @@ public class AuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         try {
             String accessToken = getJWTFromRequest(request);
 
@@ -64,40 +69,35 @@ public class AuthFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-
             final String userName = tokenUtility.extractSessionId(accessToken);
-
             User user = userRepository.findByUserName(userName);
-
             if (user == null) {
-                sendError(response, "User Not Found", 401);
+                sendError(response, UserMessage.USER_NOT_FOUND, 401);
                 return;
             }
+            UserSession userSession = userSessionRepository.findByAccessToken(accessToken);
 
+            if (userSession == null) {
+                sendError(response, UserMessage.SESSION_NOT_FOUND, 401);
+                return;
+            }
+            if (!userSession.getIsValidToken()) {
+                sendError(response, UserMessage.USER_LOGOUT, 401);
+                return;
+            }
             if (tokenUtility.isTokenExpired(accessToken)) {
                 sendError(response, "Token Expired", 401);
                 return;
             }
-
             letProceedFurther(user, accessToken, filterChain, request, response);
-
-        } catch (CredentialsExpiredException e) {
-            sendError(response, "Token Expired", 401);
-            return;
-
         } catch (JwtException e) {
             sendError(response, "Invalid Token", 401);
             return;
-
         } catch (Exception e) {
-            try {
-                e.printStackTrace();
-                sendError(response, "Access Token Missing", 403);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            e.printStackTrace();
+            sendError(response, "Access Token Missing", 403);
         }
+
     }
 
     private void letProceedFurther(User user, String accessToken, FilterChain filterChain,

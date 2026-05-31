@@ -36,4 +36,6 @@ public class UserRequest {
     @ValidPhone(message = "phone number must start with +91 and contain 10 digits starting from 6,7,8,9")
     private String phone;
 
+    private String role;
+
 }

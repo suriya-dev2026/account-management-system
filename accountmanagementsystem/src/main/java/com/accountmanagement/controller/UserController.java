@@ -2,7 +2,6 @@ package com.accountmanagement.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.dto.UserDto;
 import com.accountmanagement.messages.UserMessage;
@@ -21,7 +19,6 @@ import com.accountmanagement.request.UserRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.UserService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -50,7 +47,7 @@ public class UserController {
             ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP, 200);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            ApiResponse errorResponse = new ApiResponse("error", e.getMessage(), 500);
+            ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, e.getMessage(), 500);
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -65,7 +62,22 @@ public class UserController {
             response.setRequestInfo(tokenResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            ApiResponse errorResponse = new ApiResponse("error", e.getMessage(), 500);
+            ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, e.getMessage(), 500);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/refreshKey/{refreshKey}")
+    public ResponseEntity<ApiResponse> refreshToken(@Valid @PathVariable String refreshKey) {
+        try {
+            String accessToken = userService.generateAccessToken(refreshKey);
+            ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                    UserMessage.NEW_ACCESS_TOKEN, 200);
+            response.setAccessToken(accessToken);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR,
+                    e.getMessage(), 500);
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -87,20 +99,16 @@ public class UserController {
         }
     }
 
-    @PostMapping("/refreshKey/{refreshKey}")
-    public ResponseEntity<ApiResponse> refreshToken(@Valid @PathVariable String refreshKey) {
+    @GetMapping("/logout")
+    public ResponseEntity<ApiResponse> logout() {
         try {
-            String accessToken = userService.generateAccessToken(refreshKey);
-            if (accessToken == null) {
-                ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, UserMessage.ACCESS_TOKEN, 404);
-                return new ResponseEntity<>(errorResponse, HttpStatus.OK);
-            }
-            ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.NEW_ACCESS_TOKEN, 200);
-            response.setAccessToken(accessToken);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            userService.logoutUser();
+            ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.LOGOUT, 200);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, e.getMessage(), 500);
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

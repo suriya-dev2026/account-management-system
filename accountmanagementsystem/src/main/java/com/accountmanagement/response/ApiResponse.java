@@ -3,9 +3,7 @@ package com.accountmanagement.response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.Data;
 
 @Data
@@ -22,7 +20,7 @@ public class ApiResponse {
 
     private String accessToken;
 
-    private String refreshToken;
+    private String refreshKey;
 
     public ApiResponse(String status, String message, Integer statusCode) {
         headers.put("status", status);

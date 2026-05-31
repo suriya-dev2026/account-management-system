@@ -8,13 +8,11 @@ import org.springframework.stereotype.Repository;
 import com.accountmanagement.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, String> {
 
     User findByUserName(String userName);
 
     Optional<User> findByEmail(String email);
-
-    User findByRefreshKey(String refreshKey);
 
     Optional<User> findByUserNameOrEmailOrPhone(String userName, String email, String phone);
 
