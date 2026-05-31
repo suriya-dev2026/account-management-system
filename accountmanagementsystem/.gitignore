@@ -34,3 +34,4 @@ build/
 
 application-local.properties
 account_api.http
+*.zip
