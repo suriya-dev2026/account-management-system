@@ -37,6 +37,12 @@ public class PasswordReset {
     @Column(name = "otp_verification_count")
     private Integer otpVerificationCount;
 
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "token_expiry")
+    private LocalDateTime tokenExpiry;
+
     @JsonIgnore
     @Column(name = "created_at")
     private LocalDateTime createdAt;

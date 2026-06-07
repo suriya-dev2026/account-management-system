@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.accountmanagement.messages.UserMessage;
+
+import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.UserMessage;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserSession;
 import com.accountmanagement.repository.UserRepository;
@@ -37,31 +40,15 @@ public class AuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
-
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static final List<String> PUBLIC_URLS = List.of(
-            "/user/register",
-            "/user/login",
-            "/user/refreshKey/{refreshKey}",
-            "/user/verify/otp",
-            "/swagger-ui/index.html",
-            "/v3/api-docs",
-            "/forgot/password/**",
-            "/verify/reset/otp",
-            "/change/password");
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String requestUri = request.getRequestURI();
 
-        if (PUBLIC_URLS.stream().anyMatch(requestUri::startsWith)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         try {
             String accessToken = getJWTFromRequest(request);
 
@@ -69,33 +56,37 @@ public class AuthFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            final String userName = tokenUtility.extractSessionId(accessToken);
+            String userName = tokenUtility.extractSessionId(accessToken);
+
             User user = userRepository.findByUserName(userName);
             if (user == null) {
                 sendError(response, UserMessage.USER_NOT_FOUND, 401);
                 return;
             }
-            UserSession userSession = userSessionRepository.findByAccessToken(accessToken);
 
-            if (userSession == null) {
-                sendError(response, UserMessage.SESSION_NOT_FOUND, 401);
+            if (user.getStatus().equalsIgnoreCase(AppConstants.LOCKED)) {
+                sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
                 return;
             }
-            if (!userSession.getIsValidToken()) {
-                sendError(response, UserMessage.USER_LOGOUT, 401);
+
+            String token = redisTemplate.opsForValue().get(accessToken);
+            if (token == null) {
+                sendError(response, UserMessage.INVALID_TOKEN, 401);
                 return;
             }
+
             if (tokenUtility.isTokenExpired(accessToken)) {
-                sendError(response, "Token Expired", 401);
+                sendError(response, UserMessage.TOKEN_EXPIRED, 401);
                 return;
             }
+
             letProceedFurther(user, accessToken, filterChain, request, response);
         } catch (JwtException e) {
-            sendError(response, "Invalid Token", 401);
+            sendError(response, UserMessage.INVALID_TOKEN, 401);
             return;
         } catch (Exception e) {
             e.printStackTrace();
-            sendError(response, "Access Token Missing", 403);
+            sendError(response, e.getMessage(), 403);
         }
 
     }

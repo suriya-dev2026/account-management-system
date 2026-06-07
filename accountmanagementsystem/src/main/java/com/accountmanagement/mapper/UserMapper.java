@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.accountmanagement.model.User;
-import com.accountmanagement.request.UserRequest;
+import com.accountmanagement.request.UserRegistrationRequest;
 
 @Component
 public class UserMapper {
@@ -13,7 +13,7 @@ public class UserMapper {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public User toEntity(UserRequest userRequest) {
+    public User toEntity(UserRegistrationRequest userRequest) {
         if (userRequest == null) {
             return null;
         }
@@ -23,6 +23,8 @@ public class UserMapper {
         user.setUserName(userRequest.getUserName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
+        user.setFailedLoginAttempts(0);
+        user.setIsAccountLocked(false);
         user.setPhone(userRequest.getPhone());
         user.setRole((userRequest.getRole()));
         return user;

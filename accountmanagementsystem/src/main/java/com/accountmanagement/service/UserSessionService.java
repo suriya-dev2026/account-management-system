@@ -3,6 +3,7 @@ package com.accountmanagement.service;
 import com.accountmanagement.repository.UserSessionRepository;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserSession;
@@ -13,10 +14,13 @@ public class UserSessionService {
     @Autowired
     private UserSessionRepository userSessionRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public UserSession createUserSession(String userId, String otp) {
         UserSession userSession = new UserSession();
         userSession.setUserId(userId);
-        userSession.setOtp(otp);
+        userSession.setOtp(bCryptPasswordEncoder.encode(otp));
         userSession.setOtpExpiration(LocalDateTime.now().plusMinutes(2));
         userSession.setOtpVerificationCount(0);
         userSession.setIsOtpVerified(false);
@@ -35,14 +39,13 @@ public class UserSessionService {
         session.setRefreshKeyCreatedAt(LocalDateTime.now());
         session.setRefreshKeyExpiration(LocalDateTime.now().plusHours(24));
         session.setIsOtpVerified(true);
-        session.setAccessToken(accessToken);
         session.setOtp(null);
         userSessionRepository.save(session);
     }
 
     public UserSession getRefreshKey(String refreshKey) {
         UserSession userSession = userSessionRepository.findByRefreshKey(refreshKey);
-        if (userSession.getRefreshKey() == null) {
+        if (userSession == null) {
             throw new RecordNotFoundException("Refresh key not found");
         }
         return userSession;

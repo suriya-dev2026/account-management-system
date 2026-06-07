@@ -22,20 +22,32 @@ public class User {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @JsonIgnore
+    @Column(name = "failed_login_attempts", nullable = false)
+    private Integer failedLoginAttempts;
+
+    @JsonIgnore
+    @Column(name = "is_account_locked", nullable = false)
+    private Boolean isAccountLocked;
+
+    @JsonIgnore
+    @Column(name = "locked_time")
+    private LocalDateTime lockedTime;
 
     @Column(name = "phone")
     private String phone;
@@ -46,12 +58,12 @@ public class User {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "created_at")
     @JsonIgnore
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
     @JsonIgnore
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
 }

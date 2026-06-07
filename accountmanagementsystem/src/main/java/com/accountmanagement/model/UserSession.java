@@ -51,9 +51,6 @@ public class UserSession {
     @Column(name = "session_status")
     private String sessionStatus;
 
-    @Column(name = "access_token")
-    private String accessToken;
-
     @Column(name = "is_valid_token")
     private Boolean isValidToken;
 

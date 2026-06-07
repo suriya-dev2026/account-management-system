@@ -1,4 +1,4 @@
-package com.accountmanagement.messages;
+package com.accountmanagement.constants;
 
 public class UserMessage {
 
@@ -27,4 +27,10 @@ public class UserMessage {
     public static final String USER_LOGOUT = "User loggedout. Please login again";
 
     public static final String SESSION_NOT_FOUND = "User session not found";
+
+    public static final String ACCOUNT_LOCKED = "Account locked. Try again after 30 mins";
+
+    public static final String INVALID_TOKEN = "Invalid Token";
+
+    public static final String TOKEN_EXPIRED = "Token Expired";
 }

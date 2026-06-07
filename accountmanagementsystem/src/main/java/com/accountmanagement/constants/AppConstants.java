@@ -10,4 +10,16 @@ public class AppConstants {
 
     public static final String INACTIVE = "inactive";
 
+    public static final String LOCKED = "locked";
+
+    public static final int minNameLength = 3;
+
+    public static final int maxNameLength = 50;
+
+    public static final int emailLength = 100;
+
+    public static final int minPasswordLength = 8;
+
+    public static final int maxPasswordLength = 20;
+
 }

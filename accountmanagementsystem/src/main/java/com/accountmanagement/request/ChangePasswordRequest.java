@@ -1,19 +1,28 @@
 package com.accountmanagement.request;
 
-import jakarta.validation.constraints.Email;
+import com.accountmanagement.utility.Apputility;
+import com.accountmanagement.validations.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
 public class ChangePasswordRequest {
 
-    @NotBlank(message = "email cannot be blank")
-    @Email(message = "please enter valid email format")
-    private String email;
+    @NotBlank(message = "reset token cannot be blank")
+    private String resetToken;
 
     @NotBlank(message = "Password is Required")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,20}$", message = "Password must contain uppercase,lowercase, number, special character and be8-20 characters long")
-    private String changedPassword;
+    @ValidPassword(message = "Password must contain uppercase,lowercase, with a number, special character and be8-20 characters long")
+    private String newPassword;
+
+    @NotBlank(message = "Confirm Password is Required")
+    @ValidPassword(message = "Confirm Password must contain uppercase,lowercase, with a number, special character and be8-20 characters long")
+    private String confirmPassword;
+
+    public void sanitizeInput() {
+        setResetToken(Apputility.sanitizeInput(getResetToken()));
+        setNewPassword(Apputility.sanitizeInput(getNewPassword()));
+        setConfirmPassword(Apputility.sanitizeInput(getConfirmPassword()));
+    }
 
 }

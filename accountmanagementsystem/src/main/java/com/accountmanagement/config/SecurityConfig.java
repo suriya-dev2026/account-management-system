@@ -24,16 +24,17 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(
                         request -> request
-                                .requestMatchers("/user/register",
-                                        "/user/login",
-                                        "/user/refreshKey/{refreshKey}",
-                                        "/user/verify/otp",
+                                .requestMatchers(
+                                        "/register",
+                                        "/login",
+                                        "/verify/otp",
+                                        "/refreshKey/{refreshKey}",
+                                        "/verify/reset/otp",
+                                        "/forgot/password/**",
+                                        "/change/password",
                                         "/verify/reset/otp",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/forgot/password/**",
-                                        "/verify/reset/otp",
-                                        "/change/password")
+                                        "/v3/api-docs/**")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,30 +1,75 @@
 package com.accountmanagement.utility;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.accountmanagement.constants.UserMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
-import com.accountmanagement.messages.UserMessage;
 import com.accountmanagement.model.User;
 
 public class Apputility {
 
-    public static boolean isValidPhone(String phone) {
-        String regex = "^\\+91[6-9][0-9]{9}$";
-        return phone != null && phone.matches(regex);
+    public static boolean isValidPhone(String phoneNo) {
+        if (phoneNo == null)
+            return false;
+        if (phoneNo.matches("\\d{10}"))
+            return true;
+        else if (phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}"))
+            return true;
+        else if (phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}"))
+            return true;
+        else
+            return false;
     }
 
-    public static User  getLoggedUser() throws Exception, NullPointerException {
-        User user = new User();
-        try {
-            user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (user == null) {
-                throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
-            }
-            return user;
-        } catch (NullPointerException e) {
-
-            throw new NullPointerException(UserMessage.USER_NOT_FOUND);
+    public static User getLoggedUser() {
+        if (SecurityContextHolder.getContext() == null
+                || SecurityContextHolder.getContext().getAuthentication() == null) {
+            throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
         }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!(principal instanceof User)) {
+            throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
+        }
+        return (User) principal;
+    }
+
+    public static Boolean isValidEmail(String value) {
+        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+        Matcher mat = pattern.matcher(value);
+        if (mat.matches()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean isValidPassword(String value) {
+        if (value == null) {
+            return false;
+        }
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%?&]).{8,16}$";
+        return value.matches(regex);
+    }
+
+    public static String sanitizeInput(String input) {
+        if (input == null) {
+            return input;
+        }
+        input = input.trim();
+        return input;
+    }
+
+    public static Boolean isValidOtp(String value) {
+        if (value == null) {
+            return false;
+        }
+        String regex = "^\\d{6}$";
+        return value.matches(regex);
     }
 
 }

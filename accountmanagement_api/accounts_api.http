@@ -1,78 +1,79 @@
 @local = http://localhost:8080
 
-@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjM0NSIsImlhdCI6MTc4MDI0MzU1NCwiZXhwIjoxNzgwMjQ0MTU0fQ.3cT2hq5Slo-Od9YVmZCFceR2rdkLHRtTUT-_zMQ9930Zmw1gNM-NyLBHixCdomCC56ytc4-rJ8yf7CdSKNFzPg
+@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODA4MzQ4MjEsImV4cCI6MTc4MDgzNTQyMX0.mXWzqCzqVQyw7_1RfoYp0TiurB-cOKuw6qpzXBoGtghg74nLyLtpJcipBaznSBQjtecarzguaVm24_Gr_noy0g
 
 @token = {{local-Token}}
 
 @baseUrl = {{local}}
 
 ###
-POST {{baseUrl}}/user/register
+POST {{baseUrl}}/user-auth/register
 Content-Type: application/json
 
 {
-    "firstName":"Suriya",
-    "lastName":"Prabhu",
-    "userName":"suriya12345",
-    "email":"suriya1993.je2026@gmail.com",
-    "password":"Prabhu@123",
-    "phone":"+919566642045",
+    "firstName":"Suriya ",
+    "lastName":"Ram",
+    "userName":"suriya123",
+    "email":"suriyasundarrajan340@gmail.com",
+    "password":"Suriya@123",
+    "confirmPassword":"Suriya@123",
+    "phone":"9566642031",
     "role":"user"
 }
 
 ###
-POST {{baseUrl}}/user/login
+POST {{baseUrl}}/user-auth/login
 Content-Type: application/json
 
 {
-    "userNameOrEmailOrPhone":"suriya1993.je2026@gmail.com",
-    "password":"Prabhu@123"
-}
-
-
-###
-POST {{baseUrl}}/user/verify/otp
-Content-Type: application/json
-
-{
-    "email":"suriya1993.je2026@gmail.com",
-    "otp":"939563"
+    "userName":"suriya123",
+    "password":"Suriya@123"
 }
 
 ###
-GET {{baseUrl}}/user
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/user/refreshKey/a03b78f-ecac-4ec9-a649-7892956566e0
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/forgot/password/suriyasundarrajan340@gmail.com
-Content-Type: application/json
-
-###
-POST {{baseUrl}}/verify/reset/otp
+POST {{baseUrl}}/user-auth/verify/otp
 Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"848884"
+    "otp":"962667"
 }
 
 ###
-POST {{baseUrl}}/change/password
+GET {{baseUrl}}/user-auth
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/user-auth/refreshKey/a439b7c7-9f59-44e6-a59e-e81798e209f0
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/user-auth/forgot/password/suriyasundarrajan340@gmail.com
+Content-Type: application/json
+
+###
+POST {{baseUrl}}/user-auth/verify/reset/otp
 Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "changedPassword":"Suriya@123"
+    "otp":"664654"
 }
 
 ###
-GET {{baseUrl}}/user/logout
+POST {{baseUrl}}/user-auth/change/password
+Content-Type: application/json
+
+{
+    "resetToken":"a455a135-2645-4063-9ea5-0913b05a248a",
+    "newPassword":"Suriya@12345",
+    "confirmPassword":"Suriya@12345"
+}
+
+###
+POST {{baseUrl}}/user-auth/signout
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
