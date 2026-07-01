@@ -1,6 +1,6 @@
 @local = http://localhost:8080
 
-@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODA4MzQ4MjEsImV4cCI6MTc4MDgzNTQyMX0.mXWzqCzqVQyw7_1RfoYp0TiurB-cOKuw6qpzXBoGtghg74nLyLtpJcipBaznSBQjtecarzguaVm24_Gr_noy0g
+@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODI5MDEyMTUsImV4cCI6MTc4MjkwMTgxNX0._hwqwmHX-bnrdkcJ9-t6NwdewbhVvs5IxB0hYPy0kyCgqvDvX64j2rcQ8Rkz2eby6EFyGGTpcKmZoLSQJoUEfg
 
 @token = {{local-Token}}
 
@@ -11,14 +11,15 @@ POST {{baseUrl}}/user-auth/register
 Content-Type: application/json
 
 {
-    "firstName":"Suriya ",
+    "firstName":"Suriya",
     "lastName":"Ram",
     "userName":"suriya123",
     "email":"suriyasundarrajan340@gmail.com",
     "password":"Suriya@123",
     "confirmPassword":"Suriya@123",
     "phone":"9566642031",
-    "role":"user"
+    "address":"Nagercoil",
+    "role":"teacher"
 }
 
 ###
@@ -26,7 +27,7 @@ POST {{baseUrl}}/user-auth/login
 Content-Type: application/json
 
 {
-    "userName":"suriya123",
+    "userName":"suriyasundarrajan340@gmail.com",
     "password":"Suriya@123"
 }
 
@@ -36,7 +37,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"962667"
+    "otp":"437203"
 }
 
 ###
@@ -77,5 +78,32 @@ POST {{baseUrl}}/user-auth/signout
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+###
+POST {{baseUrl}}/user-auth/add/location
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
- 
+{
+    "area":"mylode",
+    "description":"kjhknlsfldlfm"
+}
+
+###
+PUT {{baseUrl}}/user-auth/update/location/id/1574b5cb-45af-4e81-83b7-ec1bbc8f4345
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "area":"canada",
+    "description":"sdfdfddf"
+}
+
+###
+DELETE {{baseUrl}}/user-auth/delete/location/id/79752098-be23-4fb2-ab83-a7f5bf9637c3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/location
+Content-Type: application/json
+Authorization: Bearer {{token}}

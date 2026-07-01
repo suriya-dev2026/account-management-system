@@ -2,10 +2,9 @@ package com.accountmanagement.utility;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.accountmanagement.constants.UserMessage;
+import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.User;
 
@@ -29,7 +28,6 @@ public class Apputility {
                 || SecurityContextHolder.getContext().getAuthentication() == null) {
             throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
         }
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!(principal instanceof User)) {

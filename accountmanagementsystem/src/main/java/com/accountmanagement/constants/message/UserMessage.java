@@ -1,4 +1,4 @@
-package com.accountmanagement.constants;
+package com.accountmanagement.constants.message;
 
 public class UserMessage {
 

@@ -72,6 +72,11 @@ public class UserRegistrationRequest {
         @NotBlank(message = "please enter role")
         private String role;
 
+        private String userId;
+
+        @NotBlank(message = "address cannot be blank")
+        private String address;
+
         public void sanitizeInput() {
                 setFirstName(Apputility.sanitizeInput(getFirstName()));
                 setLastName(Apputility.sanitizeInput(getLastName()));
@@ -79,6 +84,7 @@ public class UserRegistrationRequest {
                 setEmail(Apputility.sanitizeInput(getEmail()));
                 setPassword(Apputility.sanitizeInput(getPassword()));
                 setPhone(Apputility.sanitizeInput(getPhone()));
+                setAddress(Apputility.sanitizeInput(getAddress()));
         }
 
 }

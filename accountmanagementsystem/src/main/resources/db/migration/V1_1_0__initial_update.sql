@@ -5,15 +5,24 @@ create table if not exists users(
     user_name varchar(50) not null,
     email varchar(150) not null unique,
     password varchar(256) not null,
-    failed_login_attempts int default 0,
-    is_account_locked boolean default false,
-    locked_time timestamp,
     phone varchar(20) not null unique,
     role varchar(10),
     status varchar(10) not null,
     created_at timestamp not null,
     updated_at timestamp default null,
     primary key(id)
+);
+CREATE TABLE if not EXISTS user_profiles (
+    id varchar(50) PRIMARY KEY,
+    user_id varchar(50) NOT NULL UNIQUE,
+    address VARCHAR(255),
+    failed_login_attempts INTEGER DEFAULT 0,
+    is_account_locked BOOLEAN DEFAULT FALSE,
+    locked_time TIMESTAMP,
+    status VARCHAR(10),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 create table if not exists users_sessions(
     id varchar(50),
@@ -72,3 +81,10 @@ create index idx_users_sessions_user_id on users_sessions(user_id);
 create index idx_users_sessions_refresh_key on users_sessions(refresh_key);
 create index idx_password_reset_user_id on password_reset(user_id);
 create index idx_email_queues_user_id on email_queues(user_id);
+create table IF NOT EXISTS locations(
+    id varchar(50),
+    area varchar(50) not null,
+    description text,
+    created_at timestamp not null,
+    updated_at timestamp default null
+);

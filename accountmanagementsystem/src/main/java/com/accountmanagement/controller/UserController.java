@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
-import com.accountmanagement.constants.UserMessage;
+import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.dto.UserDto;
 import com.accountmanagement.request.ChangePasswordRequest;
 import com.accountmanagement.request.LoginRequest;

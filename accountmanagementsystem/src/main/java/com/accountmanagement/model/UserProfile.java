@@ -2,7 +2,7 @@ package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
 import org.hibernate.annotations.UuidGenerator;
-import com.accountmanagement.model.listeners.UserListeners;
+import com.accountmanagement.model.listeners.UserProfileListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,38 +12,32 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user_profiles")
 @Data
-@EntityListeners(UserListeners.class)
-public class User {
+@EntityListeners(UserProfileListeners.class)
+public class UserProfile {
 
     @Id
     @UuidGenerator
     @Column(name = "id")
     private String id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+    @Column(name = "user_id")
+    private String userId;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "address")
+    private String address;
 
-    @Column(name = "user_name", nullable = false)
-    private String userName;
+    @Column(name = "failed_login_attempts")
+    private Integer failedLoginAttempts;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+    @Column(name = "is_account_locked")
+    private Boolean isAccountLocked;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "locked_time")
+    private LocalDateTime lockedTime;
 
-    @Column(name = "phone")
-    private String phone;
-
-    @Column(name = "role")
-    private String role;
-
-    @Column(name = "status")
+    @Column
     private String status;
 
     @JsonIgnore
@@ -53,5 +47,4 @@ public class User {
     @JsonIgnore
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

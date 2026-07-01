@@ -34,7 +34,8 @@ public class SecurityConfig {
                                         "/change/password",
                                         "/verify/reset/otp",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**")
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

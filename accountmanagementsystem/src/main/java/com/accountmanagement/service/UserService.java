@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.dto.UserDto;
 import com.accountmanagement.exceptions.InvalidCredentialsException;
@@ -19,8 +18,10 @@ import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.UserMapper;
 import com.accountmanagement.model.PasswordReset;
 import com.accountmanagement.model.User;
+import com.accountmanagement.model.UserProfile;
 import com.accountmanagement.model.UserSession;
 import com.accountmanagement.repository.PasswordResetRepository;
+import com.accountmanagement.repository.UserProfileRepository;
 import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.repository.UserSessionRepository;
 import com.accountmanagement.request.ChangePasswordRequest;
@@ -44,6 +45,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
 
     @Autowired
     private UserLogService userLogService;
@@ -80,40 +84,41 @@ public class UserService {
             throw new RuntimeException("Passwords do not match");
         }
         User user = userMapper.toEntity(userRequest);
-        User registeredUser = userRepository.save(user);
-        userLogService.createUserLog(registeredUser.getId(), "register", "success");
-        return registeredUser;
+
+        userLogService.createUserLog(user.getId(), "register", "success");
+        return user;
     }
 
     public String loginUser(LoginRequest loginRequest) {
         User user = userRepository
                 .findByLoginUser(loginRequest.getUserName())
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid user credentials"));
-
-        if (user.getIsAccountLocked()) {
-            if (LocalDateTime.now().isBefore(user.getLockedTime().plusMinutes(30))) {
+                .orElseThrow(() -> new InvalidCredentialsException("user name not found"));
+        UserProfile userProfile = userProfileRepository
+                .findByUserId(user.getId())
+                .orElseThrow(() -> new InvalidCredentialsException("user name not found"));
+        if (userProfile.getIsAccountLocked()) {
+            if (LocalDateTime.now().isBefore(userProfile.getLockedTime().plusMinutes(30))) {
                 throw new InvalidCredentialsException("Account locked.Try again after 30 minutes");
             }
-            user.setIsAccountLocked(false);
-            user.setFailedLoginAttempts(0);
-            user.setLockedTime(null);
-            user.setStatus(AppConstants.ACTIVE);
-            userRepository.save(user);
+            userProfile.setIsAccountLocked(false);
+            userProfile.setFailedLoginAttempts(0);
+            userProfile.setLockedTime(null);
+            userProfileRepository.save(userProfile);
         }
         boolean isPasswordValid = bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword());
 
         if (!isPasswordValid) {
-            user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
-            if (user.getFailedLoginAttempts() >= 3) {
-                user.setIsAccountLocked(true);
-                user.setLockedTime(LocalDateTime.now());
-                user.setStatus("locked");
+            userProfile.setFailedLoginAttempts(userProfile.getFailedLoginAttempts() + 1);
+            if (userProfile.getFailedLoginAttempts() >= 3) {
+                userProfile.setIsAccountLocked(true);
+                userProfile.setLockedTime(LocalDateTime.now());
+                userProfile.setStatus("locked");
             }
             userRepository.save(user);
             throw new InvalidCredentialsException("Invalid Password");
         }
-        user.setFailedLoginAttempts(0);
-        userRepository.save(user);
+        userProfile.setFailedLoginAttempts(0);
+        userProfileRepository.save(userProfile);
         String otp = otpService.generateOtp();
         emailQueueService.addToQueue(user.getId(), user.getEmail(), otp);
 
