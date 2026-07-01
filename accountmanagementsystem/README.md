@@ -58,4 +58,4 @@ DELETE /auth-user/delete/location/id/{id}
 ### Get All locations
 GET /auth-user/location
 ### Swagger URL
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/user-auth/swagger-ui/index.html
