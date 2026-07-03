@@ -2,8 +2,6 @@ package com.accountmanagement.scheduler;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,11 +13,14 @@ import com.accountmanagement.repository.EmailQueueRepository;
 @Component
 public class EmailProcessScheduler {
 
-    @Autowired
-    private EmailQueueRepository emailQueueRepository;
+    private final EmailQueueRepository emailQueueRepository;
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+
+    EmailProcessScheduler(EmailQueueRepository emailQueueRepository, JavaMailSender javaMailSender) {
+        this.emailQueueRepository = emailQueueRepository;
+        this.javaMailSender = javaMailSender;
+    }
 
     @Scheduled(fixedDelay = 30000)
     public void processEmails() {

@@ -2,7 +2,6 @@ package com.accountmanagement.service;
 
 import com.accountmanagement.repository.UserSessionRepository;
 import java.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.exceptions.RecordNotFoundException;
@@ -11,11 +10,14 @@ import com.accountmanagement.model.UserSession;
 @Service
 public class UserSessionService {
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
+    private final UserSessionRepository userSessionRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    UserSessionService(UserSessionRepository userSessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userSessionRepository = userSessionRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     public UserSession createUserSession(String userId, String otp) {
         UserSession userSession = new UserSession();

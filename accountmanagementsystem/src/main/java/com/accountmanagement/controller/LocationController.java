@@ -2,7 +2,6 @@ package com.accountmanagement.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,8 +25,11 @@ import jakarta.validation.Valid;
 @RequestMapping(value = "location")
 public class LocationController {
 
-    @Autowired
-    private LocationService locationService;
+    private final LocationService locationService;
+
+    LocationController(LocationService locationService) {
+        this.locationService = locationService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> createLocation(@Valid @RequestBody LocationRequest locationRequest) {
@@ -39,8 +41,8 @@ public class LocationController {
     }
 
     @PutMapping("/update/id/{id}")
-    public ResponseEntity<ApiResponse> updateLocation(@Valid @PathVariable String id,
-            @RequestBody LocationRequest locationRequest) {
+    public ResponseEntity<ApiResponse> updateLocation(@PathVariable String id,
+            @Valid @RequestBody LocationRequest locationRequest) {
         locationRequest.sanitizeInput();
         locationService.updateLocation(id, locationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, LocationMessage.UPDATE_LOCATION, 200);
@@ -54,7 +56,7 @@ public class LocationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ApiResponse> getAllLocations() {
         try {
             List<Location> location = locationService.getAllLocations();

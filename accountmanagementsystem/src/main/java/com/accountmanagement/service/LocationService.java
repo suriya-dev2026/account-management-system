@@ -1,8 +1,6 @@
 package com.accountmanagement.service;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.exceptions.RecordNotFoundException;
@@ -13,8 +11,11 @@ import com.accountmanagement.request.LocationRequest;
 @Service
 public class LocationService {
 
-    @Autowired
-    private LocationRepository locationRepository;
+    private final LocationRepository locationRepository;
+
+    LocationService(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
 
     public Location addLocation(LocationRequest locationRequest) {
         System.out.println("Area" + locationRequest.getArea());

@@ -12,8 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,6 +36,7 @@ public class UserControllerTest {
         userRequest.setPassword("Sowmiya@123");
         userRequest.setConfirmPassword("Sowmiya@123");
         userRequest.setPhone("7598632149");
+        userRequest.setAddress("nagercoil");
         userRequest.setRole("user");
         mockMvc.perform(post("/register").with(csrf()).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest)))

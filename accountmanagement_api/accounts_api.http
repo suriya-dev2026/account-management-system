@@ -1,6 +1,6 @@
 @local = http://localhost:8080
 
-@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODI5MDEyMTUsImV4cCI6MTc4MjkwMTgxNX0._hwqwmHX-bnrdkcJ9-t6NwdewbhVvs5IxB0hYPy0kyCgqvDvX64j2rcQ8Rkz2eby6EFyGGTpcKmZoLSQJoUEfg
+@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODMwNzg0NzksImV4cCI6MTc4MzA3OTA3OX0.fI_1YPBOuhIW-uq_4kf_9MlbwTOauPxsHdaca8niPe-xBoZeV1sKrVQv9UXMwjFeZj13furgJ0CNqAYqmpeTJg
 
 @token = {{local-Token}}
 
@@ -11,15 +11,15 @@ POST {{baseUrl}}/user-auth/register
 Content-Type: application/json
 
 {
-    "firstName":"Suriya",
-    "lastName":"Ram",
-    "userName":"suriya123",
-    "email":"suriyasundarrajan340@gmail.com",
-    "password":"Suriya@123",
-    "confirmPassword":"Suriya@123",
-    "phone":"9566642031",
+    "firstName":"Ajitha",
+    "lastName":"Mohan",
+    "userName":"ajitha123",
+    "email":"suriya1993.je20260@gmail.com",
+    "password":"Ajitha@123",
+    "confirmPassword":"Ajitha@123",
+    "phone":"9791652388",
     "address":"Nagercoil",
-    "role":"teacher"
+    "role":"staff"
 }
 
 ###
@@ -27,7 +27,7 @@ POST {{baseUrl}}/user-auth/login
 Content-Type: application/json
 
 {
-    "userName":"suriyasundarrajan340@gmail.com",
+    "userName":"suriya123",
     "password":"Suriya@123"
 }
 
@@ -37,7 +37,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"437203"
+    "otp":"369976"
 }
 
 ###
@@ -46,9 +46,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-POST {{baseUrl}}/user-auth/refreshKey/a439b7c7-9f59-44e6-a59e-e81798e209f0
+POST {{baseUrl}}/user-auth/refreshKey/979dd303-092b-4646-aaf1-5ab39826aaf8
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 ###
 POST {{baseUrl}}/user-auth/forgot/password/suriyasundarrajan340@gmail.com
@@ -79,27 +78,27 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-POST {{baseUrl}}/user-auth/add/location
+POST {{baseUrl}}/user-auth/location/add
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "area":"mylode",
+    "area":"usa",
     "description":"kjhknlsfldlfm"
 }
 
 ###
-PUT {{baseUrl}}/user-auth/update/location/id/1574b5cb-45af-4e81-83b7-ec1bbc8f4345
+PUT {{baseUrl}}/user-auth/location/update/id/1574b5cb-45af-4e81-83b7-ec1bbc8f4345
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "area":"canada",
+    "area":"",
     "description":"sdfdfddf"
 }
 
 ###
-DELETE {{baseUrl}}/user-auth/delete/location/id/79752098-be23-4fb2-ab83-a7f5bf9637c3
+DELETE {{baseUrl}}/user-auth/location/delete/id/79752098-be23-4fb2-ab83-a7f5bf9637c3
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

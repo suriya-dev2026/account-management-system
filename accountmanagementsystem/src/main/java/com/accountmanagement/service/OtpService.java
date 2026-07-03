@@ -2,7 +2,6 @@ package com.accountmanagement.service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.exceptions.RecordNotFoundException;
@@ -14,16 +13,20 @@ import com.accountmanagement.repository.UserSessionRepository;
 @Service
 public class OtpService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
+    private final UserSessionRepository userSessionRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static final SecureRandom random = new SecureRandom();
+
+    OtpService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
+            UserSessionRepository userSessionRepository) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userSessionRepository = userSessionRepository;
+    }
 
     public String generateOtp() {
         int otp = 100000 + random.nextInt(900000);

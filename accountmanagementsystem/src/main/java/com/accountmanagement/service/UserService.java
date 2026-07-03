@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.accountmanagement.constants.AppConstants;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.accountmanagement.dto.UserDto;
 import com.accountmanagement.exceptions.InvalidCredentialsException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
@@ -34,42 +34,50 @@ import com.accountmanagement.utility.TokenUtility;
 @Service
 public class UserService {
 
-    @Autowired
-    private OtpService otpService;
+    private final OtpService otpService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private TokenUtility tokenUtility;
+    private final TokenUtility tokenUtility;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserProfileRepository userProfileRepository;
+    private final UserProfileRepository userProfileRepository;
 
-    @Autowired
-    private UserLogService userLogService;
+    private final UserLogService userLogService;
 
-    @Autowired
-    private UserSessionService userSessionService;
+    private final UserSessionService userSessionService;
 
-    @Autowired
-    private UserSessionRepository userSessionRepository;
+    private final UserSessionRepository userSessionRepository;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private PasswordResetRepository passwordResetRepository;
+    private final PasswordResetRepository passwordResetRepository;
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private EmailQueueService emailQueueService;
+    private final EmailQueueService emailQueueService;
 
+    UserService(OtpService otpService, BCryptPasswordEncoder bCryptPasswordEncoder, TokenUtility tokenUtility,
+            UserRepository userRepository, UserProfileRepository userProfileRepository, UserLogService userLogService,
+            UserSessionService userSessionService, UserSessionRepository userSessionRepository, UserMapper userMapper,
+            PasswordResetRepository passwordResetRepository, RedisTemplate redisTemplate,
+            EmailQueueService emailQueueService) {
+        this.otpService = otpService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.tokenUtility = tokenUtility;
+        this.userRepository = userRepository;
+        this.userProfileRepository = userProfileRepository;
+        this.userLogService = userLogService;
+        this.userSessionService = userSessionService;
+        this.userSessionRepository = userSessionRepository;
+        this.userMapper = userMapper;
+        this.passwordResetRepository = passwordResetRepository;
+        this.redisTemplate = redisTemplate;
+        this.emailQueueService = emailQueueService;
+    }
+
+    @Transactional
     public User registerUser(UserRegistrationRequest userRequest) {
         if (userRepository.existsByUserName(userRequest.getUserName())) {
             throw new UserAlreadyExistsException("Username already exists");
@@ -84,7 +92,9 @@ public class UserService {
             throw new RuntimeException("Passwords do not match");
         }
         User user = userMapper.toEntity(userRequest);
-
+        User savedUser = userRepository.save(user);
+        UserProfile userProfile = userMapper.toUserProfile(userRequest, savedUser.getId());
+        userProfileRepository.save(userProfile);
         userLogService.createUserLog(user.getId(), "register", "success");
         return user;
     }
@@ -114,7 +124,7 @@ public class UserService {
                 userProfile.setLockedTime(LocalDateTime.now());
                 userProfile.setStatus("locked");
             }
-            userRepository.save(user);
+            userProfileRepository.save(userProfile);
             throw new InvalidCredentialsException("Invalid Password");
         }
         userProfile.setFailedLoginAttempts(0);
@@ -157,7 +167,9 @@ public class UserService {
         if (userSession.getSessionStatus().equalsIgnoreCase("logout")) {
             throw new RuntimeException("Please login again");
         }
-        String newToken = tokenUtility.generateJwt(userSession.getUserId());
+        User user = userRepository.findById(userSession.getUserId())
+                .orElseThrow(() -> new RecordNotFoundException("User not found"));
+        String newToken = tokenUtility.generateJwt(user.getUserName());
         return newToken;
     }
 

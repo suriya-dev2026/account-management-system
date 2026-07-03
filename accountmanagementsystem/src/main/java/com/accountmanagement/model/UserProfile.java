@@ -26,7 +26,7 @@ public class UserProfile {
     private String userId;
 
     @Column(name = "address")
-    private String address;
+    private String address  ;
 
     @Column(name = "failed_login_attempts")
     private Integer failedLoginAttempts;

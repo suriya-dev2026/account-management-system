@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,9 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
+import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.User;
+import com.accountmanagement.model.UserProfile;
+import com.accountmanagement.repository.UserProfileRepository;
 import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.utility.TokenUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,16 +32,23 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private TokenUtility tokenUtility;
+    private final TokenUtility tokenUtility;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final UserProfileRepository userProfileRepository;
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    AuthFilter(TokenUtility tokenUtility, UserProfileRepository userProfileRepository, UserRepository userRepository,
+            RedisTemplate<String, String> redisTemplate) {
+        this.tokenUtility = tokenUtility;
+        this.userProfileRepository = userProfileRepository;
+        this.userRepository = userRepository;
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -60,8 +68,10 @@ public class AuthFilter extends OncePerRequestFilter {
                 sendError(response, UserMessage.USER_NOT_FOUND, 401);
                 return;
             }
+            UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RecordNotFoundException("User id not found"));
 
-            if (user.getStatus().equalsIgnoreCase(AppConstants.LOCKED)) {
+            if (userProfile.getIsAccountLocked()) {
                 sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
                 return;
             }
