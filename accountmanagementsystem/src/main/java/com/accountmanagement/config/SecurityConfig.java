@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers(
+                                        "/organization/register",
                                         "/register",
                                         "/login",
                                         "/verify/otp",

@@ -1,6 +1,7 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.accountmanagement.model.listeners.UserListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,13 +21,10 @@ public class User {
     @Id
     @UuidGenerator
     @Column(name = "id")
-    private String id;
+    private UUID id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "organization_id", nullable = false)
+    private UUID organizationId;
 
     @Column(name = "user_name", nullable = false)
     private String userName;
@@ -34,14 +32,23 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "contact_number")
+    private String contactNumber;
+
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "user_type")
+    private String userType;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "failed_login_attempts")
+    private Integer failedLoginAttempts;
+
+    @Column(name = "is_account_locked")
+    private Boolean isAccountLocked;
+
+    @Column(name = "locked_time")
+    private LocalDateTime lockedTime;
 
     @Column(name = "status")
     private String status;

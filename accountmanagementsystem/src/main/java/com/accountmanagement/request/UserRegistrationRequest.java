@@ -1,19 +1,30 @@
 package com.accountmanagement.request;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.enums.Gender;
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.validations.ValidUserEmail;
+import com.accountmanagement.validations.ValidContactNumber;
+import com.accountmanagement.validations.ValidDate;
 import com.accountmanagement.validations.ValidInputString;
+import com.accountmanagement.validations.ValidOrganizationId;
 import com.accountmanagement.validations.ValidPassword;
-import com.accountmanagement.validations.ValidPhone;
 import com.accountmanagement.validations.ValidUserPhoneNumber;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class UserRegistrationRequest {
+
+        @NotNull(message = "organization id is required")
+        @ValidOrganizationId(message = "organization id does not exists")
+        private UUID organizationId;
 
         @NotBlank(message = "Please enter first name")
         @Size(min = AppConstants.minNameLength, message = "First Name requires minimum of " + AppConstants.minNameLength
@@ -44,9 +55,15 @@ public class UserRegistrationRequest {
         @ValidUserEmail(message = "Account with this email already exists")
         @Size(min = AppConstants.minNameLength, message = "email requires minimum of " + AppConstants.minNameLength
                         + " characters")
-        @Size(max = AppConstants.emailLength, message = "User Name cannot exceed maximum of " + AppConstants.emailLength
+        @Size(max = AppConstants.maxEmailLength, message = "email cannot exceed maximum of "
+                        + AppConstants.maxEmailLength
                         + " characters")
         private String email;
+
+        @NotBlank(message = "please enter phone number")
+        @ValidContactNumber(message = "please enter a valid phone number")
+        @ValidUserPhoneNumber(message = "Account with this phone number already exists")
+        private String contactNumber;
 
         @NotBlank(message = "Please enter password")
         @ValidPassword(message = "Password must contain uppercase,lowercase, numbers, special characters")
@@ -64,18 +81,18 @@ public class UserRegistrationRequest {
                         + AppConstants.maxPasswordLength + " characters")
         private String confirmPassword;
 
-        @NotBlank(message = "please enter phone number")
-        @ValidPhone(message = "please enter a valid phone number")
-        @ValidUserPhoneNumber(message = "Account with this phone number already exists")
-        private String phone;
+        @NotNull(message = "date of birth is required")
+        @ValidDate(message = "please enter valid date")
+        private LocalDate dateOfBirth;
 
-        @NotBlank(message = "please enter role")
-        private String role;
+        @NotNull(message = "please enter gender")
+        private Gender gender;
 
-        private String userId;
-
-        @NotBlank(message = "address cannot be blank")
+        @NotBlank(message = "please enter address ")
         private String address;
+
+        @NotBlank(message = "please enter user type")
+        private String userType;
 
         public void sanitizeInput() {
                 setFirstName(Apputility.sanitizeInput(getFirstName()));
@@ -83,8 +100,8 @@ public class UserRegistrationRequest {
                 setUserName(Apputility.sanitizeInput(getUserName()));
                 setEmail(Apputility.sanitizeInput(getEmail()));
                 setPassword(Apputility.sanitizeInput(getPassword()));
-                setPhone(Apputility.sanitizeInput(getPhone()));
                 setAddress(Apputility.sanitizeInput(getAddress()));
+                setUserType(Apputility.sanitizeInput(getUserType()));
         }
 
 }

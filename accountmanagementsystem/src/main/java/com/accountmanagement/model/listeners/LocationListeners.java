@@ -7,16 +7,16 @@ import com.accountmanagement.model.Location;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
-public class AreaListeners {
+public class LocationListeners {
 
     @PrePersist
-    public void onCreate(Location area) {
-        area.setCreatedAt(LocalDateTime.now());
+    public void onCreate(Location location) {
+        location.setCreatedAt(LocalDateTime.now());
     }
 
     @PreUpdate
-    public void onUpdate(Location area) {
-        area.setUpdatedAt(LocalDateTime.now());
+    public void onUpdate(Location location) {
+        location.setUpdatedAt(LocalDateTime.now());
     }
 
 }

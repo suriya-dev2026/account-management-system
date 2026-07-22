@@ -14,8 +14,10 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,9 +29,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.accountmanagement.dto.UserDto;
+import com.accountmanagement.enums.Gender;
 import com.accountmanagement.exceptions.InvalidCredentialsException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.UserMapper;
+import com.accountmanagement.model.EmailQueue;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserProfile;
 import com.accountmanagement.model.UserSession;
@@ -39,6 +43,7 @@ import com.accountmanagement.repository.UserSessionRepository;
 import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
+import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.utility.TokenUtility;
 
@@ -52,7 +57,7 @@ public class UserServiceTest {
     private UserMapper userMapper;
 
     @Mock
-    private UserLogService userLogService;
+    private UserLoginAuditLogService userLoginAuditLogService;
 
     @Mock
     private OtpService otpService;
@@ -67,10 +72,10 @@ public class UserServiceTest {
     private TokenUtility tokenUtility;
 
     @Mock
-    private RedisTemplate<String, String> redisTemplate;
+    private ValueOperations<String, String> valueOperation;
 
     @Mock
-    private ValueOperations<String, String> valueOperations;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Mock
     private Apputility apputility;
@@ -87,54 +92,50 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    UserRegistrationRequest userRequest = new UserRegistrationRequest();;
-
-    LoginRequest loginRequest = new LoginRequest();
+    UserRegistrationRequest userRequest = new UserRegistrationRequest();
 
     @Test
     void shouldRegisterUser() {
+        UUID organizationId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
         userRequest.setFirstName("Ajay");
         userRequest.setLastName("Kumar");
         userRequest.setUserName(("ajay123"));
         userRequest.setEmail("ajay@gmail.com");
         userRequest.setPassword("Ajay@123");
         userRequest.setConfirmPassword("Ajay@123");
-        userRequest.setPhone("7859632148");
-        userRequest.setRole("user");
-        userRequest.setAddress("nagercoil");
+        userRequest.setContactNumber("7859632148");
+        userRequest.setGender(Gender.Male);
+        userRequest.setAddress("Nagercoil");
+        userRequest.setUserType("Staff");
         User user = new User();
-        user.setId("user1");
-        user.setFirstName("Ajay");
-        user.setLastName("Kumar");
+        user.setId(userId);
+        user.setOrganizationId(organizationId);
         user.setUserName("ajay123");
         user.setEmail("ajay@gmail.com");
         user.setPassword("Ajay@123");
-        user.setPhone("7859632148");
-        user.setRole("user");
+        user.setContactNumber("7859632148");
         UserProfile userProfile = new UserProfile();
-        userProfile.setUserId("user1");
+        userProfile.setUserId(user.getId());
         userProfile.setAddress("nagercoil");
-        userProfile.setFailedLoginAttempts(0);
-        userProfile.setIsAccountLocked(false);
-        userProfile.setLockedTime(null);
         when(userRepository.existsByUserName("ajay123")).thenReturn(false);
         when(userRepository.existsByEmail("ajay@gmail.com")).thenReturn(false);
-        when(userRepository.existsByPhone("7859632148")).thenReturn(false);
-        when(userMapper.toEntity(userRequest)).thenReturn(user);
+        when(userRepository.existsByContactNumber("7859632148")).thenReturn(false);
+        when(userMapper.toRegisterUser(userRequest)).thenReturn(user);
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userMapper.toUserProfile(userRequest, "user1")).thenReturn(userProfile);
+        when(userMapper.toUserProfile(userRequest, userId)).thenReturn(userProfile);
         User result = userService.registerUser(userRequest);
         assertNotNull(result);
         assertEquals("ajay@gmail.com", result.getEmail());
         assertEquals("ajay123", result.getUserName());
         verify(userRepository).existsByUserName("ajay123");
         verify(userRepository).existsByEmail("ajay@gmail.com");
-        verify(userRepository).existsByPhone("7859632148");
-        verify(userMapper).toEntity(userRequest);
+        verify(userRepository).existsByContactNumber("7859632148");
+        verify(userMapper).toRegisterUser(userRequest);
         verify(userRepository).save(any(User.class));
-        verify(userMapper).toUserProfile(userRequest, "user1");
+        verify(userMapper).toUserProfile(userRequest, user.getId());
         verify(userProfileRepository).save(any(UserProfile.class));
-        verify(userLogService).createUserLog(eq("user1"), eq("register"), eq("success"));
+        verify(userLoginAuditLogService).createUserLog(organizationId, userId, "register", "success");
     }
 
     @Test
@@ -148,8 +149,8 @@ public class UserServiceTest {
 
     @Test
     void shouldThrowExceptionWhenPhoneAlreadyExists() {
-        userRequest.setPhone("7859632141");
-        when(userRepository.existsByPhone(anyString()))
+        userRequest.setContactNumber("7859632141");
+        when(userRepository.existsByContactNumber(anyString()))
                 .thenReturn(true);
         assertThrows(UserAlreadyExistsException.class, () -> userService.registerUser(userRequest));
         verify(userRepository, never()).save(any(User.class));
@@ -166,88 +167,115 @@ public class UserServiceTest {
 
     @Test
     void shouldLoginUser() {
-        loginRequest.setUserName("ajay123");
+        LoginRequest loginRequest = new LoginRequest();
+        UUID userId = UUID.randomUUID();
+        UUID organizationId = UUID.randomUUID();
+        loginRequest.setLogin("ajay123");
         loginRequest.setPassword("Ajay@123");
         User user = new User();
-        user.setId("123");
+        user.setId(userId);
+        user.setOrganizationId(organizationId);
         user.setUserName("ajay123");
         user.setEmail("ajay@gmail.com");
         user.setPassword("encodedPassword");
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserId("123");
-        userProfile.setIsAccountLocked(false);
-        userProfile.setFailedLoginAttempts(0);
-        userProfile.setLockedTime(null);
-        when(userRepository.findByLoginUser("ajay123")).thenReturn(Optional.of(user));
-        when(userProfileRepository.findByUserId("123")).thenReturn(Optional.of(userProfile));
+        user.setFailedLoginAttempts(0);
+        user.setIsAccountLocked(false);
+        user.setLockedTime(null);
+        UserSession userSession = new UserSession();
+        EmailQueue emailQueue = new EmailQueue();
+        when(userRepository.findByUserNameOrEmailOrContactNumber(anyString(), anyString(), anyString()))
+                .thenReturn(Optional.of(user));
         when(bCryptPasswordEncoder.matches("Ajay@123", "encodedPassword")).thenReturn(true);
         when(otpService.generateOtp()).thenReturn("123456");
-        when(userSessionService.createUserSession(anyString(), anyString())).thenReturn(new UserSession());
-        doNothing().when(emailQueueService).addToQueue(anyString(), anyString(), anyString());
+        when(userSessionService.createUserSession(userId, "123456")).thenReturn(userSession);
+        when(emailQueueService.addToQueue(userId, "ajay@gmail.com")).thenReturn(emailQueue);
+        doNothing().when(otpService).sendEmail(emailQueue, "123456");
         String result = userService.loginUser(loginRequest);
         assertEquals("Otp send successfully", result);
-        verify(userSessionService, times(1)).createUserSession("123", "123456");
-        verify(userLogService, times(1)).createUserLog(eq("123"), eq("login"), eq("success"));
+        verify(userRepository).findByUserNameOrEmailOrContactNumber("ajay123", "ajay123", "ajay123");
+        verify(bCryptPasswordEncoder).matches("Ajay@123", "encodedPassword");
+        verify(otpService).generateOtp();
+        verify(userSessionService).createUserSession(userId, "123456");
+        verify(emailQueueService).addToQueue(userId, "ajay@gmail.com");
+        verify(otpService).sendEmail(emailQueue, "123456");
+        verify(userLoginAuditLogService).createUserLog(organizationId, userId, "Login", "Success");
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
-        loginRequest.setUserName("ajay123");
-        when(userRepository.findByLoginUser(anyString()))
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setLogin("ajay123");
+        when(userRepository.findByUserNameOrEmailOrContactNumber("ajay123", "ajay123", "ajay123"))
                 .thenReturn(Optional.empty());
         assertThrows(InvalidCredentialsException.class, () -> userService.loginUser(loginRequest));
     }
 
     @Test
     void shouldVerifyOtp() {
+        UUID userId = UUID.randomUUID();
+        UUID organizationID = UUID.randomUUID();
         VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest();
         verifyOtpRequest.setEmail("ajay@gmail.com");
         verifyOtpRequest.setOtp("123456");
         User user = new User();
-        user.setId("123");
+        user.setId(userId);
+        user.setOrganizationId(organizationID);
         user.setUserName("ajay123");
         user.setEmail("ajay@gmail.com");
         when(userRepository.findByEmail("ajay@gmail.com")).thenReturn(Optional.of(user));
+        doNothing().when(otpService).verifyOtp(userId, "123456");
         when(tokenUtility.generateJwt("ajay123")).thenReturn("jwt-token");
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        Map<String, String> result = userService.verifyLoginOtp(verifyOtpRequest);
-        assertEquals("jwt-token", result.get("accessToken"));
-        assertNotNull(result.get("refreshKey"));
-        verify(userSessionService, times(1)).updateSessionAfterOtp(anyString(), anyString(), anyString());
-        verify(userLogService, times(1)).createUserLog(anyString(), eq("Verify Otp"), eq("success"));
+        when(redisTemplate.opsForValue()).thenReturn(valueOperation);
+        ApiResponse response = userService.verifyLoginOtp(verifyOtpRequest);
+        assertNotNull(response);
+        assertEquals("jwt-token", response.getAccessToken());
+        assertNotNull(response.getRefreshKey());
+        verify(userRepository).findByEmail("ajay@gmail.com");
+        verify(otpService).verifyOtp(userId, "123456");
+        verify(tokenUtility).generateJwt("ajay123");
+        verify(valueOperation).set(eq("jwt-token"), eq(userId.toString()), eq(10L), eq(TimeUnit.MINUTES));
+        verify(userSessionService).updateSessionAfterOtp(eq(userId), anyString());
+        verify(userLoginAuditLogService).createUserLog(organizationID, userId, "Verify Otp", "Success");
     }
 
     @Test
     void shouldGenerateAccessToken() {
         String refreshKey = "refresh-123";
+        UUID userId = UUID.randomUUID();
+        UUID sessionId = UUID.randomUUID();
         UserSession userSession = new UserSession();
-        userSession.setId("session1");
-        userSession.setUserId("123");
+        userSession.setId(sessionId);
+        userSession.setUserId(userId);
         userSession.setRefreshKey(refreshKey);
         userSession.setRefreshKeyStatus(true);
         userSession.setSessionStatus("login");
         userSession.setRefreshKeyExpiration(LocalDateTime.now().plusDays(1));
         User user = new User();
-        user.setId("123");
-        user.setUserName("ajya123");
-        when(userSessionService.getRefreshKey(refreshKey)).thenReturn(userSession);
-        when(userRepository.findById("123")).thenReturn(Optional.of(user));
-        when(tokenUtility.generateJwt(anyString())).thenReturn("new-jwt-token");
+        user.setId(userId);
+        user.setUserName("ajay123");
+        when(userSessionRepository.findByRefreshKey(refreshKey)).thenReturn(Optional.of(userSession));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(tokenUtility.generateJwt("ajay123"))
+                .thenReturn("new-jwt-token");
+        when(redisTemplate.opsForValue())
+                .thenReturn(valueOperation);
         String result = userService.generateAccessToken(refreshKey);
+
         assertEquals("new-jwt-token", result);
-        verify(userSessionService).getRefreshKey(refreshKey);
-        verify(userRepository).findById("123");
-        verify(tokenUtility).generateJwt(anyString());
-        System.out.println(userSession.getUserId());
+
+        verify(userSessionRepository).findByRefreshKey(refreshKey);
+        verify(userRepository).findById(userId);
+        verify(tokenUtility).generateJwt("ajay123");
+
+        verify(valueOperation).set("new-jwt-token", userId.toString(), 10L, TimeUnit.MINUTES);
     }
 
     @Test
     void shouldGetAllUsers() throws Exception {
         User loggedUser = new User();
-        loggedUser.setId("123");
+        // loggedUser.setId();
         User user = new User();
-        user.setFirstName("Ajay");
-        user.setLastName("Kumar");
         user.setUserName("ajay123");
         user.setEmail("ajay@gmail.com");
         List<User> users = List.of(user);
@@ -256,8 +284,6 @@ public class UserServiceTest {
             mockedStatic.when(Apputility::getLoggedUser).thenReturn(loggedUser);
             List<UserDto> result = userService.getAllUsers();
             assertEquals(1, result.size());
-            assertEquals("Ajay", result.get(0).getFirstName());
-            assertEquals("Kumar", result.get(0).getLastName());
             assertEquals("ajay@gmail.com", result.get(0).getEmail());
         }
     }
@@ -265,14 +291,20 @@ public class UserServiceTest {
     @Test
     public void shouldSignOutUser() {
         String authHeader = "Bearer jwt-token";
+        UUID userId = UUID.randomUUID();
+        UUID organizationId = UUID.randomUUID();
         User loggedUser = new User();
-        loggedUser.setId("123");
+        loggedUser.setId(userId);
         loggedUser.setUserName("ajay123");
+        loggedUser.setOrganizationId(organizationId);
         UserSession userSession = new UserSession();
-        userSession.setSessionStatus("logout");
-        when(userRepository.findByUserName("ajay123"))
-                .thenReturn(loggedUser);
-        when(userSessionRepository.findTopByUserIdOrderByCreatedAtDesc("123")).thenReturn(userSession);
+        userSession.setUserId(userId);
+        userSession.setSessionStatus("Active");
+        userSession.setRefreshKey("refresh-token");
+        userSession.setRefreshKeyStatus(true);
+        userSession.setIsValidToken(true);
+        when(userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId))
+                .thenReturn(Optional.of(userSession));
         try (MockedStatic<Apputility> mockedStatic = Mockito.mockStatic(Apputility.class)) {
             mockedStatic.when(Apputility::getLoggedUser).thenReturn(loggedUser);
 
@@ -281,7 +313,7 @@ public class UserServiceTest {
         }
         verify(redisTemplate, times(1)).delete("jwt-token");
         verify(userSessionRepository).save(userSession);
-        verify(userLogService).createUserLog(eq("123"), eq("logout"), eq("success"));
+        verify(userLoginAuditLogService).createUserLog(organizationId, userId, "logout", "success");
     }
 
 }

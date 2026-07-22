@@ -1,7 +1,6 @@
 package com.accountmanagement.controller;
 
 import java.util.List;
-import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,10 +48,7 @@ public class UserController {
     @PostMapping("/verify/otp")
     public ResponseEntity<ApiResponse> verifyOtp(@Valid @RequestBody VerifyOtpRequest verifyOtpRequest) {
         verifyOtpRequest.sanitizeInput();
-        Map<String, String> tokenResponse = userService.verifyLoginOtp(verifyOtpRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                UserMessage.OTP_VERIFY, 200);
-        response.setRequestInfo(tokenResponse);
+        ApiResponse response = userService.verifyLoginOtp(verifyOtpRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -95,9 +91,7 @@ public class UserController {
     @PostMapping("/verify/reset/otp")
     public ResponseEntity<ApiResponse> verifyResetOtp(@Valid @RequestBody VerifyOtpRequest verifyOtpRequest) {
         verifyOtpRequest.sanitizeInput();
-        userService.verifyResetOtp(verifyOtpRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                UserMessage.OTP_VERIFY, 200);
+        ApiResponse response = userService.verifyResetOtp(verifyOtpRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

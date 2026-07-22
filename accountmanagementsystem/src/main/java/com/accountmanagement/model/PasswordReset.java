@@ -1,7 +1,10 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.UuidGenerator;
+
 import com.accountmanagement.model.listeners.PasswordResetListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -13,42 +16,38 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "password_reset")
+@Table(name = "password_resets")
 @EntityListeners(PasswordResetListeners.class)
 public class PasswordReset {
 
     @Id
     @UuidGenerator
     @Column(name = "id")
-    private String id;
+    private UUID id;
 
     @Column(name = "user_id")
-    private String userId;
+    private UUID userId;
 
-    @Column(name = "reset_otp")
-    private String resetOtp;
+    @Column(name = "otp")
+    private String otp;
 
     @Column(name = "otp_expiration")
     private LocalDateTime otpExpiration;
 
-    @Column(name = "is_otp_verified")
-    private Boolean isOtpVerified;
-
     @Column(name = "otp_verification_count")
     private Integer otpVerificationCount;
+
+    @Column(name = "is_otp_verified")
+    private Boolean isOtpVerified;
 
     @Column(name = "reset_token")
     private String resetToken;
 
-    @Column(name = "token_expiry")
-    private LocalDateTime tokenExpiry;
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
 
     @JsonIgnore
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @JsonIgnore
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
 }

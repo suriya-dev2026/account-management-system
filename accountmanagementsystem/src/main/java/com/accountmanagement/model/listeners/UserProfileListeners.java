@@ -2,6 +2,7 @@ package com.accountmanagement.model.listeners;
 
 import java.time.LocalDateTime;
 
+import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.model.UserProfile;
 
 import jakarta.persistence.PrePersist;
@@ -13,6 +14,7 @@ public class UserProfileListeners {
 
     @PrePersist
     public void onCreate(UserProfile userProfile) {
+        userProfile.setStatus(AppConstants.ACTIVE);
         userProfile.setCreatedAt(LocalDateTime.now());
     }
 

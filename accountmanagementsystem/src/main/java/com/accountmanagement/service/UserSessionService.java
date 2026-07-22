@@ -2,6 +2,8 @@ package com.accountmanagement.service;
 
 import com.accountmanagement.repository.UserSessionRepository;
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.exceptions.RecordNotFoundException;
@@ -19,7 +21,7 @@ public class UserSessionService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public UserSession createUserSession(String userId, String otp) {
+    public UserSession createUserSession(UUID userId, String otp) {
         UserSession userSession = new UserSession();
         userSession.setUserId(userId);
         userSession.setOtp(bCryptPasswordEncoder.encode(otp));
@@ -32,25 +34,15 @@ public class UserSessionService {
         return userSessionRepository.save(userSession);
     }
 
-    public void updateSessionAfterOtp(String userId, String refreshKey, String accessToken) {
-        UserSession session = userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
-        if (session == null) {
-            throw new RecordNotFoundException("session not found");
-        }
+    public void updateSessionAfterOtp(UUID userId, String refreshKey) {
+        UserSession session = userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
+                .orElseThrow(() -> new RecordNotFoundException("User session not found"));
         session.setRefreshKey(refreshKey);
         session.setRefreshKeyCreatedAt(LocalDateTime.now());
         session.setRefreshKeyExpiration(LocalDateTime.now().plusHours(24));
         session.setIsOtpVerified(true);
         session.setOtp(null);
         userSessionRepository.save(session);
-    }
-
-    public UserSession getRefreshKey(String refreshKey) {
-        UserSession userSession = userSessionRepository.findByRefreshKey(refreshKey);
-        if (userSession == null) {
-            throw new RecordNotFoundException("Refresh key not found");
-        }
-        return userSession;
     }
 
 }

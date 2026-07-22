@@ -1,25 +1,23 @@
 package com.accountmanagement.validations;
 
 import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+
+import com.accountmanagement.validators.OrganizationIdValidator;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+import java.lang.annotation.Target;
 
-import com.accountmanagement.validators.PhoneValidator;
-
-@Constraint(validatedBy = PhoneValidator.class)
+@Constraint(validatedBy = OrganizationIdValidator.class)
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD })
-public @interface ValidPhone {
+public @interface ValidOrganizationId {
 
-    public String message() default "Invalid phone number";
+    public String message() default "Invalid organization id";
 
     public Class<?>[] groups() default {};
 
     public Class<? extends Payload>[] payload() default {};
-
 }

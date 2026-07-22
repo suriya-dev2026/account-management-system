@@ -1,25 +1,76 @@
 @local = http://localhost:8080
 
-@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODMwNzg0NzksImV4cCI6MTc4MzA3OTA3OX0.fI_1YPBOuhIW-uq_4kf_9MlbwTOauPxsHdaca8niPe-xBoZeV1sKrVQv9UXMwjFeZj13furgJ0CNqAYqmpeTJg
+@local-Token =eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODQ3MDk5NTQsImV4cCI6MTc4NDcxMDU1NH0.UM6RBw51mnUrOuVO5NYQs4ZHIiEXZyT9lp41rlI4-SujiHSkn4Z87mq65nnwwqJN-wwVAkKaFKk1DOkwud92XQ
 
 @token = {{local-Token}}
 
 @baseUrl = {{local}}
 
 ###
+POST {{baseUrl}}/user-auth/organization/register
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name":"CSI Mission Church",
+    "registrationNumber":"457489CSIMN",
+    "email":"csimissionchurch@gmail.com",
+    "contactNumber":"9566642014",
+    "website":"www.csimissionchurch.com",
+    "address":"14 duthie school junction road near bank",
+    "city":"Nagercoil",
+    "state":"Tamilnadu",
+    "country":"India",
+    "postalCode":"629002",
+    "primaryContactName":"Johnson",
+    "primaryContactEmail":"johnson@gmail.com",
+    "primaryContactPhone":"7485961236"
+}
+
+###
+PUT {{baseUrl}}/user-auth/organization/update/id/ab1e9976-c0f4-451f-95e5-afcbcf872c06
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name":"CSI Mission Church",
+    "registrationNumber":"457489CSIMN",
+    "email":"csimissionchurch@gmail.com",
+    "contactNumber":"+919545666420",
+    "website":"www.csimissionchurch.com",
+    "address":"14 duthie school junction road near TMB bank",
+    "city":"Nagercoil",
+    "state":"Tamilnadu",
+    "country":"India",
+    "postalCode":"629002",
+    "primaryContactName":"Johnson",
+    "primaryContactEmail":"johnson@gmail.com",
+    "primaryContactPhone":"7485961236"
+}
+
+###
+DELETE {{baseUrl}}/user-auth/organization/delete/id/c94b0cd2-6e38-4c29-8357-3fa4767a2d7e
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
 POST {{baseUrl}}/user-auth/register
 Content-Type: application/json
 
 {
-    "firstName":"Ajitha",
-    "lastName":"Mohan",
-    "userName":"ajitha123",
-    "email":"suriya1993.je20260@gmail.com",
-    "password":"Ajitha@123",
-    "confirmPassword":"Ajitha@123",
-    "phone":"9791652388",
+    "organizationId":"f0768d32-efd3-4d5e-84f4-1159af6617bf",
+    "code":"CH_00001",
+    "firstName":"Suriya",
+    "lastName":"Ram",
+    "userName":"suriya123",
+    "email":"suriyasundarrajan340@gmail.com",
+    "password":"Suriya@123",
+    "confirmPassword":"Suriya@123",
+    "contactNumber":"9566642031",
+    "gender":"Female",
+    "dateOfBirth":"1993-05-22",
     "address":"Nagercoil",
-    "role":"staff"
+    "userType":"staff"
 }
 
 ###
@@ -27,7 +78,7 @@ POST {{baseUrl}}/user-auth/login
 Content-Type: application/json
 
 {
-    "userName":"suriya123",
+    "login":"9566642031",
     "password":"Suriya@123"
 }
 
@@ -37,7 +88,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"369976"
+    "otp":"950907"
 }
 
 ###
@@ -46,7 +97,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-POST {{baseUrl}}/user-auth/refreshKey/979dd303-092b-4646-aaf1-5ab39826aaf8
+POST {{baseUrl}}/user-auth/refreshKey/8b3ca159-6c91-48fa-9248-8643da9b959a
 Content-Type: application/json
 
 ###
@@ -59,7 +110,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"664654"
+    "otp":"467925"
 }
 
 ###
@@ -67,9 +118,9 @@ POST {{baseUrl}}/user-auth/change/password
 Content-Type: application/json
 
 {
-    "resetToken":"a455a135-2645-4063-9ea5-0913b05a248a",
-    "newPassword":"Suriya@12345",
-    "confirmPassword":"Suriya@12345"
+    "resetToken":"6f32f359-19a5-447b-b778-b8f2ed01216f",
+    "newPassword":"Suriya@123",
+    "confirmPassword":"Suriya@123"
 }
 
 ###
@@ -83,17 +134,17 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "area":"usa",
+    "location":"Kanyakumari",
     "description":"kjhknlsfldlfm"
 }
 
 ###
-PUT {{baseUrl}}/user-auth/location/update/id/1574b5cb-45af-4e81-83b7-ec1bbc8f4345
+PUT {{baseUrl}}/user-auth/location/update/id/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "area":"",
+    "location":"Nagercoil",
     "description":"sdfdfddf"
 }
 
@@ -104,5 +155,88 @@ Authorization: Bearer {{token}}
 
 ###
 GET {{baseUrl}}/user-auth/location
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/user-auth/member/category/add
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "category":"Believer",
+    "description":"sdfdsfhghjfgsfef"
+}
+
+###
+PUT {{baseUrl}}/user-auth/member/category/update/id/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "category":"Believer",
+    "description":"fdssfdfdsfdf"
+}
+
+###
+DELETE {{baseUrl}}/user-auth/member/category/delete/id/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/user-auth/member/add
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "organizationId":"f0768d32-efd3-4d5e-84f4-1159af6617bf",
+    "organizationCode":"CH_00001",
+    "familyHeadId":"",
+    "category":"Believer",
+    "location":"Kanyakumari",
+    "relationShip":"",
+    "firstName":"Yuva",
+    "lastName":"Raj",
+    "userName":"yuva123",
+    "gender":"Male",
+    "dateOfBirth":"2025-10-05",
+    "dateOfJoin":"2025-05-10",
+    "weddingDate":"",
+    "email":"yuva@gmail.com",
+    "contactNumber":"+919566642314",
+    "address":"No 6 RGV colony ljdlflfmkjkdf nagercoil kanya kumari district",
+    "isWaterBaptised":true,
+    "isSpiritBaptised":false
+}
+
+###
+PUT {{baseUrl}}/user-auth/member/update/id/af8e447b-79b4-4002-adc3-d8c8d68df791
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "organizationId":"c3688ba9-b256-48fa-84ba-c0a6f6a8bc9c",
+    "organizationCode":"CH_00010",
+    "familyHeadId":"",
+    "category":"Believer",
+    "location":"Nagercoil",
+    "relationShip":"Father",
+    "firstName":"Michael",
+    "lastName":"John",
+    "userName":"michael123",
+    "gender":"Male",
+    "dateOfBirth":"2027-05-08",
+    "dateOfJoin":"2025-10-18",
+    "weddingDate":"",
+    "email":"michael@gmail.com",
+    "contactNumber":"9741526398",
+    "address":"No 6 ngm colony ljdlflfmkjkdf nagercoil kanya kumari district",
+    "isWaterBaptised":true,
+    "isSpiritBaptised":false
+
+}
+
+###
+DELETE {{baseUrl}}/user-auth/member
 Content-Type: application/json
 Authorization: Bearer {{token}}

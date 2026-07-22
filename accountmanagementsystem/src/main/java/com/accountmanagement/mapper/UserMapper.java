@@ -1,5 +1,7 @@
 package com.accountmanagement.mapper;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.accountmanagement.model.User;
@@ -15,31 +17,27 @@ public class UserMapper {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User toEntity(UserRegistrationRequest userRequest) {
-        if (userRequest == null) {
-            return null;
-        }
+    public User toRegisterUser(UserRegistrationRequest userRequest) {
         User user = new User();
-        user.setFirstName(userRequest.getFirstName());
-        user.setLastName(userRequest.getLastName());
+        user.setOrganizationId(userRequest.getOrganizationId());
         user.setUserName(userRequest.getUserName());
         user.setEmail(userRequest.getEmail());
+        user.setContactNumber(userRequest.getContactNumber());
         user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
-        user.setPhone(userRequest.getPhone());
-        user.setRole((userRequest.getRole()));
+        user.setUserType(userRequest.getUserType());
+        user.setFailedLoginAttempts(0);
+        user.setIsAccountLocked(false);
         return user;
     }
 
-    public UserProfile toUserProfile(UserRegistrationRequest userRegistrationRequest, String userId) {
-        if (userRegistrationRequest == null) {
-            return null;
-        }
+    public UserProfile toUserProfile(UserRegistrationRequest userRegistrationRequest, UUID userId) {
         UserProfile userProfile = new UserProfile();
         userProfile.setUserId(userId);
+        userProfile.setFirstName(userRegistrationRequest.getFirstName());
+        userProfile.setLastName(userRegistrationRequest.getLastName());
+        userProfile.setGender(userRegistrationRequest.getGender());
+        userProfile.setDateOfBirth(userRegistrationRequest.getDateOfBirth());
         userProfile.setAddress(userRegistrationRequest.getAddress());
-        userProfile.setFailedLoginAttempts(0);
-        userProfile.setIsAccountLocked(false);
-        userProfile.setLockedTime(null);
         return userProfile;
     }
 

@@ -1,12 +1,12 @@
 package com.accountmanagement.repository;
 
 import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import com.accountmanagement.model.User;
 
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     User findByUserName(String userName);
 
@@ -16,11 +16,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByEmail(String email);
 
-    boolean existsByPhone(String phone);
+    boolean existsByContactNumber(String contactNumber);
 
-    @Query("""
-                Select u from User u where u.email=:loginId OR u.userName=:loginId OR u.phone=:loginId
-            """)
-    Optional<User> findByLoginUser(@Param("loginId") String loginId);
+    Optional<User> findByUserNameOrEmailOrContactNumber(String login, String login2, String login3);
 
 }

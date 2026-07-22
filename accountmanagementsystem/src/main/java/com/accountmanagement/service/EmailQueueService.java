@@ -1,6 +1,8 @@
 package com.accountmanagement.service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.model.EmailQueue;
@@ -15,13 +17,12 @@ public class EmailQueueService {
         this.emailQueueRepository = emailQueueRepository;
     }
 
-    public void addToQueue(String userId, String email, String otp) {
+    public EmailQueue addToQueue(UUID userId, String email) {
         EmailQueue emailQueue = new EmailQueue();
         emailQueue.setUserId(userId);
         emailQueue.setToEmail(email);
-        emailQueue.setMessage("Your otp  is" + otp);
         emailQueue.setStatus("In Process");
         emailQueue.setCreatedAT(LocalDateTime.now());
-        emailQueueRepository.save(emailQueue);
+        return emailQueueRepository.save(emailQueue);
     }
 }

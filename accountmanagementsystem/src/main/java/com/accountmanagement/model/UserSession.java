@@ -1,6 +1,8 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.UuidGenerator;
 import com.accountmanagement.model.listeners.UserSessionListeners;
 import jakarta.persistence.Column;
@@ -12,17 +14,17 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "users_sessions")
+@Table(name = "user_sessions")
 @EntityListeners(UserSessionListeners.class)
 public class UserSession {
 
     @Id
     @UuidGenerator
     @Column(name = "id")
-    private String id;
+    private UUID id;
 
     @Column(name = "user_id")
-    private String userId;
+    private UUID userId;
 
     @Column(name = "otp")
     private String otp;
@@ -48,11 +50,11 @@ public class UserSession {
     @Column(name = "refresh_key_status")
     private Boolean refreshKeyStatus;
 
-    @Column(name = "session_status")
-    private String sessionStatus;
-
     @Column(name = "is_valid_token")
     private Boolean isValidToken;
+
+    @Column(name = "session_status")
+    private String sessionStatus;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

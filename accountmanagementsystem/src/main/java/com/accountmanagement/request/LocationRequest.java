@@ -8,13 +8,13 @@ import lombok.Data;
 @Data
 public class LocationRequest {
 
-    @NotBlank(message = "area field is required")
-    private String area;
+    @NotBlank(message = "location field is required")
+    private String location;
 
     private String description;
 
     public void sanitizeInput() {
-        setArea(Apputility.sanitizeInput(getArea()));
+        setLocation(Apputility.sanitizeInput(getLocation()));
         setDescription(Apputility.sanitizeInput(getDescription()));
     }
 }

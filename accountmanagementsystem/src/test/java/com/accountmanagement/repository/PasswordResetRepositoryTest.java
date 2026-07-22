@@ -4,10 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.accountmanagement.model.Organization;
 import com.accountmanagement.model.PasswordReset;
 import com.accountmanagement.model.User;
+
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -21,42 +26,31 @@ public class PasswordResetRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
     @Test
     public void shouldFindTopByUserIdOrderByCreatedAtDesc() throws InterruptedException {
-        User user = new User();
-        user.setFirstName("Ajay");
-        user.setLastName("Kumar");
-        user.setUserName("ajay123");
-        user.setEmail("ajay@gmail.com");
-        user.setPassword("Ajay@123");
-        user.setPhone("7859632148");
-        User savedUser = userRepository.save(user);
+        Organization organization = addOrganization();
+        User user = addUser(organization.getId());
         PasswordReset oldReset = new PasswordReset();
-        oldReset.setUserId(savedUser.getId());
-        oldReset.setResetToken("oldToken");
+        oldReset.setUserId(user.getId());
         oldReset.setCreatedAt(LocalDateTime.now().minusMinutes(10));
         passwordResetRepository.save(oldReset);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         PasswordReset newReset = new PasswordReset();
-        newReset.setUserId(savedUser.getId());
-        newReset.setResetToken("newToken");
+        newReset.setUserId(user.getId());
         newReset.setCreatedAt(LocalDateTime.now());
         passwordResetRepository.save(newReset);
-        Optional<PasswordReset> result = passwordResetRepository.findTopByUserIdOrderByCreatedAtDesc(savedUser.getId());
+        Optional<PasswordReset> result = passwordResetRepository.findTopByUserIdOrderByCreatedAtDesc(user.getId());
         assertTrue(result.isPresent());
-        assertEquals("newToken", result.get().getResetToken());
-
+        assertEquals(newReset.getId(), result.get().getId());
     }
 
     @Test
     public void shouldFindByResetToken() {
-        User user = new User();
-        user.setFirstName("Ajay");
-        user.setLastName("Kumar");
-        user.setUserName("ajay123");
-        user.setEmail("ajay@gmail.com");
-        user.setPassword("Ajay@123");
-        user.setPhone("7859632148");
+        Organization organization = addOrganization();
+        User user = addUser(organization.getId());
         User savedUser = userRepository.save(user);
         PasswordReset passwordReset = new PasswordReset();
         passwordReset.setUserId(savedUser.getId());
@@ -65,6 +59,37 @@ public class PasswordResetRepositoryTest {
         passwordResetRepository.save(passwordReset);
         Optional<PasswordReset> result = passwordResetRepository.findByResetToken("token123");
         assertTrue(result.isPresent());
-        assertEquals("token123", result.get().getResetToken());
+    }
+
+    private Organization addOrganization() {
+        Organization organization = new Organization();
+        organization.setCode("CH_" + UUID.randomUUID().toString().substring(0, 8));
+        organization.setName("CSI Church");
+        organization.setRegistrationNumber("REG123");
+        organization.setEmail("csi@gmail.com");
+        organization.setContactNumber("9876543210");
+        organization.setWebsite("www.csichurch.com");
+        organization.setAddress("4646 NGM Colony");
+        organization.setCity("Nagercoil");
+        organization.setState("Tamil Nadu");
+        organization.setCountry("India");
+        organization.setPostalcode("629002");
+        organization.setPrimaryContactName("Ajay");
+        organization.setPrimaryContactEmail("ajay@gmail.com");
+        organization.setPrimaryContactPhone("9876543210");
+        return organizationRepository.save(organization);
+    }
+
+    private User addUser(UUID id) {
+        User user = new User();
+        user.setOrganizationId(id);
+        user.setUserName("ajay123");
+        user.setEmail("ajay@gmail.com");
+        user.setPassword("Ajay@123");
+        user.setContactNumber("7859632148");
+        user.setFailedLoginAttempts(0);
+        user.setIsAccountLocked(false);
+        user.setLockedTime(null);
+        return userRepository.save(user);
     }
 }

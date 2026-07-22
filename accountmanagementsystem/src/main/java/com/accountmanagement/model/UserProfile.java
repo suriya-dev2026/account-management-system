@@ -1,12 +1,17 @@
 package com.accountmanagement.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+import com.accountmanagement.enums.Gender;
 import com.accountmanagement.model.listeners.UserProfileListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -20,22 +25,26 @@ public class UserProfile {
     @Id
     @UuidGenerator
     @Column(name = "id")
-    private String id;
+    private UUID id;
 
     @Column(name = "user_id")
-    private String userId;
+    private UUID userId;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
 
     @Column(name = "address")
-    private String address  ;
-
-    @Column(name = "failed_login_attempts")
-    private Integer failedLoginAttempts;
-
-    @Column(name = "is_account_locked")
-    private Boolean isAccountLocked;
-
-    @Column(name = "locked_time")
-    private LocalDateTime lockedTime;
+    private String address;
 
     @Column
     private String status;
@@ -47,4 +56,5 @@ public class UserProfile {
     @JsonIgnore
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 }

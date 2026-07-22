@@ -1,32 +1,31 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
-
-import org.hibernate.annotations.UuidGenerator;
-
-import com.accountmanagement.model.listeners.AreaListeners;
+import com.accountmanagement.model.listeners.LocationListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
 @Table(name = "locations")
-@EntityListeners(AreaListeners.class)
+@EntityListeners(LocationListeners.class)
 @Data
 public class Location {
 
     @Id
-    @UuidGenerator
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Integer id;
 
-    @Column(name = "area")
-    private String area;
+    @Column(name = "location")
+    private String location;
 
     @Column(name = "description")
     private String description;

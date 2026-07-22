@@ -12,4 +12,6 @@ public class LocationMessage {
 
     public static final String LOCATIONS_NOT_FOUND = "locations does not exists";
 
+    public static final String LOCATIONS_ID_NOT_FOUND = "location id not found";
+
 }

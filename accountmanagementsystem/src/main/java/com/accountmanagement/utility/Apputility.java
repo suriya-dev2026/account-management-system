@@ -3,21 +3,22 @@ package com.accountmanagement.utility;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.User;
 
 public class Apputility {
 
-    public static boolean isValidPhone(String phoneNo) {
+    public static boolean isValidContactNumber(String phoneNo) {
         if (phoneNo == null)
             return false;
-        if (phoneNo.matches("\\d{10}"))
+        if (phoneNo.matches("[6-9]\\d{9}"))
             return true;
-        else if (phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}"))
+        else if (phoneNo.matches("(\\+91|91)[6-9]\\d{9}"))
             return true;
-        else if (phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}"))
+        else if (phoneNo.matches("[6-9]\\d{2}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}"))
+            return true;
+        else if (phoneNo.matches("\\([6-9]\\d{2}\\)-\\d{3}-\\d{4}"))
             return true;
         else
             return false;

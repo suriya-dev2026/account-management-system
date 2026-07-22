@@ -1,6 +1,8 @@
 package com.accountmanagement.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.UuidGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,16 +18,13 @@ public class EmailQueue {
     @Id
     @UuidGenerator
     @Column(name = "id")
-    private String id;
+    private UUID id;
 
     @Column(name = "user_id")
-    private String userId;
+    private UUID userId;
 
     @Column(name = "to_email")
     private String toEmail;
-
-    @Column(name = "message")
-    private String message;
 
     @Column(name = "status")
     private String status;

@@ -16,7 +16,11 @@ public class AppConstants {
 
     public static final int maxNameLength = 50;
 
-    public static final int emailLength = 100;
+    public static final int minPostalCodeLength = 5;
+
+    public static final int maxPostalCodeLength = 10;
+
+    public static final int maxEmailLength = 100;
 
     public static final int minPasswordLength = 8;
 

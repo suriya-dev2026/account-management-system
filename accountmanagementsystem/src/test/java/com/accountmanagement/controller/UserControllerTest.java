@@ -35,9 +35,8 @@ public class UserControllerTest {
         userRequest.setEmail("sowmiya@gmail.com");
         userRequest.setPassword("Sowmiya@123");
         userRequest.setConfirmPassword("Sowmiya@123");
-        userRequest.setPhone("7598632149");
+        userRequest.setContactNumber("7598632149");
         userRequest.setAddress("nagercoil");
-        userRequest.setRole("user");
         mockMvc.perform(post("/register").with(csrf()).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())

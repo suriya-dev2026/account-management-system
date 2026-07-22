@@ -71,7 +71,7 @@ public class AuthFilter extends OncePerRequestFilter {
             UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new RecordNotFoundException("User id not found"));
 
-            if (userProfile.getIsAccountLocked()) {
+            if (user.getIsAccountLocked()) {
                 sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
                 return;
             }
@@ -110,7 +110,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private String getJWTFromRequest(HttpServletRequest request) {
         String authtoken = request.getHeader("Authorization");
-        if (authtoken != null && StringUtils.hasText(authtoken) && authtoken.startsWith("Bearer")) {
+        if (authtoken != null && StringUtils.hasText(authtoken) && authtoken.startsWith("Bearer ")) {
             return authtoken.substring(7, authtoken.length());
         }
         return null;
