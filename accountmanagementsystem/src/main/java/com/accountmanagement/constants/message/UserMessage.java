@@ -33,4 +33,7 @@ public class UserMessage {
     public static final String INVALID_TOKEN = "Invalid Token";
 
     public static final String TOKEN_EXPIRED = "Token Expired";
+
+    public static final String INVALID_REQUEST = "Authentication Token Is Required";
+
 }

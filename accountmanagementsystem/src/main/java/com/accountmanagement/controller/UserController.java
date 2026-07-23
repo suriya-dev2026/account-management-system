@@ -11,16 +11,19 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
-import com.accountmanagement.dto.UserDto;
+import com.accountmanagement.model.User;
 import com.accountmanagement.request.ChangePasswordRequest;
 import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.UserService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@Tag(name = "UserController")
 public class UserController {
 
     private final UserService userService;
@@ -62,12 +65,7 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<ApiResponse> getAllUsers() {
-
-        List<UserDto> user = userService.getAllUsers();
-        if (user == null || user.isEmpty()) {
-            ApiResponse errorResponse = new ApiResponse(AppConstants.ERROR, UserMessage.USER_NOT_FOUND, 404);
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-        }
+        List<User> user = userService.getAllUsers();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USERS_RETRIEVED, 200);
         response.setData(user);
         return new ResponseEntity<>(response, HttpStatus.OK);

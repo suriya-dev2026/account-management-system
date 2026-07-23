@@ -15,10 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.accountmanagement.constants.message.UserMessage;
-import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.User;
-import com.accountmanagement.model.UserProfile;
-import com.accountmanagement.repository.UserProfileRepository;
+
 import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.utility.TokenUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,16 +34,13 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
 
-    private final UserProfileRepository userProfileRepository;
-
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    AuthFilter(TokenUtility tokenUtility, UserProfileRepository userProfileRepository, UserRepository userRepository,
+    AuthFilter(TokenUtility tokenUtility, UserRepository userRepository,
             RedisTemplate<String, String> redisTemplate) {
         this.tokenUtility = tokenUtility;
-        this.userProfileRepository = userProfileRepository;
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
     }
@@ -53,12 +48,10 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         try {
             String accessToken = getJWTFromRequest(request);
-
             if (accessToken == null) {
-                filterChain.doFilter(request, response);
+                sendError(response, UserMessage.INVALID_REQUEST, 403);
                 return;
             }
             String userName = tokenUtility.extractSessionId(accessToken);
@@ -68,25 +61,19 @@ public class AuthFilter extends OncePerRequestFilter {
                 sendError(response, UserMessage.USER_NOT_FOUND, 401);
                 return;
             }
-            UserProfile userProfile = userProfileRepository.findByUserId(user.getId())
-                    .orElseThrow(() -> new RecordNotFoundException("User id not found"));
-
             if (user.getIsAccountLocked()) {
                 sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
                 return;
             }
-
             String token = redisTemplate.opsForValue().get(accessToken);
             if (token == null) {
                 sendError(response, UserMessage.INVALID_TOKEN, 401);
                 return;
             }
-
             if (tokenUtility.isTokenExpired(accessToken)) {
                 sendError(response, UserMessage.TOKEN_EXPIRED, 401);
                 return;
             }
-
             letProceedFurther(user, accessToken, filterChain, request, response);
         } catch (JwtException e) {
             sendError(response, UserMessage.INVALID_TOKEN, 401);
@@ -95,7 +82,25 @@ public class AuthFilter extends OncePerRequestFilter {
             e.printStackTrace();
             sendError(response, e.getMessage(), 403);
         }
+    }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.equals("/organization/register")
+                || path.equals("/organization/update/")
+                || path.equals("/organization/delete/")
+                || path.equals("/organization")
+                || path.equals("/register")
+                || path.equals("/login")
+                || path.equals("/verify/otp")
+                || path.startsWith("/refreshKey")
+                || path.equals("/verify/reset/otp")
+                || path.startsWith("/forgot/password")
+                || path.equals("/change/password")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.equals("/swagger-ui.html");
     }
 
     private void letProceedFurther(User user, String accessToken, FilterChain filterChain,

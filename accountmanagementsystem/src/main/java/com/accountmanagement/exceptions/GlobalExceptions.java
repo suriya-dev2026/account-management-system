@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,10 +34,14 @@ public class GlobalExceptions {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> handleJsonParseError(HttpMessageNotReadableException ex) {
         Map<String, Object> error = new HashMap<>();
+        String message = "Invalid Json Format";
+        if (ex.getMessage().contains("Gender")) {
+            message = "Invalid gender value. Allowed values are Male or Female";
+        }
         error.put("timestamp", LocalDateTime.now());
         error.put("status", 400);
-        error.put("message", "Invalid Json Format");
-        error.put("error", ex.getMostSpecificCause().getMessage());
+        error.put("message", message);
+        error.put("error", "Bad Request");
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -84,6 +89,15 @@ public class GlobalExceptions {
         error.put("status", 500);
         error.put("message", "Internal Server Error");
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status", 409);
+        error.put("message", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
 }

@@ -10,6 +10,6 @@ public class MemberMessage {
 
     public static final String MEMBER = "member fetched successfully";
 
-    public static final String MEMBER_ID_NOT_FOUND = "member id does not exists";
+    public static final String MEMBER_NOT_FOUND = "member does not exists";
 
 }

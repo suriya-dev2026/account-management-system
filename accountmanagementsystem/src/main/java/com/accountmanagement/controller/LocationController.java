@@ -17,10 +17,13 @@ import com.accountmanagement.model.Location;
 import com.accountmanagement.request.LocationRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.LocationService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "location")
+@Tag(name = "LocationController")
 public class LocationController {
 
     private final LocationService locationService;
@@ -37,7 +40,7 @@ public class LocationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/update/id/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateLocation(@PathVariable Integer id,
             @Valid @RequestBody LocationRequest locationRequest) {
         locationRequest.sanitizeInput();
@@ -46,7 +49,7 @@ public class LocationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/id/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteLocationById(@PathVariable Integer id) {
         locationService.deleteLocation(id);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, LocationMessage.DELETE_LOCATION, 200);

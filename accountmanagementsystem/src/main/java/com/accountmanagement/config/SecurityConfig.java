@@ -28,6 +28,9 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers(
                                         "/organization/register",
+                                        "/organization/update/{id}",
+                                        "/organization/delete/{id}",
+                                        "/organization",
                                         "/register",
                                         "/login",
                                         "/verify/otp",

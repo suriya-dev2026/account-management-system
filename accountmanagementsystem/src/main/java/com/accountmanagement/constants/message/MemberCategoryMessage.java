@@ -10,5 +10,5 @@ public class MemberCategoryMessage {
 
     public static final String MEMBER_CATEGORY = "member category fetched successfully";
 
-    public static final String MEMBER_CATEGORY_ID_NOT_FOUND = "member category id does not exists";
+    public static final String MEMBER_CATEGORY_NOT_FOUND = "member category does not exists";
 }

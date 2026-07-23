@@ -282,7 +282,7 @@ public class UserServiceTest {
         when(userRepository.findAll()).thenReturn(users);
         try (MockedStatic<Apputility> mockedStatic = Mockito.mockStatic(Apputility.class)) {
             mockedStatic.when(Apputility::getLoggedUser).thenReturn(loggedUser);
-            List<UserDto> result = userService.getAllUsers();
+            List<User> result = userService.getAllUsers();
             assertEquals(1, result.size());
             assertEquals("ajay@gmail.com", result.get(0).getEmail());
         }

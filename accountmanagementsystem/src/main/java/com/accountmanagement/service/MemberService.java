@@ -1,16 +1,21 @@
 package com.accountmanagement.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.LocationMessage;
+import com.accountmanagement.constants.message.MemberMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
+import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.MemberMapper;
 import com.accountmanagement.model.Member;
 import com.accountmanagement.model.User;
 import com.accountmanagement.repository.MemberRepository;
 import com.accountmanagement.request.MemberRequest;
+import com.accountmanagement.request.OrganizationRequest;
 import com.accountmanagement.utility.Apputility;
 
 @Service
@@ -30,6 +35,7 @@ public class MemberService {
     }
 
     public Member addMember(MemberRequest memberRequest) {
+        validateMember(memberRequest);
         User user = getLoggedUser();
         Member member = memberMapper.toAddMember(memberRequest);
         Member savedMember = memberRepository.save(member);
@@ -60,6 +66,28 @@ public class MemberService {
 
     private User getLoggedUser() {
         return Apputility.getLoggedUser();
+    }
+
+    public List<Member> viewAll() {
+        User user = getLoggedUser();
+        List<Member> member = memberRepository.findAll();
+        if (member.isEmpty() || member == null) {
+            throw new RecordNotFoundException(MemberMessage.MEMBER_NOT_FOUND);
+        }
+        userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "Get All Members", "Success");
+        return member;
+    }
+
+    private void validateMember(MemberRequest memberRequest) {
+        if (memberRepository.existsByUserName(memberRequest.getUserName())) {
+            throw new UserAlreadyExistsException("user name already exists");
+        }
+        if (memberRepository.existsByEmail(memberRequest.getEmail())) {
+            throw new UserAlreadyExistsException("Email already registered");
+        }
+        if (memberRepository.existsByContactNumber(memberRequest.getContactNumber())) {
+            throw new UserAlreadyExistsException("Phone number already registered");
+        }
     }
 
 }

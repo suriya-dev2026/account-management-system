@@ -60,6 +60,9 @@ public class Apputility {
             return input;
         }
         input = input.trim();
+        input = input.replaceAll("<[^>]*>", "");
+        input = input.replaceAll("[^a-zA-Z0-9@._\\-\\s]", "");
+
         return input;
     }
 

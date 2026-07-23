@@ -1,6 +1,6 @@
 @local = http://localhost:8080
 
-@local-Token =eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODQ3MDk5NTQsImV4cCI6MTc4NDcxMDU1NH0.UM6RBw51mnUrOuVO5NYQs4ZHIiEXZyT9lp41rlI4-SujiHSkn4Z87mq65nnwwqJN-wwVAkKaFKk1DOkwud92XQ
+@local-Token =eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODQ4MDEyMTgsImV4cCI6MTc4NDgwMTgxOH0.sp0b8hCO_lirfmlhl-6uSzAtgZvuTtbkOrgHn5VTHGE5_82IgHO70DBvddrPQuCgLwoBBSeLFUD4cQ6vFwnuSQ
 
 @token = {{local-Token}}
 
@@ -12,11 +12,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name":"CSI Mission Church",
-    "registrationNumber":"457489CSIMN",
-    "email":"csimissionchurch@gmail.com",
-    "contactNumber":"9566642014",
-    "website":"www.csimissionchurch.com",
+    "name":"RCCM Church",
+    "registrationNumber":"457489CSIMPpi",
+    "email":"sdfdhurch@gmail.com",
+    "contactNumber":"9566642089",
+    "website":"www.csimissionchurch.com???<<>>",
     "address":"14 duthie school junction road near bank",
     "city":"Nagercoil",
     "state":"Tamilnadu",
@@ -28,15 +28,15 @@ Authorization: Bearer {{token}}
 }
 
 ###
-PUT {{baseUrl}}/user-auth/organization/update/id/ab1e9976-c0f4-451f-95e5-afcbcf872c06
+PUT {{baseUrl}}/user-auth/organization/update/d71edfaa-42da-4ae8-964b-9f1ffc5f9d90
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name":"CSI Mission Church",
-    "registrationNumber":"457489CSIMN",
+    "name":"RCM Church",
+    "registrationNumber":"457489CSIMNRC",
     "email":"csimissionchurch@gmail.com",
-    "contactNumber":"+919545666420",
+    "contactNumber":"+919545666485",
     "website":"www.csimissionchurch.com",
     "address":"14 duthie school junction road near TMB bank",
     "city":"Nagercoil",
@@ -49,7 +49,12 @@ Authorization: Bearer {{token}}
 }
 
 ###
-DELETE {{baseUrl}}/user-auth/organization/delete/id/c94b0cd2-6e38-4c29-8357-3fa4767a2d7e
+DELETE {{baseUrl}}/user-auth/organization/delete/d71edfaa-42da-4ae8-964b-9f1ffc5f9d90
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/organization
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -63,12 +68,12 @@ Content-Type: application/json
     "firstName":"Suriya",
     "lastName":"Ram",
     "userName":"suriya123",
-    "email":"suriyasundarrajan340@gmail.com",
+    "email":"suriyasundrrajan340@gmail.com",
     "password":"Suriya@123",
     "confirmPassword":"Suriya@123",
-    "contactNumber":"9566642031",
+    "contactNumber":"9566642014",
     "gender":"Female",
-    "dateOfBirth":"1993-05-22",
+    "dateOfBirth":"19936-05-22",
     "address":"Nagercoil",
     "userType":"staff"
 }
@@ -88,7 +93,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"950907"
+    "otp":"986879"
 }
 
 ###
@@ -139,7 +144,7 @@ Authorization: Bearer {{token}}
 }
 
 ###
-PUT {{baseUrl}}/user-auth/location/update/id/1
+PUT {{baseUrl}}/user-auth/location/update/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -149,7 +154,7 @@ Authorization: Bearer {{token}}
 }
 
 ###
-DELETE {{baseUrl}}/user-auth/location/delete/id/79752098-be23-4fb2-ab83-a7f5bf9637c3
+DELETE {{baseUrl}}/user-auth/location/delete/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -164,7 +169,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "category":"Believer",
+    "category":"Believer>>>",
     "description":"sdfdsfhghjfgsfef"
 }
 
@@ -184,6 +189,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
+GET {{baseUrl}}/user-auth/member/category
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
 POST {{baseUrl}}/user-auth/member/add
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -197,7 +207,7 @@ Authorization: Bearer {{token}}
     "relationShip":"",
     "firstName":"Yuva",
     "lastName":"Raj",
-    "userName":"yuva123",
+    "userName":"yuva2123",
     "gender":"Male",
     "dateOfBirth":"2025-10-05",
     "dateOfJoin":"2025-05-10",
@@ -210,7 +220,7 @@ Authorization: Bearer {{token}}
 }
 
 ###
-PUT {{baseUrl}}/user-auth/member/update/id/af8e447b-79b4-4002-adc3-d8c8d68df791
+PUT {{baseUrl}}/user-auth/member/update/af8e447b-79b4-4002-adc3-d8c8d68df791
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -237,6 +247,6 @@ Authorization: Bearer {{token}}
 }
 
 ###
-DELETE {{baseUrl}}/user-auth/member
+DELETE {{baseUrl}}/user-auth/member/delete/
 Content-Type: application/json
 Authorization: Bearer {{token}}

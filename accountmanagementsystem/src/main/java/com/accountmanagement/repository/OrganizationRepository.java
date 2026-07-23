@@ -9,4 +9,14 @@ public interface OrganizationRepository extends JpaRepository<Organization, UUID
 
     boolean existsByCode(String organizationCode);
 
+    boolean existsByName(String name);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByContactNumber(String contactNumber);
+
+    boolean existsByRegistrationNumber(String registrationNumber);
+
+    boolean existsByWebsite(String website);
+
 }

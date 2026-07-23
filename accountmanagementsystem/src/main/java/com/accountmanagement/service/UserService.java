@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.MemberMessage;
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.dto.UserDto;
 import com.accountmanagement.exceptions.AccountLockException;
@@ -155,18 +156,15 @@ public class UserService {
         return newToken;
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<User> getAllUsers() {
         User loggedUser = Apputility.getLoggedUser();
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty() || users == null) {
+            throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
+        }
         userLoginAuditLogService.createUserLog(loggedUser.getOrganizationId(), loggedUser.getId(), "Get All Users",
                 "success");
-        List<User> users = userRepository.findAll();
-        return users.stream().map(user -> {
-            UserDto userDto = new UserDto();
-            userDto.setUserName(user.getUserName());
-            userDto.setEmail(user.getEmail());
-            userDto.setPhone(user.getContactNumber());
-            return userDto;
-        }).toList();
+        return users;
     }
 
     public String signout(String authHeader) {
