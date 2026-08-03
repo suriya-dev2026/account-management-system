@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.OrganizationMessage;
 import com.accountmanagement.model.Organization;
-import com.accountmanagement.request.OrganizationRequest;
+import com.accountmanagement.request.OrganizationRegistrationRequest;
+import com.accountmanagement.request.OrganizationUpdationRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.OrganizationService;
 
@@ -36,16 +37,16 @@ public class OrganizationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse> createOrganization(@Valid @RequestBody OrganizationRequest organizationRequest) {
+    public ResponseEntity<ApiResponse> createOrganization(@Valid @RequestBody OrganizationRegistrationRequest organizationRequest) {
         organizationRequest.sanitizeInput();
-        organizationService.addOrganization(organizationRequest);
+        organizationService.registerOrganization(organizationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, OrganizationMessage.ADD_ORGANIZATION, 201);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateOrganizationById(@PathVariable UUID id,
-            @Valid @RequestBody OrganizationRequest organizationRequest) {
+            @Valid @RequestBody OrganizationUpdationRequest organizationRequest) {
         organizationRequest.sanitizeInput();
         organizationService.updateOrganization(id, organizationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, OrganizationMessage.UPDATE_ORGANIZATION, 200);

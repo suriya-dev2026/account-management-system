@@ -28,10 +28,12 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers(
                                         "/organization/register",
-                                        "/organization/update/{id}",
-                                        "/organization/delete/{id}",
+                                        "/organization/update/**",
+                                        "/organization/delete/**",
                                         "/organization",
                                         "/register",
+                                        "/email/verification/otp/**",
+                                        "/verify/email/otp",
                                         "/login",
                                         "/verify/otp",
                                         "/refreshKey/{refreshKey}",
@@ -39,6 +41,8 @@ public class SecurityConfig {
                                         "/forgot/password/**",
                                         "/change/password",
                                         "/verify/reset/otp",
+                                        "/subscription/plan",
+                                        "/subscription/feature",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui.html")

@@ -7,16 +7,14 @@ import com.accountmanagement.model.Organization;
 
 public interface OrganizationRepository extends JpaRepository<Organization, UUID> {
 
-    boolean existsByCode(String organizationCode);
-
-    boolean existsByName(String name);
-
-    boolean existsByEmail(String email);
-
-    boolean existsByContactNumber(String contactNumber);
+    boolean existsByNameAndCityId(String name, Integer cityId);
 
     boolean existsByRegistrationNumber(String registrationNumber);
 
     boolean existsByWebsite(String website);
+
+    boolean existsByPrimaryContactEmail(String trim);
+
+    boolean existsByPrimaryContactNumber(String trim);
 
 }

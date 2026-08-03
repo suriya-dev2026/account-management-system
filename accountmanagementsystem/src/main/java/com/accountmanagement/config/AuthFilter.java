@@ -49,6 +49,7 @@ public class AuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            System.out.println(request.getServletPath());
             String accessToken = getJWTFromRequest(request);
             if (accessToken == null) {
                 sendError(response, UserMessage.INVALID_REQUEST, 403);
@@ -61,10 +62,10 @@ public class AuthFilter extends OncePerRequestFilter {
                 sendError(response, UserMessage.USER_NOT_FOUND, 401);
                 return;
             }
-            if (user.getIsAccountLocked()) {
-                sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
-                return;
-            }
+            // if (user.getIsAccountLocked()) {
+            // sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
+            // return;
+            // }
             String token = redisTemplate.opsForValue().get(accessToken);
             if (token == null) {
                 sendError(response, UserMessage.INVALID_TOKEN, 401);
@@ -88,16 +89,20 @@ public class AuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
         return path.equals("/organization/register")
-                || path.equals("/organization/update/")
-                || path.equals("/organization/delete/")
+                || path.startsWith("/organization/update/")
+                || path.startsWith("/organization/delete/")
                 || path.equals("/organization")
                 || path.equals("/register")
+                || path.startsWith("/email/verification/otp")
+                || path.equals("/verify/email/otp")
                 || path.equals("/login")
                 || path.equals("/verify/otp")
                 || path.startsWith("/refreshKey")
                 || path.equals("/verify/reset/otp")
                 || path.startsWith("/forgot/password")
                 || path.equals("/change/password")
+                || path.equals("/subscription/plan")
+                || path.equals("/subscription/feature")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
                 || path.equals("/swagger-ui.html");

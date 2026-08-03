@@ -14,7 +14,11 @@ public class UserMessage {
 
     public static final String INVALID_OTP = "invalid otp";
 
+    public static final String USER_REGISTERED_OTP = "User registered successfully. A verification OTP has been sent to your registered email address";
+
     public static final String OTP = "Otp send successfully";
+
+    public static final String USER_EMAIL_VERIFY = "user email verified successfully";
 
     public static final String ACCESS_TOKEN = "access token not found";
 

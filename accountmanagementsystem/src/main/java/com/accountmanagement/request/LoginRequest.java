@@ -26,7 +26,6 @@ public class LoginRequest {
 
     public void sanitizeInput() {
         setLogin(Apputility.sanitizeInput(getLogin()));
-        setPassword(Apputility.sanitizeInput(getPassword()));
     }
 
 }

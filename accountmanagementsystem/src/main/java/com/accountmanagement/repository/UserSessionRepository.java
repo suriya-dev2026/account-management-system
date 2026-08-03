@@ -12,4 +12,6 @@ public interface UserSessionRepository extends JpaRepository<UserSession, UUID> 
 
     Optional<UserSession> findByRefreshKey(String refreshKey);
 
+    Optional<UserSession> findByUserId(UUID userId);
+
 }

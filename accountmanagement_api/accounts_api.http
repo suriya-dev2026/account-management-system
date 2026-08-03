@@ -1,6 +1,6 @@
 @local = http://localhost:8080
 
-@local-Token =eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODQ4MDEyMTgsImV4cCI6MTc4NDgwMTgxOH0.sp0b8hCO_lirfmlhl-6uSzAtgZvuTtbkOrgHn5VTHGE5_82IgHO70DBvddrPQuCgLwoBBSeLFUD4cQ6vFwnuSQ
+@local-Token =eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODUzMDY1OTksImV4cCI6MTc4NTMwNzE5OX0.yytDapA6XujZoveJRKTwDBbGlVLsPIP6b02DDBbY5n3xIp_yooQqTMpYjsysHTSV9iEbMU7fX7VScTmIv8euJw
 
 @token = {{local-Token}}
 
@@ -12,44 +12,44 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name":"RCCM Church",
-    "registrationNumber":"457489CSIMPpi",
-    "email":"sdfdhurch@gmail.com",
-    "contactNumber":"9566642089",
-    "website":"www.csimissionchurch.com???<<>>",
-    "address":"14 duthie school junction road near bank",
-    "city":"Nagercoil",
-    "state":"Tamilnadu",
-    "country":"India",
+    "name":"CSI Church",
+    "registrationNumber":"45748dCSI",
+    "website":"www.csiedmissionchurch.com",
+    "address":"14 duthie school junction road near ICICI bank",
+    "countryId":100,
+    "stateId":21,
+    "cityId":497,
     "postalCode":"629002",
     "primaryContactName":"Johnson",
     "primaryContactEmail":"johnson@gmail.com",
-    "primaryContactPhone":"7485961236"
+    "primaryContactNumber":"7485961236",
+    "logoUrl":"",
+    "faviconUrl":"",
+    "primarycolor":"",
+    "timeZone":"",
+    "currency":"",
+    "language":""
 }
 
 ###
-PUT {{baseUrl}}/user-auth/organization/update/d71edfaa-42da-4ae8-964b-9f1ffc5f9d90
+PUT {{baseUrl}}/user-auth/organization/update/898f51b6-fa6a-4bd3-ae6b-be5db2efbbaf
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name":"RCM Church",
-    "registrationNumber":"457489CSIMNRC",
-    "email":"csimissionchurch@gmail.com",
-    "contactNumber":"+919545666485",
-    "website":"www.csimissionchurch.com",
+    "name":"CSI Church",
     "address":"14 duthie school junction road near TMB bank",
-    "city":"Nagercoil",
-    "state":"Tamilnadu",
-    "country":"India",
+    "countryId":100,
+    "stateId":23,
+    "cityId":590,
     "postalCode":"629002",
-    "primaryContactName":"Johnson",
+    "primaryContactName":"JohnsonRaj",
     "primaryContactEmail":"johnson@gmail.com",
-    "primaryContactPhone":"7485961236"
+    "primaryContactNumber":"7485961236"
 }
 
 ###
-DELETE {{baseUrl}}/user-auth/organization/delete/d71edfaa-42da-4ae8-964b-9f1ffc5f9d90
+DELETE {{baseUrl}}/user-auth/organization/delete/898f51b6-fa6a-4bd3-ae6b-be5db2efbbaf
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -63,28 +63,37 @@ POST {{baseUrl}}/user-auth/register
 Content-Type: application/json
 
 {
-    "organizationId":"f0768d32-efd3-4d5e-84f4-1159af6617bf",
-    "code":"CH_00001",
-    "firstName":"Suriya",
+    "organizationId":"e25382f1-4542-4f2e-87be-6b770349de01",
+    "firstName":"Anu",
     "lastName":"Ram",
-    "userName":"suriya123",
-    "email":"suriyasundrrajan340@gmail.com",
-    "password":"Suriya@123",
-    "confirmPassword":"Suriya@123",
-    "contactNumber":"9566642014",
+    "userName":"anu123",
+    "email":"suriya1993.je2026@gmail.com",
+    "contactNumber":"9791652388",
     "gender":"Female",
-    "dateOfBirth":"19936-05-22",
-    "address":"Nagercoil",
-    "userType":"staff"
+    "dateOfBirth":"1993-05-22",
+    "address":"14 duthie school junction road near TMB bankl",
+    "userType":"Super Admin"
 }
 
+###
+POST {{baseUrl}}/user-auth/email/verification/otp/suriya1993.je2026@gmail.com
+Content-Type: application/json
+
+###
+POST {{baseUrl}}/user-auth/verify/email/otp
+Content-Type: application/json
+
+{
+    "email":"suriya1993.je2026@gmail.com",
+    "otp":"162389"
+}
 ###
 POST {{baseUrl}}/user-auth/login
 Content-Type: application/json
 
 {
     "login":"9566642031",
-    "password":"Suriya@123"
+    "password":"Suriya@12345"
 }
 
 ###
@@ -93,7 +102,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"986879"
+    "otp":"593329"
 }
 
 ###
@@ -102,7 +111,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-POST {{baseUrl}}/user-auth/refreshKey/8b3ca159-6c91-48fa-9248-8643da9b959a
+POST {{baseUrl}}/user-auth/refreshKey/b4b803ac-e021-4b30-b570-cdb8206880ad
 Content-Type: application/json
 
 ###
@@ -115,7 +124,7 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"467925"
+    "otp":"887306"
 }
 
 ###
@@ -123,9 +132,9 @@ POST {{baseUrl}}/user-auth/change/password
 Content-Type: application/json
 
 {
-    "resetToken":"6f32f359-19a5-447b-b778-b8f2ed01216f",
-    "newPassword":"Suriya@123",
-    "confirmPassword":"Suriya@123"
+    "resetToken":"75330e81-bbdd-4f92-9e5f-c4ea596afbfa",
+    "newPassword":"Suriya@12345",
+    "confirmPassword":"Suriya@12345"
 }
 
 ###
@@ -139,7 +148,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "location":"Kanyakumari",
+    "location":"Nagercoil",
     "description":"kjhknlsfldlfm"
 }
 
@@ -169,7 +178,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "category":"Believer>>>",
+    "category":"Believer",
     "description":"sdfdsfhghjfgsfef"
 }
 
@@ -189,7 +198,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-GET {{baseUrl}}/user-auth/member/category
+GET {{baseUrl}}/user-auth/member/category/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -202,18 +211,18 @@ Authorization: Bearer {{token}}
     "organizationId":"f0768d32-efd3-4d5e-84f4-1159af6617bf",
     "organizationCode":"CH_00001",
     "familyHeadId":"",
-    "category":"Believer",
-    "location":"Kanyakumari",
+    "category":"sdfdsfhghjfgsfef",
+    "location":"kanyakumari",
     "relationShip":"",
     "firstName":"Yuva",
     "lastName":"Raj",
-    "userName":"yuva2123",
+    "userName":"yuva212345",
     "gender":"Male",
     "dateOfBirth":"2025-10-05",
     "dateOfJoin":"2025-05-10",
     "weddingDate":"",
     "email":"yuva@gmail.com",
-    "contactNumber":"+919566642314",
+    "contactNumber":"+919578642314",
     "address":"No 6 RGV colony ljdlflfmkjkdf nagercoil kanya kumari district",
     "isWaterBaptised":true,
     "isSpiritBaptised":false
@@ -250,3 +259,37 @@ Authorization: Bearer {{token}}
 DELETE {{baseUrl}}/user-auth/member/delete/
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/country/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/states/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/states/100
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/city
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/city/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/user-auth/subscription/plan
+Content-Type: application/json
+
+###
+GET {{baseUrl}}/user-auth/subscription/feature
+Content-Type: application/json
+

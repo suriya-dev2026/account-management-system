@@ -1,6 +1,5 @@
 package com.accountmanagement.service;
 
-import com.accountmanagement.repository.MemberRepository;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import com.accountmanagement.utility.Apputility;
 
 @Service
 public class MemberCategoryService {
-    private final MemberRepository memberRepository;
 
     private final UserLoginAuditLogService userLoginAuditLogService;
 
@@ -26,12 +24,11 @@ public class MemberCategoryService {
     private final MemberCategoryMapper memberCategoryMapper;
 
     MemberCategoryService(MemberCategoryRepository memberCategoryRepository,
-            MemberCategoryMapper memberCategoryMapper, UserLoginAuditLogService userLoginAuditLogService,
-            MemberRepository memberRepository) {
+            MemberCategoryMapper memberCategoryMapper, UserLoginAuditLogService userLoginAuditLogService) {
         this.memberCategoryRepository = memberCategoryRepository;
         this.memberCategoryMapper = memberCategoryMapper;
         this.userLoginAuditLogService = userLoginAuditLogService;
-        this.memberRepository = memberRepository;
+
     }
 
     public MemberCategory addMemberCategory(MemberCategoryRequest memberCategoryRequest) {

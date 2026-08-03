@@ -1,11 +1,16 @@
 package com.accountmanagement.service;
 
 import com.accountmanagement.repository.UserSessionRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserSession;
 
@@ -34,6 +39,19 @@ public class UserSessionService {
         return userSessionRepository.save(userSession);
     }
 
+    @Transactional
+    public void updateOtp(UUID userId, String otp) {
+
+        UserSession userSession = userSessionRepository.findByUserId(userId)
+                .orElseThrow(() -> new RecordNotFoundException("Session not found."));
+
+        userSession.setOtp(bCryptPasswordEncoder.encode(otp));
+        userSession.setOtpExpiration(LocalDateTime.now().plusMinutes(2));
+        userSession.setOtpVerificationCount(0);
+        userSession.setIsOtpVerified(false);
+        userSessionRepository.save(userSession);
+    }
+
     public void updateSessionAfterOtp(UUID userId, String refreshKey) {
         UserSession session = userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
                 .orElseThrow(() -> new RecordNotFoundException("User session not found"));
@@ -43,6 +61,26 @@ public class UserSessionService {
         session.setIsOtpVerified(true);
         session.setOtp(null);
         userSessionRepository.save(session);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void incrementOtpVerificationCount(UUID userId) {
+        UserSession session = findByTopUserId(userId);
+        session.setOtpVerificationCount(session.getOtpVerificationCount() + 1);
+        userSessionRepository.save(session);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void markOtpVerified(UUID userId) {
+        UserSession session = findByTopUserId(userId);
+        session.setIsOtpVerified(true);
+        session.setOtpVerificationCount(0);
+        userSessionRepository.save(session);
+    }
+
+    private UserSession findByTopUserId(UUID userId) {
+        return userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
+                .orElseThrow(() -> new RecordNotFoundException("User session not found."));
     }
 
 }

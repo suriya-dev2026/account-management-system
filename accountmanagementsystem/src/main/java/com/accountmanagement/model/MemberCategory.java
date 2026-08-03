@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "member_category")
+@Table(name = "member_categories")
 public class MemberCategory {
 
     @Id

@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.constants.AppConstants;
-import com.accountmanagement.constants.message.LocationMessage;
 import com.accountmanagement.constants.message.MemberMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
@@ -15,7 +14,6 @@ import com.accountmanagement.model.Member;
 import com.accountmanagement.model.User;
 import com.accountmanagement.repository.MemberRepository;
 import com.accountmanagement.request.MemberRequest;
-import com.accountmanagement.request.OrganizationRequest;
 import com.accountmanagement.utility.Apputility;
 
 @Service

@@ -6,7 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserProfile;
+import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
+import com.accountmanagement.request.UserUpdationRequest;
 
 @Component
 public class UserMapper {
@@ -17,28 +19,40 @@ public class UserMapper {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User toRegisterUser(UserRegistrationRequest userRequest) {
+    public User toRegisterUser(UserRegistrationRequest userRegistrationRequest) {
+        String randomPassword = UUID.randomUUID().toString();
+        String hashedPassword = bCryptPasswordEncoder.encode(randomPassword);
         User user = new User();
-        user.setOrganizationId(userRequest.getOrganizationId());
-        user.setUserName(userRequest.getUserName());
-        user.setEmail(userRequest.getEmail());
-        user.setContactNumber(userRequest.getContactNumber());
-        user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
-        user.setUserType(userRequest.getUserType());
-        user.setFailedLoginAttempts(0);
-        user.setIsAccountLocked(false);
+        user.setOrganizationId(userRegistrationRequest.getOrganizationId());
+        user.setUserName(userRegistrationRequest.getUserName());
+        user.setEmail(userRegistrationRequest.getEmail());
+        user.setContactNumber(userRegistrationRequest.getContactNumber());
+        user.setPassword(hashedPassword);
+        user.setUserType(userRegistrationRequest.getUserType());
         return user;
     }
 
-    public UserProfile toUserProfile(UserRegistrationRequest userRegistrationRequest, UUID userId) {
+    public UserProfile toRegisterUserProfile(UUID id, UserRegistrationRequest userRegistrationRequest) {
         UserProfile userProfile = new UserProfile();
-        userProfile.setUserId(userId);
+        userProfile.setUserId(id);
         userProfile.setFirstName(userRegistrationRequest.getFirstName());
         userProfile.setLastName(userRegistrationRequest.getLastName());
+        userProfile.setAddress(userRegistrationRequest.getAddress());
         userProfile.setGender(userRegistrationRequest.getGender());
         userProfile.setDateOfBirth(userRegistrationRequest.getDateOfBirth());
-        userProfile.setAddress(userRegistrationRequest.getAddress());
         return userProfile;
     }
 
+    public User toUpdateUser(User user, UserUpdationRequest userUpdationRequest) {
+        user.setUserType(userUpdationRequest.getUserType());
+        return user;
+    }
+
+    public UserProfile toUpdateUserProfile(UserProfile userProfile, UserUpdationRequest userUpdationRequest) {
+        userProfile.setFirstName(userUpdationRequest.getFirstName());
+        userProfile.setLastName(userUpdationRequest.getLastName());
+        userProfile.setAddress(userUpdationRequest.getAddress());
+        userProfile.setDateOfBirth(userUpdationRequest.getDateOfBirth());
+        return userProfile;
+    }
 }

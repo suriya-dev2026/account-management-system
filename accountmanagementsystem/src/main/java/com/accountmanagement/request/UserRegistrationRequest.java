@@ -6,13 +6,11 @@ import java.util.UUID;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.enums.Gender;
 import com.accountmanagement.utility.Apputility;
-import com.accountmanagement.validations.ValidUserEmail;
 import com.accountmanagement.validations.ValidContactNumber;
 import com.accountmanagement.validations.ValidDate;
+import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidInputString;
-import com.accountmanagement.validations.ValidOrganizationId;
-import com.accountmanagement.validations.ValidPassword;
-import com.accountmanagement.validations.ValidUserPhoneNumber;
+import com.accountmanagement.validations.ValidUserEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,63 +21,39 @@ import lombok.Data;
 public class UserRegistrationRequest {
 
         @NotNull(message = "organization id is required")
-        @ValidOrganizationId(message = "organization id does not exists")
         private UUID organizationId;
 
-        @NotBlank(message = "Please enter first name")
-        @Size(min = AppConstants.minNameLength, message = "First Name requires minimum of " + AppConstants.minNameLength
-                        + " characters")
-        @Size(max = AppConstants.maxNameLength, message = "First Name cannot exceed maximum of "
-                        + AppConstants.maxNameLength + " characters")
-        @ValidInputString(message = "first name should contain alphabets only ", allowNull = false, alphaOnly = true)
-        private String firstName;
-
-        @Size(min = AppConstants.minNameLength, message = "Last Name requires minimum of " + AppConstants.minNameLength
-                        + " characters")
-        @Size(max = AppConstants.maxNameLength, message = "Last Name cannot exceed maximum of "
-                        + AppConstants.maxNameLength
-                        + " characters")
-        @ValidInputString(message = "last name should contain alphabets only ", allowNull = true, alphaOnly = true)
-        private String lastName;
-
-        @NotBlank(message = "please enter user name")
-        @Size(min = AppConstants.minNameLength, message = "User Name requires minimum of " + AppConstants.minNameLength
-                        + " characters")
-        @Size(max = AppConstants.maxNameLength, message = "User Name cannot exceed maximum of "
-                        + AppConstants.maxNameLength + " characters")
+        @NotBlank(message = "user name mandatory")
+        @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "Username must be between "
+                        + AppConstants.minNameLength + " and " + AppConstants.maxNameLength + " characters")
         @ValidInputString(message = "user name should contain lowercase and number only avoid special character and upper case", allowNull = false, alphaOnly = false)
+        @ValidInput(message = "Input contains invalid characters")
         private String userName;
 
         @NotBlank(message = "please enter email")
         @Email(message = "invalid email provided")
-        @ValidUserEmail(message = "Account with this email already exists")
-        @Size(min = AppConstants.minNameLength, message = "email requires minimum of " + AppConstants.minNameLength
-                        + " characters")
-        @Size(max = AppConstants.maxEmailLength, message = "email cannot exceed maximum of "
-                        + AppConstants.maxEmailLength
-                        + " characters")
+        @Size(min = AppConstants.minNameLength, max = AppConstants.maxEmailLength, message = "email must be between "
+                        + AppConstants.minNameLength + " and " + AppConstants.maxEmailLength + " characters")
+        @ValidInput(message = "Input contains invalid characters")
         private String email;
 
-        @NotBlank(message = "please enter phone number")
-        @ValidContactNumber(message = "please enter a valid phone number")
-        @ValidUserPhoneNumber(message = "Account with this phone number already exists")
+        @NotBlank(message = "please enter contact number")
+        @ValidContactNumber(message = "please enter a valid contact number")
+        @ValidInput(message = "Input contains invalid characters")
         private String contactNumber;
 
-        @NotBlank(message = "Please enter password")
-        @ValidPassword(message = "Password must contain uppercase,lowercase, numbers, special characters")
-        @Size(min = AppConstants.minPasswordLength, message = "Password requires a minimum of "
-                        + AppConstants.minPasswordLength + " characters")
-        @Size(max = AppConstants.maxPasswordLength, message = "Password cannot exceed a maximum of "
-                        + AppConstants.maxPasswordLength + " characters")
-        private String password;
+        @NotBlank(message = "Please enter first name")
+        @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "first name must be between "
+                        + AppConstants.minNameLength + " and " + AppConstants.maxNameLength + " characters")
+        @ValidInputString(message = "first name should contain alphabets only ", allowNull = false, alphaOnly = true)
+        @ValidInput(message = "Input contains invalid characters")
+        private String firstName;
 
-        @NotBlank(message = "Please enter confirm password")
-        @ValidPassword(message = "Password must contain uppercase,lowercase, numbers and special characters")
-        @Size(min = AppConstants.minPasswordLength, message = "Password requires a minimum of "
-                        + AppConstants.minPasswordLength + " characters")
-        @Size(max = AppConstants.maxPasswordLength, message = "Password cannot exceed a maximum of "
-                        + AppConstants.maxPasswordLength + " characters")
-        private String confirmPassword;
+        @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "last name must be between "
+                        + AppConstants.minNameLength + " and " + AppConstants.maxNameLength + " characters")
+        @ValidInputString(message = "last name should contain alphabets only ", allowNull = true, alphaOnly = true)
+        @ValidInput(message = "Input contains invalid characters")
+        private String lastName;
 
         @NotNull(message = "date of birth is required")
         @ValidDate(message = "please enter valid date")
@@ -88,18 +62,18 @@ public class UserRegistrationRequest {
         @NotNull(message = "please enter gender")
         private Gender gender;
 
-        @NotBlank(message = "please enter address ")
+        @ValidInput(message = "Input contains invalid characters")
+        @NotBlank(message = "address is required")
         private String address;
 
-        @NotBlank(message = "please enter user type")
+        @NotBlank(message = "user type cannot be blank")
+        @ValidInput(message = "Input contains invalid characters")
         private String userType;
 
         public void sanitizeInput() {
+                setUserName(Apputility.sanitizeInput(getUserName()));
                 setFirstName(Apputility.sanitizeInput(getFirstName()));
                 setLastName(Apputility.sanitizeInput(getLastName()));
-                setUserName(Apputility.sanitizeInput(getUserName()));
-                setEmail(Apputility.sanitizeInput(getEmail()));
-                setPassword(Apputility.sanitizeInput(getPassword()));
                 setAddress(Apputility.sanitizeInput(getAddress()));
                 setUserType(Apputility.sanitizeInput(getUserType()));
         }

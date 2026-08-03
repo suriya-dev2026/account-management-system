@@ -19,8 +19,6 @@ import com.accountmanagement.model.EmailQueue;
 import com.accountmanagement.model.UserSession;
 import com.accountmanagement.repository.UserSessionRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class OtpService {
 
@@ -48,17 +46,17 @@ public class OtpService {
         return String.valueOf(otp);
     }
 
-    public void sendEmail(EmailQueue emailQueue, String otp) {
+    public void sendEmail(EmailQueue emailQueue) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailQueue.getToEmail());
-            message.setSubject("Login Otp");
-            message.setText("Your otp is" + otp);
+            message.setSubject(emailQueue.getSubject());
+            message.setText(emailQueue.getBody());
             javaMailSender.send(message);
             emailQueue.setStatus("Sent");
             emailQueue.setSentAt(LocalDateTime.now());
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send otp email");
+           emailQueue.setStatus("Failed");
         } finally {
             emailQueueRepository.save(emailQueue);
         }

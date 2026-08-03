@@ -17,10 +17,11 @@ public class EmailQueueService {
         this.emailQueueRepository = emailQueueRepository;
     }
 
-    public EmailQueue addToQueue(UUID userId, String email) {
+    public EmailQueue addToQueue(UUID userId, String email, String body) {
         EmailQueue emailQueue = new EmailQueue();
         emailQueue.setUserId(userId);
         emailQueue.setToEmail(email);
+        emailQueue.setBody(body);
         emailQueue.setStatus("In Process");
         emailQueue.setCreatedAT(LocalDateTime.now());
         return emailQueueRepository.save(emailQueue);

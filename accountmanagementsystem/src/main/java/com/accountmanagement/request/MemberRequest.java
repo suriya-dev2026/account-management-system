@@ -10,7 +10,6 @@ import com.accountmanagement.validations.ValidContactNumber;
 import com.accountmanagement.validations.ValidDate;
 import com.accountmanagement.validations.ValidInputString;
 import com.accountmanagement.validations.ValidLocation;
-import com.accountmanagement.validations.ValidOrganizationCode;
 import com.accountmanagement.validations.ValidOrganizationId;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -25,7 +24,6 @@ public class MemberRequest {
         @ValidOrganizationId(message = "organization id does not exists")
         private UUID organizationId;
 
-        @ValidOrganizationCode(message = "invalid organization code")
         @NotBlank(message = "organization code is required")
         private String organizationCode;
 

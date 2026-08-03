@@ -12,6 +12,8 @@ public class AppConstants {
 
     public static final String LOCKED = "locked";
 
+    public static final String DELETED = "deleted";
+
     public static final int minNameLength = 3;
 
     public static final int maxNameLength = 50;

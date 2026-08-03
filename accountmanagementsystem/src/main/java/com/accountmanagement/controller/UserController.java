@@ -1,11 +1,14 @@
 package com.accountmanagement.controller;
 
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +18,7 @@ import com.accountmanagement.model.User;
 import com.accountmanagement.request.ChangePasswordRequest;
 import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
+import com.accountmanagement.request.UserUpdationRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.UserService;
@@ -40,13 +44,39 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
-        loginRequest.sanitizeInput();
-        userService.loginUser(loginRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP, 200);
+    @PostMapping("/email/verification/otp/{email}")
+    public ResponseEntity<ApiResponse> verifyEmail(@PathVariable String email) {
+        userService.sendOtpForEmailVerification(email);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP, 201);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/verify/email/otp")
+    public ResponseEntity<ApiResponse> verifyEmail(@Valid @RequestBody VerifyOtpRequest verifyOtpRequest) {
+        verifyOtpRequest.sanitizeInput();
+        userService.verifyEmailOtp(verifyOtpRequest);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_EMAIL_VERIFY, 201);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse> updateUser(@PathVariable UUID id,
+            @Valid @RequestBody UserUpdationRequest userUpdationRequest) {
+        userUpdationRequest.sanitizeInput();
+        userService.updateUser(null, userUpdationRequest);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_REGISTER, 201);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // @PostMapping("/login")
+    // public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginRequest
+    // loginRequest) {
+    // loginRequest.sanitizeInput();
+    // userService.loginUser(loginRequest);
+    // ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP,
+    // 200);
+    // return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
 
     @PostMapping("/verify/otp")
     public ResponseEntity<ApiResponse> verifyOtp(@Valid @RequestBody VerifyOtpRequest verifyOtpRequest) {

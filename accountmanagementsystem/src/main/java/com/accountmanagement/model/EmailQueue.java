@@ -26,6 +26,12 @@ public class EmailQueue {
     @Column(name = "to_email")
     private String toEmail;
 
+    @Column(name = "body")
+    private String body;
+
+    @Column(name = "subject")
+    private String subject;
+
     @Column(name = "status")
     private String status;
 

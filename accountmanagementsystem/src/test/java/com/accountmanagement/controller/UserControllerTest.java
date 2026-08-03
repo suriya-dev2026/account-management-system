@@ -12,7 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import com.accountmanagement.request.UserRegistrationRequest;
+
+import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -28,17 +29,10 @@ public class UserControllerTest {
 
     @Test
     public void registerUserTest() throws Exception {
-        UserRegistrationRequest userRequest = new UserRegistrationRequest();
-        userRequest.setFirstName("Sowmiya");
-        userRequest.setLastName("Arun");
-        userRequest.setUserName("sowmiya123");
-        userRequest.setEmail("sowmiya@gmail.com");
-        userRequest.setPassword("Sowmiya@123");
-        userRequest.setConfirmPassword("Sowmiya@123");
-        userRequest.setContactNumber("7598632149");
-        userRequest.setAddress("nagercoil");
+        OrganizationRegistrationRequest organizationRequest = new OrganizationRegistrationRequest();
+        organizationRequest.setAddress("nagercoil");
         mockMvc.perform(post("/register").with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userRequest)))
+                .content(objectMapper.writeValueAsString(organizationRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.headers.message").value("user registered successfully"));

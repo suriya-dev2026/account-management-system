@@ -35,20 +35,11 @@ public class User {
     @Column(name = "contact_number")
     private String contactNumber;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "user_type")
     private String userType;
-
-    @Column(name = "failed_login_attempts")
-    private Integer failedLoginAttempts;
-
-    @Column(name = "is_account_locked")
-    private Boolean isAccountLocked;
-
-    @Column(name = "locked_time")
-    private LocalDateTime lockedTime;
 
     @Column(name = "status")
     private String status;

@@ -36,17 +36,16 @@ public class UserProfile {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    @Column(name = "address")
+    private String address;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
-    @Column
     private String status;
 
     @JsonIgnore
