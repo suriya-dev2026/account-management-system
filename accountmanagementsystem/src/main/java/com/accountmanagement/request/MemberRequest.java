@@ -23,8 +23,6 @@ public class MemberRequest {
 
         @NotNull(message = "organization id required")
         @ValidOrganizationId(message = "organization id does not exists")
-        @Size(min = AppConstants.uuidMinLength, max = AppConstants.uuidMaxLength, message = "organization id must be between "
-                        + AppConstants.uuidMinLength + " and " + AppConstants.uuidMaxLength + " characters")
         private UUID organizationId;
 
         @NotBlank(message = "organization code is required")
@@ -32,13 +30,13 @@ public class MemberRequest {
 
         private UUID familyHeadId;
 
-        @NotBlank(message = "category is required")
+        @NotNull(message = "category is required")
         @ValidMemberCategoryId(message = "category id does not exists")
-        private String categoryId;
+        private Integer categoryId;
 
-        @NotBlank(message = "location id is required")
+        @NotNull(message = "location id is required")
         @ValidLocationId(message = "location id does not exists")
-        private String locationId;
+        private Integer locationId;
 
         @ValidInput(message = "Input contains invalid characters")
         private String relationship;
@@ -70,7 +68,6 @@ public class MemberRequest {
         private String userName;
 
         @NotNull(message = "gender is required")
-        @ValidInput(message = "Input contains invalid characters")
         private Gender gender;
 
         @NotNull(message = "please enter date of birth")

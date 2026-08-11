@@ -9,6 +9,6 @@ public class CurrencyValidator implements ConstraintValidator<ValidCurrency, Str
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext arg1) {
-        return value == null || value.matches("^[A-Z]{3}$");
+        return value == null || value.isBlank() || value.matches("^[A-Z]{3}$");
     }
 }

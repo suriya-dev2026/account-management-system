@@ -52,10 +52,10 @@ public class Member {
     private Gender gender;
 
     @Column(name = "category_id")
-    private String categoryId;
+    private Integer categoryId;
 
     @Column(name = "location_id")
-    private String locationId;
+    private Integer locationId;
 
     @Column(name = "relation_ship")
     private String relationShip;
