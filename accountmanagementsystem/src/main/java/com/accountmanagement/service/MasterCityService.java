@@ -1,12 +1,9 @@
 package com.accountmanagement.service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.MasterCity;
-import com.accountmanagement.model.MasterState;
 import com.accountmanagement.repository.MasterCityRepository;
 import com.accountmanagement.repository.MasterStateRepository;
 

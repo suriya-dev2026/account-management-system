@@ -1,33 +1,28 @@
 package com.accountmanagement.service;
 
-import com.accountmanagement.mapper.SubscriptionPlanMapper;
-
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.SubscriptionPlan;
 import com.accountmanagement.repository.SubscriptionPlanRepository;
-import com.accountmanagement.request.SubscriptionPlanRequest;
 
 @Service
 public class SubscriptionPlanService {
 
-    private final SubscriptionPlanMapper subscriptionPlanMapper;
     private final SubscriptionPlanRepository subscriptionPlanRepository;
 
-    public SubscriptionPlanService(SubscriptionPlanRepository subscriptionPlanRepository,
-            SubscriptionPlanMapper subscriptionPlanMapper) {
+    public SubscriptionPlanService(SubscriptionPlanRepository subscriptionPlanRepository) {
         this.subscriptionPlanRepository = subscriptionPlanRepository;
-        this.subscriptionPlanMapper = subscriptionPlanMapper;
     }
 
-    public SubscriptionPlan addSubscriptionPlan(SubscriptionPlanRequest subscriptionPlanRequest) {
-        SubscriptionPlan subscriptionPlan = subscriptionPlanMapper.toAddSubscriptionPlan(subscriptionPlanRequest);
-        return subscriptionPlanRepository.save(subscriptionPlan);
-    }
-
-     public List<SubscriptionPlan> viewAllSubscriptionPlan() {
+    public List<SubscriptionPlan> viewAllSubscriptionPlan() {
         return subscriptionPlanRepository.findAll();
+    }
+
+    public SubscriptionPlan findBySubscriptionPlanId(UUID id){
+        return subscriptionPlanRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("Subscription plan id not found"));
     }
 }

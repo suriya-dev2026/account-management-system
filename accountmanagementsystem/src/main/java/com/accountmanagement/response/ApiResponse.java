@@ -22,6 +22,8 @@ public class ApiResponse {
 
     private String refreshKey;
 
+    private String resetToken;
+
     public ApiResponse(String status, String message, Integer statusCode) {
         headers.put("status", status);
         headers.put("message", message);

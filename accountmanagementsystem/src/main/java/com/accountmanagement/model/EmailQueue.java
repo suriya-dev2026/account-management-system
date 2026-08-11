@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "email_queues")
+@Table(name = "email_queue")
 public class EmailQueue {
 
     @Id
@@ -28,9 +28,6 @@ public class EmailQueue {
 
     @Column(name = "body")
     private String body;
-
-    @Column(name = "subject")
-    private String subject;
 
     @Column(name = "status")
     private String status;

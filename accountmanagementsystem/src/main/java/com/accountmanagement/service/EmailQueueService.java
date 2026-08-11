@@ -17,7 +17,17 @@ public class EmailQueueService {
         this.emailQueueRepository = emailQueueRepository;
     }
 
-    public EmailQueue addToQueue(UUID userId, String email, String body) {
+    public EmailQueue addToQueue(UUID userId, String email, String otp) {
+        EmailQueue emailQueue = new EmailQueue();
+        emailQueue.setUserId(userId);
+        emailQueue.setToEmail(email);
+        emailQueue.setBody("Your email verification OTP is: " + otp + ".\n" + "This otp is valid for 2 MINUTES only");
+        emailQueue.setStatus("In Process");
+        emailQueue.setCreatedAT(LocalDateTime.now());
+        return emailQueueRepository.save(emailQueue);
+    }
+
+    public EmailQueue addToEmailQueue(UUID userId, String email, String body) {
         EmailQueue emailQueue = new EmailQueue();
         emailQueue.setUserId(userId);
         emailQueue.setToEmail(email);

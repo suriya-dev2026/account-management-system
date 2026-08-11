@@ -3,7 +3,9 @@ package com.accountmanagement.request;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.validations.ValidContactNumber;
+import com.accountmanagement.validations.ValidCurrency;
 import com.accountmanagement.validations.ValidInput;
+import com.accountmanagement.validations.ValidWebsite;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +28,7 @@ public class OrganizationRegistrationRequest {
         private String registrationNumber;
 
         @ValidInput(message = "Input contains invalid characters")
+        @ValidWebsite(message = "invalid website format")
         private String website;
 
         @ValidInput(message = "Input contains invalid characters")
@@ -63,6 +66,7 @@ public class OrganizationRegistrationRequest {
         private String logoUrl;
 
         @ValidInput(message = "input containts invalid characters")
+        @ValidWebsite(message = "invalid url format")
         private String faviconUrl;
 
         @ValidInput(message = "input containts invalid characters")
@@ -72,6 +76,7 @@ public class OrganizationRegistrationRequest {
         private String timeZone;
 
         @ValidInput(message = "input containts invalid characters")
+        @ValidCurrency(message = "Currency must be a valid 3-letter ISO code (e.g. INR, USD, EUR)")
         private String currency;
 
         @ValidInput(message = "input containts invalid characters")
@@ -80,7 +85,6 @@ public class OrganizationRegistrationRequest {
         public void sanitizeInput() {
                 setName(Apputility.sanitizeInput(getName()));
                 setRegistrationNumber(Apputility.sanitizeInput(getRegistrationNumber()));
-                setWebsite(Apputility.sanitizeInput(getWebsite()));
                 setAddress(Apputility.sanitizeInput(getAddress()));
                 setPostalCode(Apputility.sanitizeInput(getPostalCode()));
                 setPrimaryContactName(Apputility.sanitizeInput(getPrimaryContactName()));

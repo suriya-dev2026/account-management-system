@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.accountmanagement.constants.message.MemberCategoryMessage;
 import com.accountmanagement.constants.message.MemberMessage;
+import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.mapper.MemberCategoryMapper;
 import com.accountmanagement.model.MemberCategory;
@@ -32,6 +33,7 @@ public class MemberCategoryService {
     }
 
     public MemberCategory addMemberCategory(MemberCategoryRequest memberCategoryRequest) {
+        validateMemberCategory(memberCategoryRequest.getCategory());
         MemberCategory memberCategory = memberCategoryMapper.addMemberCategory(memberCategoryRequest);
         User user = getLoggedUser();
         MemberCategory savedMemberCategory = memberCategoryRepository.save(memberCategory);
@@ -77,5 +79,13 @@ public class MemberCategoryService {
         userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "Get All Member Category",
                 "Success");
         return memberCategory;
+    }
+
+    private void validateMemberCategory(String category) {
+        if (memberCategoryRepository
+                .existsByCategoryIgnoreCase(category.trim())) {
+            throw new DuplicateRecordException(
+                    "Member category already exists");
+        }
     }
 }

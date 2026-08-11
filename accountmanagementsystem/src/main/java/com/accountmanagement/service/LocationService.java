@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.constants.message.LocationMessage;
+import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.mapper.LocationMapper;
 import com.accountmanagement.model.Location;
@@ -29,6 +30,7 @@ public class LocationService {
     }
 
     public Location addLocation(LocationRequest locationRequest) {
+        validateLocation(locationRequest.getLocation());
         User user = getLoggedUser();
         Location location = locationMapper.addLocation(locationRequest);
         Location savedLocation = locationRepository.save(location);
@@ -69,6 +71,14 @@ public class LocationService {
 
     private User getLoggedUser() {
         return Apputility.getLoggedUser();
+    }
+
+    private void validateLocation(String location) {
+        if (locationRepository
+                .existsByLocationIgnoreCase(location.trim())) {
+            throw new DuplicateRecordException(
+                    "location already exists");
+        }
     }
 
 }

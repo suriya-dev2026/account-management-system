@@ -15,8 +15,11 @@ import com.accountmanagement.model.MasterState;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.MasterCityService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(value = "city")
+@Tag(name = "MasterCityController")
 public class MasterCityController {
 
     private final MasterCityService cityService;

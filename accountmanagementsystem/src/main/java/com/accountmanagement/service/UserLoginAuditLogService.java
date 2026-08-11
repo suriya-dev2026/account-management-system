@@ -2,7 +2,6 @@ package com.accountmanagement.service;
 
 import com.accountmanagement.model.UserLoginAuditLog;
 import com.accountmanagement.repository.UserLoginAuditLogRepository;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.stereotype.Service;

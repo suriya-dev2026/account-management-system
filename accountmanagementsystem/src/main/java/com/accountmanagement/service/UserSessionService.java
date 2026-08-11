@@ -33,24 +33,28 @@ public class UserSessionService {
         userSession.setOtpExpiration(LocalDateTime.now().plusMinutes(2));
         userSession.setOtpVerificationCount(0);
         userSession.setIsOtpVerified(false);
-        userSession.setRefreshKeyStatus(true);
+        userSession.setRefreshKeyStatus(false);
         userSession.setSessionStatus("Active");
-        userSession.setIsValidToken(true);
-        return userSessionRepository.save(userSession);
+        userSession.setIsValidToken(false);
+        UserSession saved = userSessionRepository.save(userSession);
+        return saved;
+
     }
 
-    @Transactional
-    public void updateOtp(UUID userId, String otp) {
+    // @Transactional
+    // public void updateOtp(UUID userId, String otp) {
 
-        UserSession userSession = userSessionRepository.findByUserId(userId)
-                .orElseThrow(() -> new RecordNotFoundException("Session not found."));
+    // UserSession userSession = userSessionRepository.findByUserId(userId)
+    // .orElseThrow(() -> new RecordNotFoundException("Session not found."));
 
-        userSession.setOtp(bCryptPasswordEncoder.encode(otp));
-        userSession.setOtpExpiration(LocalDateTime.now().plusMinutes(2));
-        userSession.setOtpVerificationCount(0);
-        userSession.setIsOtpVerified(false);
-        userSessionRepository.save(userSession);
-    }
+    // userSession.setOtp(bCryptPasswordEncoder.encode(otp));
+    // userSession.setOtpExpiration(LocalDateTime.now().plusMinutes(2));
+    // userSession.setOtpVerificationCount(0);
+    // userSession.setIsOtpVerified(false);
+
+    // UserSession updatedOtp = userSessionRepository.save(userSession);
+    // System.out.println("UPDATED OTP" + updatedOtp.getIsOtpVerified());
+    // }
 
     public void updateSessionAfterOtp(UUID userId, String refreshKey) {
         UserSession session = userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
@@ -60,14 +64,19 @@ public class UserSessionService {
         session.setRefreshKeyExpiration(LocalDateTime.now().plusHours(24));
         session.setIsOtpVerified(true);
         session.setOtp(null);
-        userSessionRepository.save(session);
+        UserSession saved = userSessionRepository.save(session);
+        System.out.println("UPDATE SESSION AFTER OTP " + saved.getIsOtpVerified());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void incrementOtpVerificationCount(UUID userId) {
+    public int incrementOtpVerificationCount(UUID userId) {
         UserSession session = findByTopUserId(userId);
-        session.setOtpVerificationCount(session.getOtpVerificationCount() + 1);
-        userSessionRepository.save(session);
+        int updatedCount = session.getOtpVerificationCount() + 1;
+        session.setOtpVerificationCount(updatedCount);
+        session.setIsOtpVerified(false);
+        UserSession saved = userSessionRepository.save(session);
+        System.out.println("INCREMENT OTP" + saved.getIsOtpVerified());
+        return updatedCount;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -75,7 +84,8 @@ public class UserSessionService {
         UserSession session = findByTopUserId(userId);
         session.setIsOtpVerified(true);
         session.setOtpVerificationCount(0);
-        userSessionRepository.save(session);
+        UserSession saved = userSessionRepository.save(session);
+        System.out.println("MARK OTP" + saved.getIsOtpVerified());
     }
 
     private UserSession findByTopUserId(UUID userId) {

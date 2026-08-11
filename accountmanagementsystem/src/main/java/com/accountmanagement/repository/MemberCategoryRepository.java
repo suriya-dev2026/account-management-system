@@ -6,6 +6,6 @@ import com.accountmanagement.model.MemberCategory;
 
 public interface MemberCategoryRepository extends JpaRepository<MemberCategory, Integer> {
 
-    boolean existsByCategory(String value);
+    boolean existsByCategoryIgnoreCase(String trim);
 
 }

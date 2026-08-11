@@ -4,8 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+
+import com.accountmanagement.enums.BillingCycle;
+import com.accountmanagement.enums.SubscriptionOrganizationStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -26,6 +32,10 @@ public class SubscriptionOrganization {
     @Column(name = "plan_id")
     private UUID planId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "billing_cycle")
+    private BillingCycle billingCycle;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 
@@ -35,8 +45,9 @@ public class SubscriptionOrganization {
     @Column(name = "auto_renew")
     private Boolean autoRenew;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private SubscriptionOrganizationStatus status;
 
     @Column(name = "cancelled_at")
     private LocalDateTime cancelledAt;

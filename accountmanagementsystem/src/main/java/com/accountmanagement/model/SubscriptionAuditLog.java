@@ -5,14 +5,18 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import com.accountmanagement.enums.AuditLogAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "subscription_audit_log")
+@Table(name = "subscription_audit_logs")
 @Data
 public class SubscriptionAuditLog {
 
@@ -30,11 +34,12 @@ public class SubscriptionAuditLog {
     @Column(name = "new_plan_id")
     private UUID newPlanId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "action")
-    private String action;
+    private AuditLogAction action;
 
-    @Column(name = "user_id")
-    private UUID userId;
+    @Column(name = "changed_by")
+    private UUID changedBy;
 
     @Column(name = "remarks")
     private String remarks;

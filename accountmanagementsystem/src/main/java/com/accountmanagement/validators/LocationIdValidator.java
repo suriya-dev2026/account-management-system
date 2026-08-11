@@ -1,27 +1,27 @@
 package com.accountmanagement.validators;
 
 import com.accountmanagement.repository.LocationRepository;
-import com.accountmanagement.validations.ValidLocation;
+import com.accountmanagement.validations.ValidLocationId;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class LocationValidator implements ConstraintValidator<ValidLocation, String> {
+public class LocationIdValidator implements ConstraintValidator<ValidLocationId, Integer> {
 
     private final LocationRepository locationRepository;
 
-    LocationValidator(LocationRepository locationRepository) {
+    LocationIdValidator(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 
     @Override
-    public boolean isValid(String location, ConstraintValidatorContext arg1) {
+    public boolean isValid(Integer location, ConstraintValidatorContext arg1) {
 
         if (location == null) {
             return false;
         }
 
-        return locationRepository.existsByLocation(location);
+        return locationRepository.existsById(location);
     }
 
 }

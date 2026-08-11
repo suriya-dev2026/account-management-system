@@ -51,11 +51,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "category_id")
+    private String categoryId;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "location_id")
+    private String locationId;
 
     @Column(name = "relation_ship")
     private String relationShip;

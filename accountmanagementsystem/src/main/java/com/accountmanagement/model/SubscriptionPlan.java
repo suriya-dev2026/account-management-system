@@ -1,5 +1,6 @@
 package com.accountmanagement.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
@@ -29,11 +30,8 @@ public class SubscriptionPlan {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "billing_cycle")
-    private String billingCycle;
-
     @Column(name = "price")
-    private Double price;
+    private BigDecimal price;
 
     @Column(name = "currency")
     private String currency;
@@ -49,9 +47,6 @@ public class SubscriptionPlan {
 
     @Column(name = "max_admins")
     private Integer maxAdmin;
-
-    @Column(name = "discount_percentage")
-    private Double discountPercentage;
 
     @Column(name = "status")
     private String status;

@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "subscription_usages")
+@Table(name = "subscription_usage")
 @Data
 public class SubscriptionUsage {
 
@@ -31,8 +31,8 @@ public class SubscriptionUsage {
     @Column(name = "current_admins")
     private Integer currentAdmins;
 
-    @Column(name = "storage_user_mb")
-    private Integer storageUserMb;
+    @Column(name = "storage_used_mb")
+    private Integer storageUsedMb;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

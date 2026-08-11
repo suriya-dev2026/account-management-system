@@ -11,8 +11,8 @@ public class MemberMapper {
         Member member = new Member();
         member.setOrganizationId(memberRequest.getOrganizationId());
         member.setOrganizationCode(memberRequest.getOrganizationCode());
-        member.setCategory(memberRequest.getCategory());
-        member.setLocation(memberRequest.getLocation());
+        member.setCategoryId(memberRequest.getCategoryId());
+        member.setLocationId(memberRequest.getLocationId());
         member.setFamilyHeadId(memberRequest.getFamilyHeadId());
         member.setRelationShip(memberRequest.getRelationship());
         member.setFirstName(memberRequest.getFirstName());
@@ -33,8 +33,8 @@ public class MemberMapper {
     public Member toUpdateMember(Member member, MemberRequest memberRequest) {
         member.setOrganizationId(memberRequest.getOrganizationId());
         member.setOrganizationCode(memberRequest.getOrganizationCode());
-        member.setCategory(memberRequest.getCategory());
-        member.setLocation(memberRequest.getLocation());
+        member.setCategoryId(memberRequest.getCategoryId());
+        member.setLocationId(memberRequest.getLocationId());
         member.setFamilyHeadId(memberRequest.getFamilyHeadId());
         member.setRelationShip(memberRequest.getRelationship());
         member.setFirstName(memberRequest.getFirstName());

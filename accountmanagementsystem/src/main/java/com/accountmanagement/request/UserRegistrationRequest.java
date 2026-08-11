@@ -10,7 +10,8 @@ import com.accountmanagement.validations.ValidContactNumber;
 import com.accountmanagement.validations.ValidDate;
 import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidInputString;
-import com.accountmanagement.validations.ValidUserEmail;
+
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

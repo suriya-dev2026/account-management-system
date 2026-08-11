@@ -10,7 +10,7 @@ import jakarta.validation.ConstraintValidatorContext;
 public class WebsiteValidator implements ConstraintValidator<ValidWebsite, String> {
 
     private static final Pattern WEBSITE_PATTERN = Pattern.compile(
-            "^(https?://)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)+(/.*)?$");
+            "^(https?://)?(www\\.)?([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}(/.*)?$");
 
     @Override
     public boolean isValid(String website, ConstraintValidatorContext arg1) {

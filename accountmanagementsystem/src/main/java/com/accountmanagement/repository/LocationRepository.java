@@ -7,4 +7,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     boolean existsByLocation(String location);
 
+    boolean existsByLocationIgnoreCase(String trim);
+
 }

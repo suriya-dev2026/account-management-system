@@ -26,13 +26,13 @@ public class User {
     @Column(name = "organization_id", nullable = false)
     private UUID organizationId;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "contact_number")
+    @Column(name = "contact_number", nullable = false, unique = true)
     private String contactNumber;
 
     @Column(name = "password")

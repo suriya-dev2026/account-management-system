@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.accountmanagement.constants.AppConstants;
-import com.accountmanagement.constants.message.MemberCategoryMessage;
 import com.accountmanagement.constants.message.SubscriptionMessage;
 import com.accountmanagement.model.SubscriptionPlan;
 import com.accountmanagement.response.ApiResponse;

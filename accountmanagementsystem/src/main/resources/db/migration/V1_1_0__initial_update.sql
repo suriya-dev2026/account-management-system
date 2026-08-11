@@ -1089,36 +1089,36 @@ VALUES (1, 'North and Middle Andaman', 32),
     (465, 'North Sikkim', 20),
     (466, 'South Sikkim', 20),
     (467, 'West Sikkim', 20),
-    (468, 'Ariyalur', 21),
-    (469, 'Chennai', 21),
-    (470, 'Coimbatore', 21),
-    (471, 'Cuddalore', 21),
-    (472, 'Dharmapuri', 21),
-    (473, 'Dindigul', 21),
-    (474, 'Erode', 21),
-    (475, 'Kanchipuram', 21),
-    (476, 'Kanyakumari', 21),
-    (477, 'Karur', 21),
-    (478, 'Madurai', 21),
-    (479, 'Nagapattinam', 21),
-    (480, 'The Nilgiris', 21),
-    (481, 'Namakkal', 21),
-    (482, 'Perambalur', 21),
-    (483, 'Pudukkottai', 21),
-    (484, 'Ramanathapuram', 21),
-    (485, 'Salem', 21),
-    (486, 'Sivagangai', 21),
-    (487, 'Tiruppur', 21),
-    (488, 'Tiruchirappalli', 21),
-    (489, 'Theni', 21),
-    (490, 'Tirunelveli', 21),
-    (491, 'Thanjavur', 21),
-    (492, 'Thoothukudi', 21),
-    (493, 'Thiruvallur', 21),
-    (494, 'Thiruvarur', 21),
-    (495, 'Tiruvannamalai', 21),
-    (496, 'Vellore', 21),
-    (497, 'Villupuram', 21),
+    (468, 'Ariyalur', 82),
+    (469, 'Chennai', 82),
+    (470, 'Coimbatore', 82),
+    (471, 'Cuddalore', 82),
+    (472, 'Dharmapuri', 82),
+    (473, 'Dindigul', 82),
+    (474, 'Erode', 82),
+    (475, 'Kanchipuram', 82),
+    (476, 'Kanyakumari', 82),
+    (477, 'Karur', 82),
+    (478, 'Madurai', 82),
+    (479, 'Nagapattinam', 82),
+    (480, 'The Nilgiris', 82),
+    (481, 'Namakkal', 82),
+    (482, 'Perambalur', 82),
+    (483, 'Pudukkottai', 82),
+    (484, 'Ramanathapuram', 82),
+    (485, 'Salem', 82),
+    (486, 'Sivagangai', 82),
+    (487, 'Tiruppur', 82),
+    (488, 'Tiruchirappalli', 82),
+    (489, 'Theni', 82),
+    (490, 'Tirunelveli', 82),
+    (491, 'Thanjavur', 82),
+    (492, 'Thoothukudi', 82),
+    (493, 'Thiruvallur', 82),
+    (494, 'Thiruvarur', 82),
+    (495, 'Tiruvannamalai', 82),
+    (496, 'Vellore', 82),
+    (497, 'Villupuram', 82),
     (498, 'Dhalai', 22),
     (499, 'North Tripura', 22),
     (500, 'South Tripura', 22),
@@ -1229,7 +1229,7 @@ CREATE TABLE IF NOT EXISTS organizations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code VARCHAR(25) UNIQUE NOT NULL,
     name VARCHAR(150) NOT NULL,
-    registration_number VARCHAR(100),
+    registration_number VARCHAR(100) unique,
     website VARCHAR(255),
     address VARCHAR(500),
     country_id INTEGER,
@@ -1237,8 +1237,8 @@ CREATE TABLE IF NOT EXISTS organizations (
     city_id INTEGER,
     postal_code VARCHAR(20),
     primary_contact_name VARCHAR(150),
-    primary_contact_email VARCHAR(150),
-    primary_contact_number VARCHAR(30),
+    primary_contact_email VARCHAR(150) unique,
+    primary_contact_number VARCHAR(30) unique,
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -1246,13 +1246,25 @@ CREATE TABLE IF NOT EXISTS organizations (
     FOREIGN KEY(state_id) REFERENCES master_states(id),
     FOREIGN KEY(city_id) REFERENCES master_cities(id)
 );
+CREATE SEQUENCE organization_code_seq START 1 INCREMENT 1;
+CREATE TABLE organization_settings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    logo_url VARCHAR(500),
+    favicon_url VARCHAR(500),
+    primary_color VARCHAR(20),
+    timezone VARCHAR(100),
+    currency VARCHAR(10),
+    language VARCHAR(20),
+    FOREIGN KEY (organization_id) REFERENCES organizations(id)
+);
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID NOT NULL REFERENCES organizations(id),
     user_name VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(255) UNIQUE,
     contact_number varchar(30) UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NULL,
     user_type VARCHAR(25),
     status VARCHAR(10) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1276,17 +1288,33 @@ CREATE TABLE IF NOT EXISTS user_sessions (
     user_id UUID NOT NULL,
     otp VARCHAR(255),
     otp_expiration TIMESTAMP,
-    otp_verification_count INTEGER DEFAULT 0,
-    is_otp_verified BOOLEAN DEFAULT FALSE,
+    otp_verification_count INTEGER NOT NULL DEFAULT 0,
+    is_otp_verified BOOLEAN NOT NULL DEFAULT FALSE,
     refresh_key VARCHAR(255),
     refresh_key_created_at TIMESTAMP,
     refresh_key_expiration TIMESTAMP,
-    refresh_key_status BOOLEAN DEFAULT FALSE,
-    is_valid_token BOOLEAN DEFAULT FALSE,
+    refresh_key_status BOOLEAN NOT NULL DEFAULT FALSE,
+    is_valid_token BOOLEAN NOT NULL DEFAULT FALSE,
     session_status VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
+);
+CREATE TABLE IF NOT EXISTS user_verifications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL UNIQUE,
+    is_user_onboarded BOOLEAN DEFAULT FALSE,
+    is_email_verified BOOLEAN DEFAULT FALSE,
+    is_subscription_completed BOOLEAN DEFAULT FALSE,
+    profile_completed_percentage INTEGER DEFAULT 0,
+    is_password_reset_completed BOOLEAN DEFAULT false,
+    failed_login_attempts INTEGER DEFAULT 0,
+    is_account_locked BOOLEAN DEFAULT FALSE,
+    locked_time TIMESTAMP,
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_verifications_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 CREATE TABLE IF NOT EXISTS user_login_audit_log (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1314,10 +1342,11 @@ CREATE TABLE IF NOT EXISTS password_resets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
-CREATE TABLE IF NOT EXISTS email_queues (
+CREATE TABLE IF NOT EXISTS email_queue (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID,
     to_email VARCHAR(150) NOT NULL,
+    body varchar(255),
     status VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sent_at TIMESTAMP,
@@ -1361,3 +1390,141 @@ CREATE TABLE IF NOT EXISTS members (
     FOREIGN KEY(family_head_id) REFERENCES members(id),
     FOREIGN KEY(organization_id) REFERENCES organizations(id)
 );
+CREATE TABLE IF NOT EXISTS subscription_plans (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(50) UNIQUE NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price NUMERIC(12, 2) NOT NULL,
+    currency VARCHAR(10) NOT NULL DEFAULT 'INR',
+    trial_days INTEGER DEFAULT 0,
+    max_students INTEGER,
+    max_teachers INTEGER,
+    max_admins INTEGER,
+    status varchar(10),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE subscription_features (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    status varchar(20)
+);
+CREATE SEQUENCE subscription_feature_code_seq START with 1 INCREMENT by 1;
+CREATE TABLE subscription_plan_features (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    plan_id UUID NOT NULL,
+    feature_id UUID NOT NULL,
+    FOREIGN KEY (plan_id) REFERENCES subscription_plans(id) ON DELETE CASCADE,
+    FOREIGN KEY (feature_id) REFERENCES subscription_features(id) ON DELETE CASCADE,
+    CONSTRAINT uk_plan_feature UNIQUE(plan_id, feature_id)
+);
+CREATE TABLE subscription_organizations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    plan_id UUID NOT NULL,
+    billing_cycle varchar(20) not null,
+    status VARCHAR(10) NOT NULL,
+    start_date DATE NULL,
+    end_date DATE,
+    auto_renew BOOLEAN DEFAULT TRUE,
+    cancelled_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (organization_id) REFERENCES organizations(id),
+    FOREIGN KEY (plan_id) REFERENCES subscription_plans(id)
+);
+CREATE TABLE subscription_payments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    subscription_organization_id UUID NOT NULL,
+    payment_type varchar(30) not null,
+    amount NUMERIC(12, 2) NOT NULL,
+    discount_percentage numeric(12, 2) not null,
+    billing_amount numeric(12, 2) not null,
+    currency VARCHAR(10) NOT NULL,
+    payment_provider VARCHAR(50),
+    payment_reference VARCHAR(255),
+    transaction_id VARCHAR(255),
+    status VARCHAR(30) NOT NULL,
+    paid_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (subscription_organization_id) REFERENCES subscription_organizations(id)
+);
+CREATE TABLE subscription_usage (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    subscription_organization_id UUID NOT NULL UNIQUE,
+    current_members INTEGER DEFAULT 0,
+    current_teachers INTEGER DEFAULT 0,
+    current_admins INTEGER DEFAULT 0,
+    storage_used_mb BIGINT DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (subscription_organization_id) REFERENCES subscription_organizations(id)
+);
+CREATE TABLE subscription_audit_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    old_plan_id UUID,
+    new_plan_id UUID,
+    action VARCHAR(50) NOT NULL,
+    changed_by UUID,
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (organization_id) REFERENCES organizations(id),
+    FOREIGN KEY (old_plan_id) REFERENCES subscription_plans(id),
+    FOREIGN KEY (new_plan_id) REFERENCES subscription_plans(id)
+);
+CREATE INDEX idx_subscription_organization ON subscription_organizations(organization_id);
+CREATE INDEX idx_subscription_status ON subscription_organizations(status);
+CREATE INDEX idx_payment_subscription ON subscription_payments(subscription_organization_id);
+CREATE INDEX idx_subscription_usage_subscription ON subscription_usage(subscription_organization_id);
+CREATE INDEX idx_audit_organization ON subscription_audit_logs(organization_id);
+INSERT INTO subscription_plans (
+        code,
+        name,
+        description,
+        price,
+        currency,
+        trial_days,
+        max_students,
+        max_teachers,
+        max_admins,
+        status
+    )
+VALUES (
+        'BASIC_PLAN',
+        'Basic Plan',
+        'Suitable for small churches and organizations.',
+        999.00,
+        'INR',
+        15,
+        500,
+        50,
+        5,
+        'ACTIVE'
+    ),
+    (
+        'STANDARD_PLAN',
+        'Standard Plan',
+        'Suitable for growing churches and organizations.',
+        1999.00,
+        'INR',
+        15,
+        1500,
+        150,
+        10,
+        'ACTIVE'
+    ),
+    (
+        'PREMIUM_PLAN',
+        'Premium Plan',
+        'Suitable for large churches and organizations.',
+        3999.00,
+        'INR',
+        30,
+        5000,
+        500,
+        25,
+        'ACTIVE'
+    );

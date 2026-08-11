@@ -8,4 +8,6 @@ import com.accountmanagement.model.SubscriptionFeature;
 
 public interface SubscriptionFeatureRepository extends JpaRepository<SubscriptionFeature, UUID> {
 
+    boolean existsByNameIgnoreCase(String trim);
+
 }

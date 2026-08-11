@@ -4,9 +4,13 @@ public class UserMessage {
 
     public static final String USERS_RETRIEVED = "users retrieved successfully";
 
+    public static final String USER_UPDATED = "user updated successfully";
+
+    public static final String USER_DELETED = "user deleted successfully";
+
     public static final String USER_NOT_FOUND = "user does not exists";
 
-    public static final String USER_REGISTER = "user registered successfully";
+    public static final String USER_REGISTER = "Your email verification OTP has been sent successfully. Please verify your email to continue.";
 
     public static final String USER_LOGIN = "user logged in successfully";
 
@@ -17,6 +21,10 @@ public class UserMessage {
     public static final String USER_REGISTERED_OTP = "User registered successfully. A verification OTP has been sent to your registered email address";
 
     public static final String OTP = "Otp send successfully";
+
+    public static final String TEMPORARY_PASSWORD_CHANGED = "Temporary password changed successfully. Please login with your new one.";
+
+    public static final String OTP_RESEND = "Otp resend successfully. For email verification";
 
     public static final String USER_EMAIL_VERIFY = "user email verified successfully";
 

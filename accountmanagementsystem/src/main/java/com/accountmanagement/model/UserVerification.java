@@ -35,6 +35,9 @@ public class UserVerification {
     @Column(name = "is_subscription_completed")
     private Boolean isSubscriptionCompleted;
 
+    @Column(name = "is_password_reset_completed")
+    private Boolean isPasswordResetCompleted;
+
     @Column(name = "profile_completed_percentage")
     private Integer profileCompletedPercentage;
 

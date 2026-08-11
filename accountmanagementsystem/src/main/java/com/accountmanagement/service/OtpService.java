@@ -50,13 +50,13 @@ public class OtpService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailQueue.getToEmail());
-            message.setSubject(emailQueue.getSubject());
             message.setText(emailQueue.getBody());
             javaMailSender.send(message);
             emailQueue.setStatus("Sent");
             emailQueue.setSentAt(LocalDateTime.now());
         } catch (Exception e) {
-           emailQueue.setStatus("Failed");
+            e.printStackTrace();
+            emailQueue.setStatus("Failed");
         } finally {
             emailQueueRepository.save(emailQueue);
         }

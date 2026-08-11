@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.OrganizationMapper;
-
 import com.accountmanagement.model.Organization;
 import com.accountmanagement.model.OrganizationSetting;
 import com.accountmanagement.repository.MasterCityRepository;
@@ -19,8 +19,6 @@ import com.accountmanagement.repository.OrganizationRepository;
 import com.accountmanagement.repository.OrganizationSettingRepository;
 import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.OrganizationUpdationRequest;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class OrganizationService {
@@ -114,44 +112,44 @@ public class OrganizationService {
 
     private void validateRegistrationNumber(String registrationNumber) {
         if (organizationRepository.existsByRegistrationNumber(registrationNumber)) {
-            throw new UserAlreadyExistsException("Registration number already in use.");
+            throw new UserAlreadyExistsException("Registration number already exists.");
         }
     }
 
     private void validateWebsite(String website) {
         if (StringUtils.hasText(website)
                 && organizationRepository.existsByWebsite(website.trim())) {
-            throw new UserAlreadyExistsException("Website already in use.");
+            throw new UserAlreadyExistsException("Website already registered.");
         }
     }
 
     private void validatePrimaryContactEmail(String primaryContactEmail) {
         if (organizationRepository.existsByPrimaryContactEmail(primaryContactEmail.trim())) {
-            throw new UserAlreadyExistsException("contact email already in use.");
+            throw new UserAlreadyExistsException("contact email already registered.");
         }
     }
 
     private void validatePrimaryContactNumber(String primaryContactNumber) {
         if (organizationRepository.existsByPrimaryContactNumber(primaryContactNumber.trim())) {
-            throw new UserAlreadyExistsException("contact email already in use.");
+            throw new UserAlreadyExistsException("contact number already registered.");
         }
     }
 
     private void validateCountry(Integer countryId) {
         if (!masterCountryRepository.existsById(countryId)) {
-            throw new RecordNotFoundException("Country not found.");
+            throw new RecordNotFoundException("Country id not found.");
         }
     }
 
     private void validateState(Integer stateId) {
         if (!masterStateRepository.existsById(stateId)) {
-            throw new RecordNotFoundException("State not found.");
+            throw new RecordNotFoundException("State id not found.");
         }
     }
 
     private void validateCity(Integer cityId) {
         if (!masterCityRepository.existsById(cityId)) {
-            throw new RecordNotFoundException("City not found.");
+            throw new RecordNotFoundException("City id not found.");
         }
     }
 }

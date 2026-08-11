@@ -6,28 +6,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserProfile;
-import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
 import com.accountmanagement.request.UserUpdationRequest;
 
 @Component
 public class UserMapper {
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    UserMapper(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
     public User toRegisterUser(UserRegistrationRequest userRegistrationRequest) {
-        String randomPassword = UUID.randomUUID().toString();
-        String hashedPassword = bCryptPasswordEncoder.encode(randomPassword);
         User user = new User();
         user.setOrganizationId(userRegistrationRequest.getOrganizationId());
         user.setUserName(userRegistrationRequest.getUserName());
         user.setEmail(userRegistrationRequest.getEmail());
         user.setContactNumber(userRegistrationRequest.getContactNumber());
-        user.setPassword(hashedPassword);
         user.setUserType(userRegistrationRequest.getUserType());
         return user;
     }

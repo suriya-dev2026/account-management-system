@@ -1,26 +1,26 @@
 package com.accountmanagement.validators;
 
 import com.accountmanagement.repository.MemberCategoryRepository;
-import com.accountmanagement.validations.ValidCategory;
+import com.accountmanagement.validations.ValidMemberCategoryId;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class CategoryValidator implements ConstraintValidator<ValidCategory, String> {
+public class MemberCategoryIdValidator implements ConstraintValidator<ValidMemberCategoryId, Integer> {
 
     private final MemberCategoryRepository memberCategoryRepository;
 
-    CategoryValidator(MemberCategoryRepository memberCategoryRepository) {
+    MemberCategoryIdValidator(MemberCategoryRepository memberCategoryRepository) {
         this.memberCategoryRepository = memberCategoryRepository;
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext arg1) {
+    public boolean isValid(Integer value, ConstraintValidatorContext arg1) {
 
-        if(value == null){
+        if (value == null) {
             return false;
         }
-        return memberCategoryRepository.existsByCategory(value);
+        return memberCategoryRepository.existsById(value);
 
     }
 

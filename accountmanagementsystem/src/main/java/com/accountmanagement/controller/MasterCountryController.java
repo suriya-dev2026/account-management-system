@@ -13,8 +13,11 @@ import com.accountmanagement.model.MasterCountry;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.MasterCountryService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(value = "country")
+@Tag(name = "MasterCountryController")
 public class MasterCountryController {
 
     private final MasterCountryService masterCountryService;
