@@ -241,6 +241,10 @@ public class UserService {
             return response;
         }
         String accessToken = tokenUtility.generateJwt(user.getUserName());
+        if (!userVerification.getIsUserOnboarded() && userVerification.getIsPasswordResetCompleted()) {
+            userVerification.setIsUserOnboarded(true);
+            userVerificationRepository.save(userVerification);
+        }
         String refreshKey = UUID.randomUUID().toString();
         redisTemplate.opsForValue().set(accessToken, user.getId().toString(), 10, TimeUnit.MINUTES);
         userSessionService.updateSessionAfterOtp(user.getId(), refreshKey);
@@ -541,6 +545,11 @@ public class UserService {
     private String generateTemporaryPassword() {
         return "Temp@" +
                 (100000 + new SecureRandom().nextInt(900000));
+    }
+
+    public User findByOrganizationId(UUID organizationId) {
+        return userRepository.findByOrganizationId(organizationId)
+                .orElseThrow(() -> new RecordNotFoundException("Organization id not found"));
     }
 
 }

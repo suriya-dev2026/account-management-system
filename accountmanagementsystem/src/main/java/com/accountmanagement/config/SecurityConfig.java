@@ -51,6 +51,7 @@ public class SecurityConfig {
                                         "/subscription/organization",
                                         "/subscription/payment/add",
                                         "/subscription/payment/success",
+                                        "/subscription/payment",
                                         "/login",
                                         "/verify/otp",
                                         "/change/temporary/password",

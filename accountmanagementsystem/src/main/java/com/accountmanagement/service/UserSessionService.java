@@ -60,12 +60,12 @@ public class UserSessionService {
         UserSession session = userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
                 .orElseThrow(() -> new RecordNotFoundException("User session not found"));
         session.setRefreshKey(refreshKey);
+        session.setRefreshKeyStatus(true);
         session.setRefreshKeyCreatedAt(LocalDateTime.now());
         session.setRefreshKeyExpiration(LocalDateTime.now().plusHours(24));
         session.setIsOtpVerified(true);
         session.setOtp(null);
-        UserSession saved = userSessionRepository.save(session);
-        System.out.println("UPDATE SESSION AFTER OTP " + saved.getIsOtpVerified());
+        userSessionRepository.save(session);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

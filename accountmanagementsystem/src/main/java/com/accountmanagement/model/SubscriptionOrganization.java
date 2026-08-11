@@ -7,9 +7,11 @@ import org.hibernate.annotations.UuidGenerator;
 
 import com.accountmanagement.enums.BillingCycle;
 import com.accountmanagement.enums.SubscriptionOrganizationStatus;
+import com.accountmanagement.model.listeners.SubscriptionOrganizationListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
@@ -19,6 +21,7 @@ import lombok.Data;
 @Entity
 @Table(name = "subscription_organizations")
 @Data
+@EntityListeners(SubscriptionOrganizationListener.class)
 public class SubscriptionOrganization {
 
     @Id

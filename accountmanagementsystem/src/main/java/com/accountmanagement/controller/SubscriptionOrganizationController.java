@@ -34,17 +34,16 @@ public class SubscriptionOrganizationController {
             @Valid @RequestBody SubscriptionOrganizationRequest subscriptionOrganizationRequest) {
         subscriptionOrganizationService.createSubscription(subscriptionOrganizationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 201);
+                SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse> viewAllSubscriptionOrganization(
-            @Valid @RequestBody SubscriptionOrganizationRequest subscriptionOrganizationRequest) {
+    public ResponseEntity<ApiResponse> viewAllSubscriptionOrganization() {
         List<SubscriptionOrganization> subscriptionOrganization = subscriptionOrganizationService
                 .viewAllSubscriptionOrganization();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 201);
+                SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 200);
         response.setData(subscriptionOrganization);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

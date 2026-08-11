@@ -109,6 +109,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 || path.equals("/subscription/organization/add")
                 || path.startsWith("/subscription/organization/update/")
                 || path.startsWith("/subscription/organization/delete/")
+                || path.equals("/subscription/organization")
                 || path.equals("/subscription/payment")
                 || path.equals("/subscription/payment/add")
                 || path.equals("/subscription/payment/success")

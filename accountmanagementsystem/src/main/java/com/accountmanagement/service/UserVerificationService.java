@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.UserVerificationRepository;
 
@@ -52,5 +53,10 @@ public class UserVerificationService {
         verification.setIsSubscriptionCompleted(true);
         verification.setProfileCompletedPercentage(75);
         userVerificationRepository.save(verification);
+    }
+
+    public UserVerification findByUserId(UUID id) {
+        return userVerificationRepository.findByUserId(id)
+                .orElseThrow(() -> new RecordNotFoundException("user id not found"));
     }
 }
