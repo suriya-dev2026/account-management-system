@@ -10,7 +10,7 @@ import com.accountmanagement.validations.ValidContactNumber;
 import com.accountmanagement.validations.ValidDate;
 import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidInputString;
-
+import com.accountmanagement.validations.ValidPassword;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +42,9 @@ public class UserRegistrationRequest {
         @ValidContactNumber(message = "please enter a valid contact number")
         @ValidInput(message = "Input contains invalid characters")
         private String contactNumber;
+
+        @ValidPassword(message = "Password must contain uppercase, lowercase, number, special character and be 8-20 characters long")
+        private String password;
 
         @NotBlank(message = "Please enter first name")
         @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "first name must be between "

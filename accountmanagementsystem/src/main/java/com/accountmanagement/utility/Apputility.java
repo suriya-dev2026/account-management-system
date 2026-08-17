@@ -1,6 +1,6 @@
 package com.accountmanagement.utility;
 
-import java.util.UUID;
+import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +52,7 @@ public class Apputility {
         if (value == null) {
             return false;
         }
-        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%?&]).{8,16}$";
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%?&#]).{8,20}$";
         return value.matches(regex);
     }
 
@@ -73,6 +73,33 @@ public class Apputility {
         }
         String regex = "^\\d{6}$";
         return value.matches(regex);
+    }
+
+    public static String generateTemporaryPassword() {
+
+        String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowercase = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String special = "@#$%";
+        String allCharacters = uppercase + lowercase + numbers + special;
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+        password.append(uppercase.charAt(random.nextInt(uppercase.length())));
+        password.append(lowercase.charAt(random.nextInt(lowercase.length())));
+        password.append(numbers.charAt(random.nextInt(numbers.length())));
+        password.append(special.charAt(random.nextInt(special.length())));
+        for (int i = 4; i < 10; i++) {
+            password.append(
+                    allCharacters.charAt(random.nextInt(allCharacters.length())));
+        }
+        for (int i = password.length() - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+
+            char temp = password.charAt(i);
+            password.setCharAt(i, password.charAt(j));
+            password.setCharAt(j, temp);
+        }
+        return password.toString();
     }
 
 }

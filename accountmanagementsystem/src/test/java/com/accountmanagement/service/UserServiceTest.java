@@ -94,76 +94,6 @@ public class UserServiceTest {
 
     OrganizationRegistrationRequest organizationRequest = new OrganizationRegistrationRequest();
 
-    // @Test
-    // void shouldRegisterUser() {
-    // UUID organizationId = UUID.randomUUID();
-    // UUID userId = UUID.randomUUID();
-    // organizationRequest.setUserName(("ajay123"));
-    // organizationRequest.setEmail("ajay@gmail.com");
-    // organizationRequest.setContactNumber("7859632148");
-    // organizationRequest.setAddress("Nagercoil");
-    // organizationRequest.setUserType("Staff");
-    // User user = new User();
-    // user.setId(userId);
-    // user.setOrganizationId(organizationId);
-    // user.setUserName("ajay123");
-    // user.setEmail("ajay@gmail.com");
-    // user.setPassword("Ajay@123");
-    // user.setContactNumber("7859632148");
-    // UserProfile userProfile = new UserProfile();
-    // userProfile.setUserId(user.getId());
-    // when(userRepository.existsByUserName("ajay123")).thenReturn(false);
-    // when(userRepository.existsByEmail("ajay@gmail.com")).thenReturn(false);
-    // when(userRepository.existsByContactNumber("7859632148")).thenReturn(false);
-    // when(userMapper.toRegisterUser(organizationRequest)).thenReturn(user);
-    // when(userRepository.save(any(User.class))).thenReturn(user);
-    // when(userMapper.toUserProfile(organizationRequest,
-    // userId)).thenReturn(userProfile);
-    // User result = userService.registerUser(organizationRequest);
-    // assertNotNull(result);
-    // assertEquals("ajay@gmail.com", result.getEmail());
-    // assertEquals("ajay123", result.getUserName());
-    // verify(userRepository).existsByUserName("ajay123");
-    // verify(userRepository).existsByEmail("ajay@gmail.com");
-    // verify(userRepository).existsByContactNumber("7859632148");
-    // verify(userMapper).toRegisterUser(organizationRequest);
-    // verify(userRepository).save(any(User.class));
-    // verify(userMapper).toUserProfile(organizationRequest, user.getId());
-    // verify(userProfileRepository).save(any(UserProfile.class));
-    // verify(userLoginAuditLogService).createUserLog(organizationId, userId,
-    // "register", "success");
-    // }
-
-    // @Test
-    // void shouldThrowExceptionWhenEmailAlreadyExists() {
-    // organizationRequest.setEmail("uma@gmail.com");
-    // when(userRepository.existsByEmail(anyString()))
-    // .thenReturn(true);
-    // assertThrows(UserAlreadyExistsException.class, () ->
-    // userService.registerUser(organizationRequest));
-    // verify(userRepository, never()).save(any(User.class));
-    // }
-
-    // @Test
-    // void shouldThrowExceptionWhenPhoneAlreadyExists() {
-    // organizationRequest.setContactNumber("7859632141");
-    // when(userRepository.existsByContactNumber(anyString()))
-    // .thenReturn(true);
-    // assertThrows(UserAlreadyExistsException.class, () ->
-    // userService.registerUser(organizationRequest));
-    // verify(userRepository, never()).save(any(User.class));
-    // }
-
-    // @Test
-    // void shouldThrowExceptionWhenUsernameAlreadyExists() {
-    // organizationRequest.setUserName("ajay123");
-    // when(userRepository.existsByUserName(anyString()))
-    // .thenReturn(true);
-    // assertThrows(UserAlreadyExistsException.class, () ->
-    // userService.registerUser(organizationRequest));
-    // verify(userRepository, never()).save(any(User.class));
-    // }
-
     @Test
     void shouldLoginUser() {
         LoginRequest loginRequest = new LoginRequest();
@@ -207,34 +137,6 @@ public class UserServiceTest {
                 .thenReturn(Optional.empty());
         // assertThrows(InvalidCredentialsException.class, () ->
         // userService.loginUser(loginRequest));
-    }
-
-    @Test
-    void shouldVerifyOtp() {
-        UUID userId = UUID.randomUUID();
-        UUID organizationID = UUID.randomUUID();
-        VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest();
-        verifyOtpRequest.setEmail("ajay@gmail.com");
-        verifyOtpRequest.setOtp("123456");
-        User user = new User();
-        user.setId(userId);
-        user.setOrganizationId(organizationID);
-        user.setUserName("ajay123");
-        user.setEmail("ajay@gmail.com");
-        when(userRepository.findByEmail("ajay@gmail.com")).thenReturn(Optional.of(user));
-        doNothing().when(otpService).verifyOtp(userId, "123456");
-        when(tokenUtility.generateJwt("ajay123")).thenReturn("jwt-token");
-        when(redisTemplate.opsForValue()).thenReturn(valueOperation);
-        ApiResponse response = userService.verifyLoginOtp(verifyOtpRequest);
-        assertNotNull(response);
-        assertEquals("jwt-token", response.getAccessToken());
-        assertNotNull(response.getRefreshKey());
-        verify(userRepository).findByEmail("ajay@gmail.com");
-        verify(otpService).verifyOtp(userId, "123456");
-        verify(tokenUtility).generateJwt("ajay123");
-        verify(valueOperation).set(eq("jwt-token"), eq(userId.toString()), eq(10L), eq(TimeUnit.MINUTES));
-        verify(userSessionService).updateSessionAfterOtp(eq(userId), anyString());
-        verify(userLoginAuditLogService).createUserLog(organizationID, userId, "Verify Otp", "Success");
     }
 
     @Test

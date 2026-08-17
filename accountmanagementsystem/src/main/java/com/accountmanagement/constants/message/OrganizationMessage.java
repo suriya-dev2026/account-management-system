@@ -11,4 +11,5 @@ public class OrganizationMessage {
     public static final String ORGANIZATIONS = "organizations fetched successfully";
 
     public static final String ORGANIZATIONS_NOT_FOUND = "organizations does not exists";
+
 }

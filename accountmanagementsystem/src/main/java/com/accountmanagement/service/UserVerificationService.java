@@ -1,15 +1,14 @@
 package com.accountmanagement.service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.UserVerificationRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class UserVerificationService {
@@ -58,5 +57,17 @@ public class UserVerificationService {
     public UserVerification findByUserId(UUID id) {
         return userVerificationRepository.findByUserId(id)
                 .orElseThrow(() -> new RecordNotFoundException("user id not found"));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateFailedLoginAttempt(UserVerification userVerification) {
+        int attempts = userVerification.getFailedLoginAttempts() + 1;
+        userVerification.setFailedLoginAttempts(attempts);
+        if (attempts >= 3) {
+            userVerification.setIsAccountLocked(true);
+            userVerification.setLockedTime(
+                    LocalDateTime.now());
+        }
+        userVerificationRepository.save(userVerification);
     }
 }

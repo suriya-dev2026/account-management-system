@@ -16,8 +16,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.model.User;
-
+import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.UserRepository;
+import com.accountmanagement.service.UserVerificationService;
 import com.accountmanagement.utility.TokenUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,11 +39,14 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private final RedisTemplate<String, String> redisTemplate;
 
+    private final UserVerificationService userVerificationService;
+
     AuthFilter(TokenUtility tokenUtility, UserRepository userRepository,
-            RedisTemplate<String, String> redisTemplate) {
+            RedisTemplate<String, String> redisTemplate, UserVerificationService userVerificationService) {
         this.tokenUtility = tokenUtility;
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
+        this.userVerificationService = userVerificationService;
     }
 
     @Override
@@ -62,10 +66,11 @@ public class AuthFilter extends OncePerRequestFilter {
                 sendError(response, UserMessage.USER_NOT_FOUND, 401);
                 return;
             }
-            // if (user.getIsAccountLocked()) {
-            // sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
-            // return;
-            // }
+            UserVerification userVerification = userVerificationService.findByUserId(user.getId());
+            if (userVerification.getIsAccountLocked()) {
+                sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
+                return;
+            }
             String token = redisTemplate.opsForValue().get(accessToken);
             if (token == null) {
                 sendError(response, UserMessage.INVALID_TOKEN, 401);
@@ -88,15 +93,21 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/organization/register")
-                || path.startsWith("/organization/update/")
-                || path.startsWith("/organization/delete/")
-                || path.equals("/organization")
-                || path.equals("/register")
-                || path.startsWith("/update/")
-                || path.startsWith("/delete/")
-                || path.equals("/verify/email/otp")
-                || path.startsWith("/resend/verification/otp")
+        return path.equals("/auth/v1/organization/register")
+                || path.equals("/auth/v1/user/register")
+                || path.equals("/auth/v1/user/verify/email/otp")
+                || path.startsWith("/auth/v1/user/resend/verification/otp")
+                || path.equals("/auth/v1/subscription/organization/add")
+                || path.equals("/auth/v1/subscription/payment/add")
+                || path.equals("/auth/v1/subscription/payment/webhook")
+                || path.equals("/auth/v1/user/login")
+                || path.equals("/auth/v1/user/verify/otp")
+                || path.equals("/auth/v1/user/change/temporary/password")
+                || path.startsWith("/v1/organization/update/")
+                || path.startsWith("/v1/organization/delete/")
+                || path.equals("/v1/organization")
+                || path.startsWith("/v1/user/update/")
+                || path.startsWith("/v1/user/delete/")
                 || path.equals("/subscription/plan")
                 || path.equals("/subscription/feature/add")
                 || path.startsWith("/subscription/feature/update/")
@@ -106,20 +117,14 @@ public class AuthFilter extends OncePerRequestFilter {
                 || path.startsWith("/subscription/plan/feature/update/")
                 || path.startsWith("/subscription/plan/feature/delete/")
                 || path.equals("/subscription/plan/feature")
-                || path.equals("/subscription/organization/add")
                 || path.startsWith("/subscription/organization/update/")
                 || path.startsWith("/subscription/organization/delete/")
-                || path.equals("/subscription/organization")
-                || path.equals("/subscription/payment")
-                || path.equals("/subscription/payment/add")
-                || path.equals("/subscription/payment/success")
-                || path.equals("/login")
-                || path.equals("/verify/otp")
-                || path.equals("/change/temporary/password")
-                || path.startsWith("/refreshKey")
-                || path.equals("/verify/reset/otp")
-                || path.startsWith("/forgot/password")
-                || path.equals("/change/password")
+                || path.equals("/v1/subscription/organization")
+                || path.equals("/v1/subscription/payment")
+                || path.startsWith("/v1/user/refreshKey")
+                || path.equals("/v1/user/verify/reset/otp")
+                || path.startsWith("/v1/user/forgot/password")
+                || path.equals("/v1/user/change/password")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
                 || path.equals("/swagger-ui.html");

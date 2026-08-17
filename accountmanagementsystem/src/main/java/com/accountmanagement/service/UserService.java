@@ -1,6 +1,5 @@
 package com.accountmanagement.service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -24,21 +23,17 @@ import com.accountmanagement.exceptions.OtpNotFoundException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.RefreshKeyExpiredException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
-import com.accountmanagement.mapper.PasswordResetMapper;
 import com.accountmanagement.mapper.UserMapper;
 import com.accountmanagement.model.EmailQueue;
-import com.accountmanagement.model.PasswordReset;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserProfile;
 import com.accountmanagement.model.UserSession;
 import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.OrganizationRepository;
-import com.accountmanagement.repository.PasswordResetRepository;
 import com.accountmanagement.repository.UserProfileRepository;
 import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.repository.UserSessionRepository;
 import com.accountmanagement.repository.UserVerificationRepository;
-import com.accountmanagement.request.ChangePasswordRequest;
 import com.accountmanagement.request.ChangeTemporaryPasswordRequest;
 import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.UserRegistrationRequest;
@@ -50,6 +45,8 @@ import com.accountmanagement.utility.TokenUtility;
 
 @Service
 public class UserService {
+
+    private final OrganizationService organizationService;
 
     private final OtpService otpService;
 
@@ -69,13 +66,9 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    private final PasswordResetRepository passwordResetRepository;
-
     private final RedisTemplate<String, String> redisTemplate;
 
     private final EmailQueueService emailQueueService;
-
-    private final PasswordResetMapper passwordResetMapper;
 
     private final OrganizationRepository organizationRepository;
 
@@ -87,10 +80,11 @@ public class UserService {
             UserRepository userRepository, UserProfileRepository userProfileRepository,
             UserLoginAuditLogService userLoginAuditLogService,
             UserSessionService userSessionService, UserSessionRepository userSessionRepository, UserMapper userMapper,
-            PasswordResetRepository passwordResetRepository, RedisTemplate<String, String> redisTemplate,
-            EmailQueueService emailQueueService, PasswordResetMapper passwordResetMapper,
+            RedisTemplate<String, String> redisTemplate,
+            EmailQueueService emailQueueService,
             OrganizationRepository organizationRepository,
-            UserVerificationService userVerificationService, UserVerificationRepository userVerificationRepository) {
+            UserVerificationService userVerificationService, UserVerificationRepository userVerificationRepository,
+            OrganizationService organizationService) {
         this.otpService = otpService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.tokenUtility = tokenUtility;
@@ -100,13 +94,12 @@ public class UserService {
         this.userSessionService = userSessionService;
         this.userSessionRepository = userSessionRepository;
         this.userMapper = userMapper;
-        this.passwordResetRepository = passwordResetRepository;
         this.redisTemplate = redisTemplate;
         this.emailQueueService = emailQueueService;
-        this.passwordResetMapper = passwordResetMapper;
         this.organizationRepository = organizationRepository;
         this.userVerificationService = userVerificationService;
         this.userVerificationRepository = userVerificationRepository;
+        this.organizationService = organizationService;
     }
 
     @Transactional
@@ -117,13 +110,17 @@ public class UserService {
         UserProfile userProfile = userMapper.toRegisterUserProfile(savedUser.getId(), request);
         userProfileRepository.save(userProfile);
         userVerificationService.createUserVerification(user.getId());
-        sendOtpForEmailVerification(request.getEmail());
+        sendOtpForEmailVerification(request.getOrganizationId(), request.getEmail());
         return UserMessage.USER_REGISTER;
     }
 
     @Transactional
-    public String sendOtpForEmailVerification(String email) {
+    public String sendOtpForEmailVerification(UUID organizationId, String email) {
+        organizationService.findById(organizationId);
         User user = findByEmail(email);
+        if (!user.getOrganizationId().equals(organizationId)) {
+            throw new InvalidRequestException("User does not belong to the organization.");
+        }
         UserVerification userVerification = findByVerificationByUserId(user.getId());
         if (Boolean.TRUE.equals(userVerification.getIsEmailVerified())) {
             throw new InvalidRequestException("Email is already verified.");
@@ -214,7 +211,6 @@ public class UserService {
         validateAccountStatus(userVerification);
         validatePassword(loginRequest.getPassword(), user, userVerification);
         resetFailedLoginAttempts(userVerification);
-
         String otp = otpService.generateOtp();
         userSessionService.createUserSession(user.getId(), otp);
         EmailQueue emailQueue = emailQueueService.addToQueue(user.getId(),
@@ -229,7 +225,8 @@ public class UserService {
         User user = findByEmail(verifyOtpRequest.getEmail());
         otpService.verifyOtp(user.getId(), verifyOtpRequest.getOtp());
         UserVerification userVerification = findByVerificationByUserId(user.getId());
-        if (!userVerification.getIsPasswordResetCompleted()) {
+        if ("SUPERADMIN".equalsIgnoreCase(user.getUserType()) && !Boolean.TRUE.equals(
+                userVerification.getIsPasswordResetCompleted())) {
             String resetToken = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set("PASSWORD_RESET:" + resetToken, user.getId().toString(), 10,
                     TimeUnit.MINUTES);
@@ -241,7 +238,7 @@ public class UserService {
             return response;
         }
         String accessToken = tokenUtility.generateJwt(user.getUserName());
-        if (!userVerification.getIsUserOnboarded() && userVerification.getIsPasswordResetCompleted()) {
+        if (!Boolean.TRUE.equals(userVerification.getIsUserOnboarded())) {
             userVerification.setIsUserOnboarded(true);
             userVerificationRepository.save(userVerification);
         }
@@ -328,45 +325,9 @@ public class UserService {
         return "user logout successfully";
     }
 
-    @Transactional
-    public String forgotPassword(String email) {
-        User user = findByEmail(email);
-        String otp = otpService.generateOtp();
-        EmailQueue emailQueue = emailQueueService.addToQueue(user.getId(), email, otp);
-        otpService.sendEmail(emailQueue);
-        String hashedOtp = bCryptPasswordEncoder.encode(otp);
-        PasswordReset passwordReset = passwordResetMapper.toPasswordReset(user.getId(), hashedOtp);
-        passwordResetRepository.save(passwordReset);
-        userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "password reset", "success");
-        return "otp sent successfully";
-    }
-
-    @Transactional
-    public ApiResponse verifyResetOtp(VerifyOtpRequest verifyOtpRequest) {
-        verifyOtpRequest.sanitizeInput();
-        User user = findByEmail(verifyOtpRequest.getEmail());
-        PasswordReset passwordReset = passwordResetRepository.findTopByUserIdOrderByCreatedAtDesc(user.getId())
-                .orElseThrow(() -> new RecordNotFoundException("password reset request not found"));
-        validateOtp(passwordReset, verifyOtpRequest.getOtp());
-        String resetToken = markOtpVerified(passwordReset);
-        passwordResetRepository.save(passwordReset);
-        System.out.println(passwordReset.getIsOtpVerified());
-        userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "verify otp", "success");
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP_VERIFY, 200);
-        response.setRefreshKey(resetToken);
-        return response;
-    }
-
-    @Transactional
-    public String changePassword(ChangePasswordRequest changePasswordRequest) {
-        validateChangePassword(changePasswordRequest);
-        PasswordReset passwordReset = getValidResetToken(changePasswordRequest.getResetToken());
-        User user = userRepository.findById(passwordReset.getUserId())
-                .orElseThrow(() -> new RecordNotFoundException("User not Found"));
-        user.setPassword(bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword()));
-        userRepository.save(user);
-        clearPasswordReset(passwordReset);
-        return "password changed successfully";
+    public User findByOrganizationId(UUID organizationId) {
+        return userRepository.findByOrganizationId(organizationId)
+                .orElseThrow(() -> new RecordNotFoundException("Organization Id Not Found"));
     }
 
     public User findById(UUID id) {
@@ -414,7 +375,7 @@ public class UserService {
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid Credentials"));
     }
 
-    private User findByEmail(String email) {
+    public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RecordNotFoundException("User email not found."));
     }
@@ -437,119 +398,66 @@ public class UserService {
         if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
             return;
         }
-        int attempts = userVerification.getFailedLoginAttempts() + 1;
-        userVerification.setFailedLoginAttempts(attempts);
+        userVerificationService.updateFailedLoginAttempt(userVerification);
+        int attempts = userVerification.getFailedLoginAttempts();
         if (attempts >= 3) {
-            userVerification.setIsAccountLocked(true);
-            userVerification.setLockedTime(LocalDateTime.now());
-            userRepository.save(user);
             userLoginAuditLogService.createUserLog(user.getOrganizationId(),
                     user.getId(), "Login", "Account_Locked");
             throw new AccountLockException("Account locked due to 3 failed login attempts");
         }
-        userVerificationRepository.save(userVerification);
+        int remainingAttempts = 3 - attempts;
         userLoginAuditLogService.createUserLog(user.getOrganizationId(),
                 user.getId(), "Login", "failed");
-        int remainingAttempts = 3 - attempts;
         throw new InvalidCredentialsException(
                 "Invalid credentials. " + remainingAttempts + " attempt"
                         + (remainingAttempts > 1 ? "s" : "")
                         + " remaining.");
     }
 
-    private void resetFailedLoginAttempts(UserVerification user) {
-        if (user.getFailedLoginAttempts() == 0 &&
-                !Boolean.TRUE.equals(user.getIsAccountLocked())) {
+    private void resetFailedLoginAttempts(UserVerification userVerification) {
+        if (userVerification.getFailedLoginAttempts() == 0 &&
+                !Boolean.TRUE.equals(userVerification.getIsAccountLocked())) {
             return;
         }
-        user.setFailedLoginAttempts(0);
-        user.setIsAccountLocked(false);
-        user.setLockedTime(null);
-        userVerificationRepository.save(user);
+        userVerification.setFailedLoginAttempts(0);
+        userVerification.setIsAccountLocked(false);
+        userVerification.setLockedTime(null);
+        userVerificationRepository.save(userVerification);
     }
 
-    private String markOtpVerified(PasswordReset passwordReset) {
-        passwordReset.setOtp(null);
-        passwordReset.setOtpVerificationCount(0);
-        passwordReset.setIsOtpVerified(true);
-        String resetToken = UUID.randomUUID().toString();
-        passwordReset.setResetToken(resetToken);
-        passwordReset.setResetTokenExpiry(LocalDateTime.now().plusMinutes(10));
-        return resetToken;
-    }
-
-    private void validateChangePassword(ChangePasswordRequest request) {
-        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("New password and confirm password do not match");
-        }
-    }
-
-    private PasswordReset getValidResetToken(String resetToken) {
-        PasswordReset passwordReset = passwordResetRepository.findByResetToken(resetToken)
-                .orElseThrow(() -> new RecordNotFoundException("reset token not found"));
-        if (!Boolean.TRUE.equals(passwordReset.getIsOtpVerified())) {
-            throw new InvalidRequestException("Otp verification required");
-        }
-        if (passwordReset.getResetTokenExpiry() == null
-                || LocalDateTime.now().isAfter(passwordReset.getResetTokenExpiry())) {
-            throw new InvalidRequestException("Reset token expired");
-        }
-        return passwordReset;
-    }
-
-    private void clearPasswordReset(PasswordReset passwordReset) {
-        passwordReset.setOtp(null);
-        passwordReset.setResetToken(null);
-        passwordReset.setIsOtpVerified(false);
-        passwordReset.setOtpVerificationCount(0);
-        passwordResetRepository.save(passwordReset);
-    }
-
-    private void validateOtp(PasswordReset passwordReset, String enteredOtp) {
-        if (passwordReset.getOtp() == null) {
-            throw new OtpNotFoundException("Otp not found");
-        }
-
-        if (passwordReset.getOtpExpiration() == null || LocalDateTime.now().isAfter(passwordReset.getOtpExpiration())) {
-            throw new OtpExpiredException("otp expired");
-        }
-        if (passwordReset.getOtpVerificationCount() >= 3) {
-            throw new MaxOtpAttemptException("Maximum attempts reached");
-        }
-        if (!bCryptPasswordEncoder.matches(enteredOtp, passwordReset.getOtp())) {
-            int attempts = passwordReset.getOtpVerificationCount() + 1;
-            passwordReset.setOtpVerificationCount(attempts);
-            passwordResetRepository.save(passwordReset);
-            throw new InvalidOtpException("Invalid otp");
-        }
+    public User findByOrganizationIdAndUserType(UUID organizationId, String userType) {
+        return userRepository.findByOrganizationIdAndUserType(organizationId, "SUPERADMIN")
+                .orElseThrow(() -> new RecordNotFoundException("Organization id and user type not found"));
     }
 
     @Transactional
-    public void createTemporaryCredentials(UUID id) {
-        User user = findById(id);
-        String temporaryPassword = generateTemporaryPassword();
+    public void sendTemporaryCredentials(UUID userId) {
+        User user = findById(userId);
+        String temporaryPassword = Apputility.generateTemporaryPassword();
         user.setPassword(bCryptPasswordEncoder.encode(temporaryPassword));
         userRepository.save(user);
-        String body = """
-                Dear User, Your subscription has been activated successfully. Username: %s Temporary Password: %s Please login and change your password immediately.
-                Thank you.
-                """
-                .formatted(
-                        user.getUserName(), temporaryPassword);
-        emailQueueService.addToEmailQueue(id, user.getEmail(), body);
+        emailQueueService.addTemporaryPasswordEmail(user.getId(), user.getEmail(),
+                user.getUserName(),
+                temporaryPassword);
         UserVerification userVerification = findByVerificationByUserId(user.getId());
         userVerification.setIsPasswordResetCompleted(false);
         userVerificationRepository.save(userVerification);
     }
 
-    private String generateTemporaryPassword() {
-        return "Temp@" +
-                (100000 + new SecureRandom().nextInt(900000));
+    @Transactional
+    public void resendTemporaryCredentials(UUID userId) {
+        User user = findById(userId);
+        EmailQueue emailQueue = emailQueueService.findLatestEmailByUserId(userId);
+        if (!"FAILED".equalsIgnoreCase(emailQueue.getStatus())) {
+            throw new BusinessException("Temporary credentials email cannot be resent");
+        }
+        String temporaryPassword = Apputility.generateTemporaryPassword();
+        user.setPassword(bCryptPasswordEncoder.encode(temporaryPassword));
+        userRepository.save(user);
+        emailQueueService.addTemporaryPasswordEmail(user.getId(), user.getEmail(), user.getUserName(),
+                temporaryPassword);
+        UserVerification userVerification = findByVerificationByUserId(user.getId());
+        userVerification.setIsPasswordResetCompleted(false);
+        userVerificationRepository.save(userVerification);
     }
-
-    public User findByOrganizationId(UUID organizationId) {
-        return userRepository.findByOrganizationId(organizationId)
-                .orElseThrow(() -> new RecordNotFoundException("Organization id not found"));
-    }
-
 }

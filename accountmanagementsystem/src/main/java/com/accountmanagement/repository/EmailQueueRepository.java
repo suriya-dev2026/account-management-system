@@ -2,6 +2,7 @@ package com.accountmanagement.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ import jakarta.transaction.Transactional;
 public interface EmailQueueRepository extends JpaRepository<EmailQueue, UUID> {
 
     List<EmailQueue> findByStatus(String string);
+
+    Optional<EmailQueue> findTopByUserIdOrderByCreatedAtDesc(UUID userId);
 
     @Modifying
     @Transactional

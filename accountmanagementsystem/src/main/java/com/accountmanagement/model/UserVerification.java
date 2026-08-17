@@ -26,16 +26,16 @@ public class UserVerification {
     @Column(name = "user_id")
     private UUID userId;
 
-    @Column(name = "is_user_onboarded")
+    @Column(name = "is_user_onboarded", nullable = false)
     private Boolean isUserOnboarded;
 
-    @Column(name = "is_email_verified")
+    @Column(name = "is_email_verified", nullable = false)
     private Boolean isEmailVerified;
 
-    @Column(name = "is_subscription_completed")
+    @Column(name = "is_subscription_completed", nullable = false)
     private Boolean isSubscriptionCompleted;
 
-    @Column(name = "is_password_reset_completed")
+    @Column(name = "is_password_reset_completed", nullable = false)
     private Boolean isPasswordResetCompleted;
 
     @Column(name = "profile_completed_percentage")

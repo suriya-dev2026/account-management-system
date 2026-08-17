@@ -12,6 +12,7 @@ import com.accountmanagement.repository.SubscriptionFeatureRepository;
 import com.accountmanagement.repository.SubscriptionPlanFeatureRepository;
 import com.accountmanagement.repository.SubscriptionPlanRepository;
 import com.accountmanagement.request.SubscriptionPlanFeatureRequest;
+import com.accountmanagement.request.UpdateSubscriptionPlanFeatureRequest;
 
 @Service
 public class SubscriptionPlanFeatureService {
@@ -34,10 +35,10 @@ public class SubscriptionPlanFeatureService {
     public String addSubscriptionPlanFeature(SubscriptionPlanFeatureRequest subscriptionPlanFeatureRequest) {
         validateSubscriptionPlanFeature(subscriptionPlanFeatureRequest);
         for (UUID featureId : subscriptionPlanFeatureRequest.getFeatureId()) {
-            if (subscriptionPlanFeatureRepository.existsByPlanIdAndFeatureId(subscriptionPlanFeatureRequest.getPlanId(),
-                    featureId)) {
-                throw new DuplicateRecordException(
-                        "Feature is already assigned to this subscription plan.");
+            boolean exists = subscriptionPlanFeatureRepository
+                    .existsByPlanIdAndFeatureId(subscriptionPlanFeatureRequest.getPlanId(), featureId);
+            if (exists) {
+                throw new DuplicateRecordException("Feature is already assigned to this subscription plan.");
             }
             SubscriptionPlanFeature planFeature = new SubscriptionPlanFeature();
             planFeature.setPlanId(subscriptionPlanFeatureRequest.getPlanId());
@@ -48,19 +49,20 @@ public class SubscriptionPlanFeatureService {
     }
 
     @Transactional
-    public String updateSubscriptionPlanFeature(UUID id,
-            SubscriptionPlanFeatureRequest request) {
-        SubscriptionPlanFeature subscriptionPlanFeature = findBySubscriptionPlanFeatureId(id);
-        // if (subscriptionPlanFeatureRepository.existsByPlanIdAndFeatureId(
-        // request.getPlanId(), request.getFeatureId())) {
-        // throw new InvalidRequestException("Plan feature mapping already exists.");
-        // }
-        for (UUID featureId : request.getFeatureId()) {
-            subscriptionPlanFeature.setPlanId(request.getPlanId());
-            subscriptionPlanFeature.setFeatureId(featureId);
-            subscriptionPlanFeatureRepository.save(subscriptionPlanFeature);
+    public String updateSubscriptionPlanFeature(UUID planId,
+            UpdateSubscriptionPlanFeatureRequest request) {
+        SubscriptionPlanFeature planFeature = subscriptionPlanFeatureRepository
+                .findByPlanIdAndFeatureId(planId, request.getFeatureId())
+                .orElseThrow(() -> new RecordNotFoundException(
+                        "Plan feature not found."));
+        if (subscriptionPlanFeatureRepository.existsByPlanIdAndFeatureId(planId,
+                request.getNewFeatureId())) {
+            throw new DuplicateRecordException(
+                    "New feature is already assigned to this subscription plan.");
         }
-        return "Subscription plan feature updated successfully.";
+        planFeature.setFeatureId(request.getNewFeatureId());
+        subscriptionPlanFeatureRepository.save(planFeature);
+        return "Plan Feature updated successfully.";
     }
 
     public SubscriptionPlanFeature findBySubscriptionPlanFeatureId(UUID id) {

@@ -26,7 +26,6 @@ public class EmailScheduler {
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void processEmailQueue() {
-        System.out.println("Email queue scheduler started");
         List<EmailQueue> emails = emailQueueRepository.findByStatus("In Process");
 
         for (EmailQueue email : emails) {

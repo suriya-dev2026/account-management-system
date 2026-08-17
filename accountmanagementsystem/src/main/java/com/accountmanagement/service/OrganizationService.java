@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
@@ -102,7 +101,6 @@ public class OrganizationService {
 
     private void validateOrganization(OrganizationRegistrationRequest request) {
         validateRegistrationNumber(request.getRegistrationNumber());
-        validateWebsite(request.getWebsite());
         validateCountry(request.getCountryId());
         validateState(request.getStateId());
         validateCity(request.getCityId());
@@ -113,13 +111,6 @@ public class OrganizationService {
     private void validateRegistrationNumber(String registrationNumber) {
         if (organizationRepository.existsByRegistrationNumber(registrationNumber)) {
             throw new UserAlreadyExistsException("Registration number already exists.");
-        }
-    }
-
-    private void validateWebsite(String website) {
-        if (StringUtils.hasText(website)
-                && organizationRepository.existsByWebsite(website.trim())) {
-            throw new UserAlreadyExistsException("Website already registered.");
         }
     }
 

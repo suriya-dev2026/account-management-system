@@ -48,4 +48,6 @@ public class UserMessage {
 
     public static final String INVALID_REQUEST = "Authentication Token Is Required";
 
+    public static final String RESEND_CREDENTIAL = "Temporary Credential Resend Successfully";
+
 }

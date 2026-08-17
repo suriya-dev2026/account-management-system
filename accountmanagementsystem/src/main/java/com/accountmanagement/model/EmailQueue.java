@@ -33,7 +33,7 @@ public class EmailQueue {
     private String status;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAT;
+    private LocalDateTime createdAt;
 
     @Column(name = "sent_at")
     private LocalDateTime sentAt;

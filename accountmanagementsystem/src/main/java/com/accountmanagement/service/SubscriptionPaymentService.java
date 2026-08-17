@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.accountmanagement.dto.SubscriptionPaymentDto;
 import com.accountmanagement.enums.AuditLogAction;
 import com.accountmanagement.enums.BillingCycle;
 import com.accountmanagement.enums.PaymentStatus;
@@ -85,7 +83,8 @@ public class SubscriptionPaymentService {
         if (pendingPayment) {
             throw new BusinessException("Payment is already in progress");
         }
-        User user = userRepository.findByOrganizationId(subscriptionOrganization.getOrganizationId())
+        User user = userRepository
+                .findByOrganizationIdAndUserType(subscriptionOrganization.getOrganizationId(), "SUPERADMIN")
                 .orElseThrow(() -> new RecordNotFoundException("User not found"));
         SubscriptionPlan plan = subscriptionPlanService.findBySubscriptionPlanId(
                 subscriptionOrganization.getPlanId());
@@ -119,11 +118,10 @@ public class SubscriptionPaymentService {
         subscriptionOrganizationRepository.save(subscriptionOrganization);
         subscriptionUsageService.createSubscriptionUsage(subscriptionOrganization.getId());
         subscriptionAuditLogService.createSubscriptionAuditLog(subscriptionOrganization.getOrganizationId(),
-                plan.getId(),
-                AuditLogAction.SUBSCRIBED,
+                plan.getId(), AuditLogAction.SUBSCRIBED,
                 "Subscription activated successfully");
         userVerificationService.completeSubscription(user.getId());
-        userService.createTemporaryCredentials(user.getId());
+        userService.sendTemporaryCredentials(user.getId());
     }
 
     @Transactional
@@ -142,8 +140,8 @@ public class SubscriptionPaymentService {
         SubscriptionOrganization subscriptionOrganization = subscriptionOrganizationService
                 .findBySubscriptionOrganizationId(
                         savedPayment.getSubscriptionOrganizationId());
-        User user = userRepository.findByOrganizationId(
-                subscriptionOrganization.getOrganizationId())
+        User user = userRepository.findByOrganizationIdAndUserType(
+                subscriptionOrganization.getOrganizationId(), "SUPERADMIN")
                 .orElseThrow(() -> new RecordNotFoundException("User not found"));
         SubscriptionPlan plan = subscriptionPlanService.findBySubscriptionPlanId(
                 subscriptionOrganization.getPlanId());

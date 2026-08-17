@@ -1,10 +1,8 @@
 package com.accountmanagement.exceptions;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,10 +11,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
 import com.accountmanagement.response.ValidationErrorResponse;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptions {
 
@@ -35,17 +34,18 @@ public class GlobalExceptions {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        if (ex.getRequiredType() == UUID.class) {
-            return ResponseEntity.badRequest()
-                    .body("Unrecognized ID, please enter valid id.");
+    public ResponseEntity<ValidationErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("422", "Validation Error");
+        if (UUID.class.equals(ex.getRequiredType())) {
+            validationErrorResponse.getErrorList().put(ex.getName(), "Unrecognized ID, please enter valid id.");
+        } else {
+            validationErrorResponse.getErrorList().put(ex.getName(), "Invalid Request");
         }
-        return ResponseEntity.badRequest().body("Invalid request.");
+        return ResponseEntity.unprocessableEntity().body(validationErrorResponse);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, Object>> handleJsonParseError(HttpMessageNotReadableException ex) {
-        Map<String, Object> error = new HashMap<>();
+    public ResponseEntity<ValidationErrorResponse> handleJsonParseError(HttpMessageNotReadableException ex) {
         String message = "Invalid Json Format";
         if (ex.getCause() instanceof InvalidFormatException invalidFormatException) {
             if (UUID.class.equals(invalidFormatException.getTargetType())) {
@@ -62,7 +62,7 @@ public class GlobalExceptions {
             } else if (exceptionMessage.contains("BillingCycle")) {
                 message = "Invalid billing cycle value. Allowed values are MONTHLY,YEARLY";
             } else if (exceptionMessage.contains("PaymentStatus")) {
-                message = "Invalid Payment status value. Allowed values are PENDING, SUCCESS,ALLOWED, CANCELLED";
+                message = "Invalid Payment status value. Allowed values are PENDING, SUCCESS,CANCELLED";
             } else if (exceptionMessage.contains("SubscriptionOrganizationStatus")) {
                 message = "Invalid status value. Allowed values arePENDING,ACTIVE,EXPIRED,CANCELLED";
             } else if (exceptionMessage.contains("Integer")) {
@@ -71,66 +71,63 @@ public class GlobalExceptions {
                 message = "Invalid billing Cycle value. Allowed only MONTHLY and YEARLY";
             }
         }
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 400);
-        error.put("message", message);
-        error.put("error", "Bad Request");
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("422", "Validation Error");
+        validationErrorResponse.getErrorList().put("request", message);
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleRecordNotFoundException(RecordNotFoundException ex) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 404);
-        error.put("message", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ValidationErrorResponse> handleRecordNotFoundException(RecordNotFoundException ex) {
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("404",
+                "Resource not found");
+        validationErrorResponse.getErrorList().put("error", ex.getMessage());
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidCredentialException(InvalidCredentialsException ex) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 401);
-        error.put("message", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ValidationErrorResponse> handleInvalidCredentialException(InvalidCredentialsException ex) {
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("401",
+                "Authentication Error");
+        validationErrorResponse.getErrorList().put("error", ex.getMessage());
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 400);
-        error.put("message", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ValidationErrorResponse> handleRuntimeException(RuntimeException ex) {
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("400", ex.getMessage());
+        validationErrorResponse.getErrorList().put("error", ex.getMessage());
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<ValidationErrorResponse> handleOtpExpiredException(
+            OtpExpiredException ex) {
+        ValidationErrorResponse response = new ValidationErrorResponse("400", ex.getMessage());
+        response.getErrorList().put("error", ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNoResourceFoundException(NoResourceFoundException ex) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 400);
-        error.put("message", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ValidationErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex) {
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("404",
+                "Resource not found");
+        validationErrorResponse.getErrorList().put("error", ex.getMessage());
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
-        ex.printStackTrace();
-        Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 500);
-        error.put("message", "Internal Server Error");
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ValidationErrorResponse> handleException(Exception ex) {
+        log.error("Unexpected error occured", ex);
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("500", "Internal Server Error");
+        validationErrorResponse.getErrorList().put("error", "An unexpected error occured");
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", 409);
-        error.put("message", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    public ResponseEntity<ValidationErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("409", "Resource Conflict");
+        validationErrorResponse.getErrorList().put("error", ex.getMessage());
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.CONFLICT);
     }
 
 }

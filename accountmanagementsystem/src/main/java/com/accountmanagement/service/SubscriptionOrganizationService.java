@@ -45,7 +45,7 @@ public class SubscriptionOrganizationService {
     @Transactional
     public SubscriptionOrganization createSubscription(SubscriptionOrganizationRequest request) {
         organizationService.findById(request.getOrganizationId());
-        User user = userService.findByOrganizationId(request.getOrganizationId());
+        User user = userService.findByOrganizationIdAndUserType(request.getOrganizationId(), "SUPERADMIN");
         UserVerification userVerification = userVerificationService
                 .findByUserId(user.getId());
         if (!userVerification.getIsEmailVerified()) {
@@ -53,12 +53,16 @@ public class SubscriptionOrganizationService {
                     "Email must be verified before creating a subscription");
         }
         subscriptionPlanService.findBySubscriptionPlanId(request.getPlanId());
-        subscriptionOrganizationRepository.findByOrganizationIdAndStatus(
-                request.getOrganizationId(),
-                SubscriptionOrganizationStatus.ACTIVE)
+        subscriptionOrganizationRepository
+                .findByOrganizationIdAndStatus(request.getOrganizationId(), SubscriptionOrganizationStatus.ACTIVE)
                 .ifPresent(subscription -> {
                     throw new DuplicateRecordException(
                             "Organization already has an active subscription");
+                });
+        subscriptionOrganizationRepository
+                .findByOrganizationIdAndStatus(request.getOrganizationId(), SubscriptionOrganizationStatus.PENDING)
+                .ifPresent(subscription -> {
+                    throw new DuplicateRecordException("Organization already select a subscription plan");
                 });
         SubscriptionOrganization subscriptionOrganization = subscriptionOrganizationMapper
                 .toCreateSubscriptionOrganization(request);
