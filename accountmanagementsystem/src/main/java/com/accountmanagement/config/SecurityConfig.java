@@ -29,6 +29,7 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/auth/v1/organization/register",
                                         "/auth/v1/user/register",
+                                        "/auth/v1/user/view/all",
                                         "/auth/v1/user/verify/email/otp",
                                         "/auth/v1/user/resend/verification/otp/**",
                                         "/auth/v1/subscription/organization/add",

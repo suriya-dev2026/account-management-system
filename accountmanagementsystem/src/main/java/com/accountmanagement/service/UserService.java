@@ -300,13 +300,10 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        User loggedUser = Apputility.getLoggedUser();
         List<User> users = userRepository.findAll();
-        if (users.isEmpty() || users == null) {
+        if (users.isEmpty()) {
             throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
         }
-        userLoginAuditLogService.createUserLog(loggedUser.getOrganizationId(), loggedUser.getId(), "Get All Users",
-                "success");
         return users;
     }
 

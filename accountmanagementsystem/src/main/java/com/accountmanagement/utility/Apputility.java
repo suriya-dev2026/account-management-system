@@ -49,8 +49,8 @@ public class Apputility {
     }
 
     public static Boolean isValidPassword(String value) {
-        if (value == null) {
-            return false;
+        if (value == null || value.isEmpty()) {
+            return true;
         }
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%?&#]).{8,20}$";
         return value.matches(regex);

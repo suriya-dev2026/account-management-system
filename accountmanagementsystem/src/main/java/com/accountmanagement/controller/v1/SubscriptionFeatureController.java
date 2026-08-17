@@ -19,13 +19,12 @@ import com.accountmanagement.model.SubscriptionFeature;
 import com.accountmanagement.request.SubscriptionFeatureRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.SubscriptionFeatureService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/subscription/feature")
-@Tag(name = "SubcriptionFeatureController")
+@Tag(name = "SubscriptionFeatureController")
 public class SubscriptionFeatureController {
 
     private final SubscriptionFeatureService subscriptionFeatureService;

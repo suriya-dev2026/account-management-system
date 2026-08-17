@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/subscription/plan/feature")
-@Tag(name = "SubscriptionPlanFeature")
+@Tag(name = "SubscriptionPlanFeatureController")
 public class SubscriptionPlanFeatureController {
 
     private final SubscriptionPlanFeatureService subscriptionPlanFeatureService;

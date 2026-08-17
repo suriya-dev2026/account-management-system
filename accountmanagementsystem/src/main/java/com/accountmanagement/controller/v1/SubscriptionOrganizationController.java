@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(value = "/v1/subscription/organization")
-@Tag(name = "SubcriptionOrganizationController")
+@Tag(name = "SubscriptionOrganizationController")
 public class SubscriptionOrganizationController {
 
     private final SubscriptionOrganizationService subscriptionOrganizationService;
@@ -23,16 +23,6 @@ public class SubscriptionOrganizationController {
     public SubscriptionOrganizationController(SubscriptionOrganizationService subscriptionOrganizationService) {
         this.subscriptionOrganizationService = subscriptionOrganizationService;
     }
-
-    // @PostMapping("/add")
-    // public ResponseEntity<ApiResponse> createSubscriptionOrganization(
-    // @Valid @RequestBody SubscriptionOrganizationRequest
-    // subscriptionOrganizationRequest) {
-    // subscriptionOrganizationService.createSubscription(subscriptionOrganizationRequest);
-    // ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-    // SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 200);
-    // return new ResponseEntity<>(response, HttpStatus.OK);
-    // }
 
     @GetMapping("")
     public ResponseEntity<ApiResponse> viewAllSubscriptionOrganization() {

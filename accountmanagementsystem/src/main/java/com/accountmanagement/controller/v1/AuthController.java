@@ -1,9 +1,11 @@
 package com.accountmanagement.controller.v1;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +18,7 @@ import com.accountmanagement.constants.message.OrganizationMessage;
 import com.accountmanagement.constants.message.SubscriptionMessage;
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.model.SubscriptionPayment;
+import com.accountmanagement.model.User;
 import com.accountmanagement.request.ChangeTemporaryPasswordRequest;
 import com.accountmanagement.request.LoginRequest;
 import com.accountmanagement.request.OrganizationRegistrationRequest;
@@ -71,6 +74,14 @@ public class AuthController {
         userService.registerUser(userRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_REGISTER, 201);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/user/view/all")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        List<User> user = userService.getAllUsers();
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USERS_RETRIEVED, 200);
+        response.setData(user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/user/verify/email/otp")

@@ -20,10 +20,12 @@ import com.accountmanagement.request.AccessControlModulePresetRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.AccessControlModulePresetService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/access/control/module/preset")
+@Tag(name = "AccessControlModulePresetController")
 public class AccessControlModulePresetController {
 
     private final AccessControlModulePresetService accessControlModulePresetService;

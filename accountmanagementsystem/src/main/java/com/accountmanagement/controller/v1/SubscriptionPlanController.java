@@ -17,7 +17,7 @@ import com.accountmanagement.service.SubscriptionPlanService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(value = "/v1/ubscription/plan")
+@RequestMapping(value = "/v1/subscription/plan")
 @Tag(name = "SubscriptionPlanController")
 public class SubscriptionPlanController {
 

@@ -1,11 +1,9 @@
 package com.accountmanagement.controller.v1;
 
-import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
-import com.accountmanagement.model.User;
 import com.accountmanagement.request.ChangePasswordRequest;
 import com.accountmanagement.request.UserUpdationRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
@@ -59,14 +56,6 @@ public class UserController {
         String accessToken = userService.generateAccessToken(refreshKey);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.NEW_ACCESS_TOKEN, 200);
         response.setAccessToken(accessToken);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping
-    public ResponseEntity<ApiResponse> getAllUsers() {
-        List<User> user = userService.getAllUsers();
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USERS_RETRIEVED, 200);
-        response.setData(user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
