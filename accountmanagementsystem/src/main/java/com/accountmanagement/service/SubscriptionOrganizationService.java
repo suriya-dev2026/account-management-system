@@ -1,22 +1,24 @@
 package com.accountmanagement.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.enums.SubscriptionOrganizationStatus;
-import com.accountmanagement.exceptions.BusinessException;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.mapper.SubscriptionOrganizationMapper;
 import com.accountmanagement.model.SubscriptionOrganization;
 import com.accountmanagement.model.User;
-import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.SubscriptionOrganizationRepository;
 import com.accountmanagement.request.SubscriptionOrganizationRequest;
 
 @Service
 public class SubscriptionOrganizationService {
+
+    private final EmailQueueService emailQueueService;
 
     private final SubscriptionOrganizationRepository subscriptionOrganizationRepository;
 
@@ -28,36 +30,30 @@ public class SubscriptionOrganizationService {
 
     private final UserService userService;
 
-    private final UserVerificationService userVerificationService;
-
     public SubscriptionOrganizationService(SubscriptionOrganizationRepository subscriptionOrganizationRepository,
             OrganizationService organizationService, SubscriptionPlanService subscriptionPlanService,
             SubscriptionOrganizationMapper subscriptionOrganizationMapper, UserService userService,
-            UserVerificationService userVerificationService) {
+            EmailQueueService emailQueueService) {
         this.subscriptionOrganizationRepository = subscriptionOrganizationRepository;
         this.organizationService = organizationService;
         this.subscriptionPlanService = subscriptionPlanService;
         this.subscriptionOrganizationMapper = subscriptionOrganizationMapper;
         this.userService = userService;
-        this.userVerificationService = userVerificationService;
+        this.emailQueueService = emailQueueService;
     }
 
     @Transactional
     public SubscriptionOrganization createSubscription(SubscriptionOrganizationRequest request) {
         organizationService.findById(request.getOrganizationId());
-        User user = userService.findByOrganizationIdAndUserType(request.getOrganizationId(), "SUPERADMIN");
-        UserVerification userVerification = userVerificationService
-                .findByUserId(user.getId());
-        if (!userVerification.getIsEmailVerified()) {
-            throw new BusinessException(
-                    "Email must be verified before creating a subscription");
-        }
         subscriptionPlanService.findBySubscriptionPlanId(request.getPlanId());
         subscriptionOrganizationRepository
                 .findByOrganizationIdAndStatus(request.getOrganizationId(), SubscriptionOrganizationStatus.ACTIVE)
                 .ifPresent(subscription -> {
-                    throw new DuplicateRecordException(
-                            "Organization already has an active subscription");
+                    if (!subscription.getEndDate().isBefore(LocalDate.now())) {
+                        throw new DuplicateRecordException("Organization already has an active subscription");
+                    }
+                    subscription.setStatus(SubscriptionOrganizationStatus.EXPIRED);
+                    subscriptionOrganizationRepository.save(subscription);
                 });
         subscriptionOrganizationRepository
                 .findByOrganizationIdAndStatus(request.getOrganizationId(), SubscriptionOrganizationStatus.PENDING)
@@ -76,6 +72,46 @@ public class SubscriptionOrganizationService {
     public SubscriptionOrganization findBySubscriptionOrganizationId(UUID id) {
         return subscriptionOrganizationRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Subscription Organization id not found"));
+    }
+
+    @Transactional
+    public void sendExpiryReminder(SubscriptionOrganization subscription, int daysBefore) {
+        User user = userService.findByOrganizationIdAndUserType(subscription.getOrganizationId(), "SUPERADMIN");
+
+        if (user == null) {
+            return;
+        }
+        String body;
+
+        if (daysBefore == 1) {
+
+            body = """
+                    Hello %s,Your subscription will expire tomorrow.Subscription expiry date: %s
+                    Please renew your subscription before the expiry date to continue using the services without interruption.
+                    Thank you.
+                    """
+                    .formatted(user.getUserName(), subscription.getEndDate());
+        } else {
+
+            body = """
+                    Hello %s, Your subscription will expire in %d days.Subscription expiry date: %s
+                    Please renew your subscription before the expiry date to continue using the services without interruption.
+                    Thank you.
+                    """
+                    .formatted(user.getUserName(), daysBefore, subscription.getEndDate());
+        }
+        emailQueueService.addToEmailQueue(user.getId(), user.getEmail(), body);
+    }
+
+    @Transactional
+    public void expireSubscriptions(LocalDate today) {
+        List<SubscriptionOrganization> subscriptions = subscriptionOrganizationRepository.findExpiredSubscriptions(
+                today, "ACTIVE");
+        for (SubscriptionOrganization subscription : subscriptions) {
+            subscription.setStatus(SubscriptionOrganizationStatus.EXPIRED);
+            subscription.setUpdatedAt(LocalDateTime.now());
+            subscriptionOrganizationRepository.save(subscription);
+        }
     }
 
 }

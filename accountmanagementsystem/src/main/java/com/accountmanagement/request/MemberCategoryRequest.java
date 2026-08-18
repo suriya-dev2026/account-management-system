@@ -18,7 +18,7 @@ public class MemberCategoryRequest {
 
     public void sanitizeInput() {
         setCategory(Apputility.sanitizeInput(getCategory()));
-        setCategory(Apputility.sanitizeInput(getDescription()));
+        setDescription(Apputility.sanitizeInput(getDescription()));
     }
 
 }

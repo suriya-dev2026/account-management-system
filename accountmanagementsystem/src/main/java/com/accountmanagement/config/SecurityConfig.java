@@ -38,6 +38,7 @@ public class SecurityConfig {
                                         "/auth/v1/user/login",
                                         "/auth/v1/user/verify/otp",
                                         "/auth/v1/user/change/temporary/password",
+                                        "/auth/v1/user/resend/temporary/password/**",
                                         "/v1/organization/update/**",
                                         "/v1/organization/delete/**",
                                         "/v1/organization",

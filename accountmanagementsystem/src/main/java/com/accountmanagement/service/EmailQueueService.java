@@ -26,15 +26,32 @@ public class EmailQueueService {
             Thank you.
             """;
 
+    private static final String LOGIN_OTP_TEMPLATE = """
+            Your login OTP is {{otp}}.
+            This OTP is valid for {{expiry}} minutes.
+            Please do not share this OTP with anyone.
+            """;
+
     EmailQueueService(EmailQueueRepository emailQueueRepository) {
         this.emailQueueRepository = emailQueueRepository;
     }
 
-    public EmailQueue addToQueue(UUID userId, String email, String otp) {
+    public EmailQueue addToEmailVerificationQueue(UUID userId, String email, String otp) {
         EmailQueue emailQueue = new EmailQueue();
         emailQueue.setUserId(userId);
         emailQueue.setToEmail(email);
         String body = EMAIL_VERIFICATION_TEMPLATE.replace("{{otp}}", otp).replace("{{expiry}}", "2");
+        emailQueue.setBody(body);
+        emailQueue.setStatus("In Process");
+        emailQueue.setCreatedAt(LocalDateTime.now());
+        return emailQueueRepository.save(emailQueue);
+    }
+
+    public EmailQueue addToLoginQueue(UUID userId, String email, String otp) {
+        EmailQueue emailQueue = new EmailQueue();
+        emailQueue.setUserId(userId);
+        emailQueue.setToEmail(email);
+        String body = LOGIN_OTP_TEMPLATE.replace("{{otp}}", otp).replace("{{expiry}}", "2");
         emailQueue.setBody(body);
         emailQueue.setStatus("In Process");
         emailQueue.setCreatedAt(LocalDateTime.now());

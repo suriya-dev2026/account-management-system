@@ -21,6 +21,7 @@ import com.accountmanagement.model.User;
 import com.accountmanagement.repository.PasswordResetRepository;
 import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.request.ChangePasswordRequest;
+import com.accountmanagement.request.ForgotPasswordRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
 import com.accountmanagement.response.ApiResponse;
 
@@ -58,10 +59,10 @@ public class PasswordResetService {
     }
 
     @Transactional
-    public String forgotPassword(String email) {
-        User user = userService.findByEmail(email);
+    public String forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        User user = userService.findByEmail(forgotPasswordRequest.getEmail());
         String otp = otpService.generateOtp();
-        emailQueueService.addToPasswordResetQueue(user.getId(), email, otp);
+        emailQueueService.addToPasswordResetQueue(user.getId(), forgotPasswordRequest.getEmail(), otp);
         String hashedOtp = bCryptPasswordEncoder.encode(otp);
         PasswordReset passwordReset = passwordResetMapper.toPasswordReset(user.getId(), hashedOtp);
         passwordResetRepository.save(passwordReset);

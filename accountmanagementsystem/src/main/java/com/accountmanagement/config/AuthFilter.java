@@ -104,6 +104,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 || path.equals("/auth/v1/user/login")
                 || path.equals("/auth/v1/user/verify/otp")
                 || path.equals("/auth/v1/user/change/temporary/password")
+                || path.startsWith("/auth/v1/user/resend/temporary/password/")
                 || path.startsWith("/v1/organization/update/")
                 || path.startsWith("/v1/organization/delete/")
                 || path.equals("/v1/organization")

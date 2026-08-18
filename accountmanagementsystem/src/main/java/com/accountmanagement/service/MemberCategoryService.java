@@ -34,9 +34,9 @@ public class MemberCategoryService {
 
     public MemberCategory addMemberCategory(MemberCategoryRequest memberCategoryRequest) {
         validateMemberCategory(memberCategoryRequest.getCategory());
-        MemberCategory memberCategory = memberCategoryMapper.addMemberCategory(memberCategoryRequest);
-        User user = getLoggedUser();
+        MemberCategory memberCategory = memberCategoryMapper.toCreateMemberCategory(memberCategoryRequest);
         MemberCategory savedMemberCategory = memberCategoryRepository.save(memberCategory);
+        User user = getLoggedUser();
         userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "Add Member Category",
                 "Success");
         return savedMemberCategory;
@@ -44,7 +44,7 @@ public class MemberCategoryService {
 
     public MemberCategory updateMemberCategory(Integer id, MemberCategoryRequest memberCategoryRequest) {
         MemberCategory memberCategory = findById(id);
-        MemberCategory newMemberCategory = memberCategoryMapper.updateMemberCategory(memberCategory,
+        MemberCategory newMemberCategory = memberCategoryMapper.toUpdateMemberCategory(memberCategory,
                 memberCategoryRequest);
         User user = getLoggedUser();
         MemberCategory updatedMemberCategory = memberCategoryRepository.save(newMemberCategory);

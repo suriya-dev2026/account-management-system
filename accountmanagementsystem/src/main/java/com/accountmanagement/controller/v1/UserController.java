@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.request.ChangePasswordRequest;
+import com.accountmanagement.request.ForgotPasswordRequest;
 import com.accountmanagement.request.UserUpdationRequest;
 import com.accountmanagement.request.VerifyOtpRequest;
 import com.accountmanagement.response.ApiResponse;
@@ -59,9 +60,9 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/forgot/password/{email}")
-    public ResponseEntity<ApiResponse> forgotPassword(@Valid @PathVariable String email) {
-        passwordResetService.forgotPassword(email);
+    @PostMapping("/forgot/password")
+    public ResponseEntity<ApiResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        passwordResetService.forgotPassword(forgotPasswordRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 UserMessage.OTP, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -127,7 +127,7 @@ public class UserService {
         }
         String otp = otpService.generateOtp();
         userSessionService.createUserSession(user.getId(), otp);
-        emailQueueService.addToQueue(user.getId(), user.getEmail(), otp);
+        emailQueueService.addToEmailVerificationQueue(user.getId(), user.getEmail(), otp);
         return "Your email verification OTP has been sent successfully. Please verify your email to continue..";
     }
 
@@ -213,9 +213,8 @@ public class UserService {
         resetFailedLoginAttempts(userVerification);
         String otp = otpService.generateOtp();
         userSessionService.createUserSession(user.getId(), otp);
-        EmailQueue emailQueue = emailQueueService.addToQueue(user.getId(),
+        emailQueueService.addToLoginQueue(user.getId(),
                 user.getEmail(), otp);
-        otpService.sendEmail(emailQueue);
         userLoginAuditLogService.createUserLog(user.getOrganizationId(),
                 user.getId(), "Login", "Success");
         return "Otp send successfully";
@@ -446,7 +445,7 @@ public class UserService {
         User user = findById(userId);
         EmailQueue emailQueue = emailQueueService.findLatestEmailByUserId(userId);
         if (!"FAILED".equalsIgnoreCase(emailQueue.getStatus())) {
-            throw new BusinessException("Temporary credentials email cannot be resent");
+            throw new BusinessException("Temporary credentials email already sent");
         }
         String temporaryPassword = Apputility.generateTemporaryPassword();
         user.setPassword(bCryptPasswordEncoder.encode(temporaryPassword));

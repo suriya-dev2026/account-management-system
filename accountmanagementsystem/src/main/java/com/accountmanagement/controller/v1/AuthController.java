@@ -130,7 +130,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/resend/temporary/password/{userId}")
+    @PostMapping("/user/resend/temporary/password/{userId}")
     public ResponseEntity<ApiResponse> resendCredential(@PathVariable UUID userId) {
         userService.resendTemporaryCredentials(userId);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.RESEND_CREDENTIAL, 200);
@@ -157,6 +157,14 @@ public class AuthController {
     public ResponseEntity<ApiResponse> changeTemporaryPassword(
             @Valid @RequestBody ChangeTemporaryPasswordRequest request) {
         userService.changeTemporaryPassword(request);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.TEMPORARY_PASSWORD_CHANGED,
+                200);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/user/resend/temporary/password")
+    public ResponseEntity<ApiResponse> resendTemporaryPassword(@PathVariable UUID userId) {
+        userService.resendTemporaryCredentials(userId);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.TEMPORARY_PASSWORD_CHANGED,
                 200);
         return ResponseEntity.ok(response);

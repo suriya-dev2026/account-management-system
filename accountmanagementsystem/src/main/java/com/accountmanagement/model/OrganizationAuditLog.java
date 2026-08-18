@@ -5,14 +5,18 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import com.accountmanagement.model.listeners.OrganizationAuditLogListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "organization_audit_logs")
+@Table(name = "organization_audit_log")
+@EntityListeners(OrganizationAuditLogListener.class)
 @Data
 public class OrganizationAuditLog {
 
@@ -48,4 +52,6 @@ public class OrganizationAuditLog {
     @Column(name = "remarks")
     private String remarks;
 
+    @Column(name = "ip_address")
+    private String ipAddress;
 }

@@ -1,5 +1,6 @@
 package com.accountmanagement.exceptions;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -52,6 +53,8 @@ public class GlobalExceptions {
                 message = "Unrecognized ID, please enter valid id.";
             } else if (Integer.class.equals(invalidFormatException.getTargetType())) {
                 message = "Invalid value. Please provide a valid integer.";
+            } else if (LocalDate.class.equals(invalidFormatException.getTargetType())) {
+                message = "Invalid date format. Please use yyyy-MM-dd format.";
             }
         }
         if ("Invalid Json Format".equals(message)

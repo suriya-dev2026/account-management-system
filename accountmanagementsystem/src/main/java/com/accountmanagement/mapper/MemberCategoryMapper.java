@@ -7,14 +7,14 @@ import com.accountmanagement.request.MemberCategoryRequest;
 @Component
 public class MemberCategoryMapper {
 
-    public MemberCategory addMemberCategory(MemberCategoryRequest memberCategoryRequest) {
+    public MemberCategory toCreateMemberCategory(MemberCategoryRequest memberCategoryRequest) {
         MemberCategory memberCategory = new MemberCategory();
         memberCategory.setCategory(memberCategoryRequest.getCategory());
         memberCategory.setDescription(memberCategoryRequest.getDescription());
         return memberCategory;
     }
 
-    public MemberCategory updateMemberCategory(MemberCategory memberCategory,
+    public MemberCategory toUpdateMemberCategory(MemberCategory memberCategory,
             MemberCategoryRequest memberCategoryRequest) {
         memberCategory.setCategory(memberCategoryRequest.getCategory());
         memberCategory.setDescription(memberCategoryRequest.getDescription());

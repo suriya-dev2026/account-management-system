@@ -36,10 +36,13 @@ public class OrganizationService {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final OrganizationAuditLogService organizationAuditLogService;
+
     OrganizationService(OrganizationRepository organizationRepository, OrganizationMapper organizationMapper,
             MasterCountryRepository masterCountryRepository, MasterStateRepository masterStateRepository,
             MasterCityRepository masterCityRepository,
-            JdbcTemplate jdbcTemplate, OrganizationSettingRepository organizationSettingRepository) {
+            JdbcTemplate jdbcTemplate, OrganizationSettingRepository organizationSettingRepository,
+            OrganizationAuditLogService organizationAuditLogService) {
         this.organizationRepository = organizationRepository;
         this.organizationMapper = organizationMapper;
         this.jdbcTemplate = jdbcTemplate;
@@ -47,6 +50,7 @@ public class OrganizationService {
         this.masterStateRepository = masterStateRepository;
         this.masterCityRepository = masterCityRepository;
         this.organizationSettingRepository = organizationSettingRepository;
+        this.organizationAuditLogService = organizationAuditLogService;
     }
 
     @Transactional
@@ -58,6 +62,9 @@ public class OrganizationService {
         OrganizationSetting registeredOrganizationSetting = organizationMapper
                 .toRegisterOrganizatinSetting(registeredOrganization.getId(), organizationRequest);
         organizationSettingRepository.save(registeredOrganizationSetting);
+        organizationAuditLogService.log(organization.getCode(), null, "Organization",
+                registeredOrganization.getId().toString(), "Create Organization", null, null, "Registered Organiation",
+                null);
         return organization;
     }
 
@@ -71,6 +78,7 @@ public class OrganizationService {
         OrganizationSetting updatedOrganizationSetting = organizationMapper
                 .toUpdateOrganizationSetting(organizationSetting, organizationUpdateRequest);
         organizationSettingRepository.save(updatedOrganizationSetting);
+        organizationAuditLogService.log(organization.getCode(), null, "Organization", updatedOrganization.getId().toString(), "Update Organization", null, null, null, null);
         return organization;
     }
 
