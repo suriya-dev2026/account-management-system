@@ -72,6 +72,8 @@ public class GlobalExceptions {
                 message = "Invalid value. Please provide a valid integer.";
             } else if (exceptionMessage.contains("billingCycle")) {
                 message = "Invalid billing Cycle value. Allowed only MONTHLY and YEARLY";
+            } else if (exceptionMessage.contains("AttendanceStatus")) {
+                message = "Invalid attendance status.Allowed values are PRESENT or ABSENT";
             }
         }
         ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("422", "Validation Error");
@@ -97,6 +99,7 @@ public class GlobalExceptions {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ValidationErrorResponse> handleRuntimeException(RuntimeException ex) {
+        log.error("Runtime exception occurred", ex);
         ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse("400", ex.getMessage());
         validationErrorResponse.getErrorList().put("error", ex.getMessage());
         return new ResponseEntity<>(validationErrorResponse, HttpStatus.BAD_REQUEST);

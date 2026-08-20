@@ -20,8 +20,7 @@ public class InputValidator implements ConstraintValidator<ValidInput, String> {
         if (INVALID_CHARACTERS.matcher(value).find()) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                    "Input contains invalid characters.").addConstraintViolation();
-
+                    context.getDefaultConstraintMessageTemplate()).addConstraintViolation();
             return false;
         }
         return true;

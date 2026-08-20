@@ -1,11 +1,12 @@
 package com.accountmanagement.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.accountmanagement.constants.message.SubscriptionMessage;
 import com.accountmanagement.enums.SubscriptionOrganizationStatus;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
@@ -81,37 +82,36 @@ public class SubscriptionOrganizationService {
         if (user == null) {
             return;
         }
-        String body;
-
+        String expiryMessage;
         if (daysBefore == 1) {
-
-            body = """
-                    Hello %s,Your subscription will expire tomorrow.Subscription expiry date: %s
-                    Please renew your subscription before the expiry date to continue using the services without interruption.
-                    Thank you.
-                    """
-                    .formatted(user.getUserName(), subscription.getEndDate());
+            expiryMessage = "tomorrow";
         } else {
-
-            body = """
-                    Hello %s, Your subscription will expire in %d days.Subscription expiry date: %s
-                    Please renew your subscription before the expiry date to continue using the services without interruption.
-                    Thank you.
-                    """
-                    .formatted(user.getUserName(), daysBefore, subscription.getEndDate());
+            expiryMessage = "in " + daysBefore + " days";
         }
+        String body = SubscriptionMessage.SUBSCRIPTION_EXPIRY_REMINDER_TEMPLATE
+                .replace("{{userName}}", user.getUserName())
+                .replace("{{expiryMessage}}", expiryMessage)
+                .replace("{{expiryDate}}", subscription.getEndDate().toString());
+
         emailQueueService.addToEmailQueue(user.getId(), user.getEmail(), body);
     }
 
     @Transactional
-    public void expireSubscriptions(LocalDate today) {
-        List<SubscriptionOrganization> subscriptions = subscriptionOrganizationRepository.findExpiredSubscriptions(
-                today, "ACTIVE");
-        for (SubscriptionOrganization subscription : subscriptions) {
-            subscription.setStatus(SubscriptionOrganizationStatus.EXPIRED);
-            subscription.setUpdatedAt(LocalDateTime.now());
-            subscriptionOrganizationRepository.save(subscription);
+    public void sendExpiredMail(SubscriptionOrganization subscription) {
+        User user = userService.findByOrganizationIdAndUserType(subscription.getOrganizationId(), "SUPERADMIN");
+
+        if (user == null) {
+            return;
         }
+
+        String body = SubscriptionMessage.SUBSCRIPTION_EXPIRED_TEMPLATE
+                .replace("{{userName}}", user.getUserName())
+                .replace("{{expiryDate}}", subscription.getEndDate().toString());
+
+        emailQueueService.addToEmailQueue(
+                user.getId(),
+                user.getEmail(), body);
+        System.out.println("Mail added to EmailQueue");
     }
 
 }

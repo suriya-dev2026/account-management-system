@@ -12,8 +12,6 @@ import com.accountmanagement.repository.EmailQueueRepository;
 @Service
 public class EmailQueueService {
 
-    private final EmailQueueRepository emailQueueRepository;
-
     private static final String EMAIL_VERIFICATION_TEMPLATE = "Your email verification OTP is: {{otp}}.\n"
             + "This OTP is valid for {{expiry}} MINUTES only";
 
@@ -31,6 +29,8 @@ public class EmailQueueService {
             This OTP is valid for {{expiry}} minutes.
             Please do not share this OTP with anyone.
             """;
+
+    private final EmailQueueRepository emailQueueRepository;
 
     EmailQueueService(EmailQueueRepository emailQueueRepository) {
         this.emailQueueRepository = emailQueueRepository;

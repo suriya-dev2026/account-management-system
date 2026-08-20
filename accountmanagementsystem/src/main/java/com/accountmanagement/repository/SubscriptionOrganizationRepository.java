@@ -12,21 +12,19 @@ import com.accountmanagement.model.SubscriptionOrganization;
 
 public interface SubscriptionOrganizationRepository extends JpaRepository<SubscriptionOrganization, UUID> {
 
-    boolean existsByOrganizationIdAndStatus(UUID id, String string);
+        boolean existsByOrganizationIdAndStatus(UUID id, String string);
 
-    Optional<SubscriptionOrganization> findByOrganizationIdAndStatus(UUID organizationId,
-            SubscriptionOrganizationStatus status);
+        Optional<SubscriptionOrganization> findByOrganizationIdAndStatus(UUID organizationId,
+                        SubscriptionOrganizationStatus status);
 
-    @Query("""
-                SELECT s FROM SubscriptionOrganization s WHERE s.endDate = :endDate AND s.status = :status
-            """)
-    List<SubscriptionOrganization> findExpiringSubscriptions(@Param("endDate") LocalDate endDate,
-            @Param("status") String status);
-
-    @Query("""
-                SELECT s FROM SubscriptionOrganization s WHERE s.endDate < :today AND s.status = :status
-            """)
-    List<SubscriptionOrganization> findExpiredSubscriptions(@Param("today") LocalDate today,
-            @Param("status") String status);
+        @Query("""
+                        SELECT s FROM SubscriptionOrganization s
+                        WHERE s.endDate BETWEEN :today AND :fiveDaysLater
+                        AND s.status = :status
+                        """)
+        List<SubscriptionOrganization> findSubscriptionsExpiringWithinFiveDays(
+                        @Param("today") LocalDate today,
+                        @Param("fiveDaysLater") LocalDate fiveDaysLater,
+                        @Param("status") SubscriptionOrganizationStatus status);
 
 }

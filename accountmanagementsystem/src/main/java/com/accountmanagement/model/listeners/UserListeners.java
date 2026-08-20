@@ -19,4 +19,5 @@ public class UserListeners {
     public void onUpdate(User user) {
         user.setUpdatedAt(LocalDateTime.now());
     }
+
 }

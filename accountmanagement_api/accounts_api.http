@@ -1,6 +1,6 @@
 @local = http://localhost:8080
 
-@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODcwNDEzMDEsImV4cCI6MTc4NzA0MTkwMX0.sUBD-1ek8lsSsoq5FQcPgNO_LqvWXmBI2C3Ezlu2rpqE-ba2Z2t1DrBue-wZbNFd1LWYhl4ZR_x8pwnKvYzIyw
+@local-Token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdXJpeWExMjMiLCJpYXQiOjE3ODcyMDgzMTYsImV4cCI6MTc4NzIwODkxNn0.kttdsCUZ8-g2tfynxcmo_wTTFBBF1MOx5mwxnhZthzCFw40KZ7FXXmDL1gBzd9zTUMpEutNmTUHQ2FGuWlqSXw
 @token = {{local-Token}}
 
 @baseUrl = {{local}}
@@ -50,6 +50,11 @@ Content-Type: application/json
     "address":"14 duthie school junction road near TMB bankl",
     "userType":"SUPERADMIN"
 }
+
+###
+GET {{baseUrl}}/api/auth/v1/user/view/all
+Content-Type: application/json
+
 
 ###
 POST {{baseUrl}}/api/auth/v1/user/verify/email/otp
@@ -122,8 +127,12 @@ Content-Type: application/json
 
 {
     "email":"suriyasundarrajan340@gmail.com",
-    "otp":"960007"
+    "otp":"262230"
 }
+
+###
+POST {{baseUrl}}/api/v1/user/refreshKey/e2334ec2-0f55-47f4-ab7d-7b22251977b6
+Content-Type: application/json
 
 ###
 PUT {{baseUrl}}/api/auth/v1/user/change/temporary/password
@@ -191,11 +200,6 @@ DELETE {{baseUrl}}/user-auth/delete/08974071-d8e9-4439-813c-2593148ae76e
 Content-Type: application/json
 
 ###
-GET {{baseUrl}}/api/auth/v1/user/view/all
-Content-Type: application/json
-
-
-###
 GET {{baseUrl}}/api/v1/user/subscription/plan
 Content-Type: application/json
 
@@ -253,10 +257,6 @@ Content-Type: application/json
 
 ###
 GET {{baseUrl}}/user-auth/subscription/plan/feature
-Content-Type: application/json
-
-###
-POST {{baseUrl}}/api/v1/user/refreshKey/7e3ad9c3-7589-453e-bec7-7cedf4d02720
 Content-Type: application/json
 
 ###
@@ -362,9 +362,9 @@ Authorization: Bearer {{token}}
     "lastName":"Raj",
     "userName":"yuva@123",
     "gender":"Male",
-    "dateOfBirth":"10-15-2025",
+    "dateOfBirth":"1993-05-22",
     "dateOfJoin":"2025-05-10",
-    "weddingDate":"413213d",
+    "weddingDate":"2018-09-12",
     "email":"yuva@gmail.com",
     "contactNumber":"+919578642314",
     "address":"No 6 RGV colony ljdlflfmkjkdf nagercoil kanya kumari district",
@@ -405,7 +405,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-GET {{baseUrl}}/user-auth/member/
+GET {{baseUrl}}/api/v1/member/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -433,201 +433,6 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/user-auth/city/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/api/v1/access/control/role/add
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "roleName":"AdminRole",
-    "description":"adfdkjufdfhhfdf"
-}
-
-###
-PUT {{baseUrl}}/api/v1/access/control/role/update/f84066a3-b940-40e3-8431-146a62ad0788
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "roleName":"Admin",
-    "description":"lkjslfkjdskjfkdmdfg"
-}
-
-###
-DELETE {{baseUrl}}/api/v1/access/control/role/delete/f84066a3-b940-40e3-8431-146a62ad0788
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-
-###
-GET {{baseUrl}}/api/v1/access/control/role
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/api/v1/access/control/route/add
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "controllerName":"User Controller",
-    "backendRoute":"/api/v1/auth/user/login",
-    "frontendRoute":"",
-    "description":"user login page 632",
-    "isDefault":""
-}
-
-###
-PUT {{baseUrl}}/api/v1/access/control/route/update/1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "controllerName":"UserController",
-    "backendRoute":"/api/v1/auth/user/login",
-    "frontendRoute":"",
-    "description":"user login page",
-    "isDefault":""
-}
-
-###
-DELETE {{baseUrl}}/api/v1/access/control/route/delete/1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-
-###
-GET {{baseUrl}}/api/v1/access/control/route
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/api/v1/access/control/module/preset/add
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "moduleName":"User-Module",
-    "presetName":"ViewOnly",
-    "description":"user module view only"
-}
-
-###
-PUT {{baseUrl}}/api/v1/access/control/module/preset/update/2
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "moduleName":"UserModule",
-    "presetName":"viewOnly",
-    "description":"sfjowejrlkme"
-}
-
-###
-DELETE {{baseUrl}}/api/v1/access/control/module/preset/delete/1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-
-###
-GET {{baseUrl}}/api/v1/access/control/module/preset
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/api/v1/access/control/route/preset/access/add
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "modulePresetId":1,
-    "routeId":1
-}
-
-###
-PUT {{baseUrl}}/api/v1/access/control/route/preset/access/update/
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "modulePresetId":"",
-    "routeId":""
-}
-
-###
-DELETE {{baseUrl}}/api/v1/access/control/route/preset/access/delete/
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-
-###
-GET {{baseUrl}}/api/v1/access/control/route/preset/access
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/api/v1/access/control/role/preset/access/add
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "roleId":"f84066a3-b940-40e3-8431-146a62ad0788",
-    "modulePresetId":1
-}
-
-###
-PUT {{baseUrl}}/api/v1/access/control/role/preset/access/update/
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "modulePresetId":"",
-    "routeId":""
-}
-
-###
-DELETE {{baseUrl}}/api/v1/access/control/role/preset/access/delete/
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-
-###
-GET {{baseUrl}}/api/v1/access/control/role/preset/access
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-###
-POST {{baseUrl}}/api/v1/access/control/user/role/add
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "userId":"3959b18c-6d33-41f9-96c1-e9c32b2631f5",
-    "roleId":"f84066a3-b940-40e3-8431-146a62ad0788"
-}
-
-###
-PUT {{baseUrl}}/api/v1/access/control/user/role/update/1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "userId":"gjhj",
-    "roleId":"hgjhj"
-}
-
-###
-DELETE {{baseUrl}}/api/v1/access/control/user/role/delete/1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-
-###
-GET {{baseUrl}}/api/v1/access/control/user/role
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
 
 
 

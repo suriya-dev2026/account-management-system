@@ -36,4 +36,29 @@ public class SubscriptionMessage {
 
     public static final String SUBSCRIPTION_PAYMENT_MESSAGE = "Subscription payment received successfully, and your subscription has been activated you can now log in using credential below. For security reasons, please log in and change your temporary password immediately.";
 
+    public static final String SUBSCRIPTION_EXPIRY_REMINDER_TEMPLATE = """
+
+            Hello {{userName}},
+
+            Your subscription will expire {{expiryMessage}}.
+
+            Subscription expiry date: {{expiryDate}}
+
+            Please renew your subscription before the expiry date to continue using the services without interruption.
+
+            Thank you.
+            """;
+
+    public static final String SUBSCRIPTION_EXPIRED_TEMPLATE = """
+            Hello {{userName}},
+
+            Your subscription has expired today.
+
+            Expiry Date: {{expiryDate}}
+
+            Please renew your subscription to continue using the service.
+
+            Thank you.
+            """;
+
 }

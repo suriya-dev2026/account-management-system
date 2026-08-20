@@ -71,14 +71,14 @@ public class MemberRequest {
         private Gender gender;
 
         @NotNull(message = "please enter date of birth")
-        @ValidDate(message = "pleases enter a valid date birth date cannot be in the future")
+        @ValidDate(message = "pleases enter a valid date. Birth date cannot be in the future")
         private LocalDate dateOfBirth;
 
         @NotNull(message = "please enter date of join")
-        @ValidDate(message = "pleases enter a valid date join date cannot be in the future")
+        @ValidDate(message = "please enter a valid date. Join date cannot be in the future")
         private LocalDate dateOfJoin;
 
-        @ValidDate(message = "wedding date cannot be future")
+        @ValidDate(message = "Wedding date cannot be future")
         private LocalDate weddingDate;
 
         @NotBlank(message = "please enter email")

@@ -5,17 +5,19 @@ import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import com.accountmanagement.validators.RouteIdValidator;
+
+import com.accountmanagement.validators.StudentIdValidator;
+
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
 @Target({ TYPE, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = RouteIdValidator.class)
-public @interface ValidRouteId {
+@Constraint(validatedBy = StudentIdValidator.class)
+public @interface ValidStudentId {
 
-    public String message() default "Access Control Route Id does not exists";
+    public String message() default "Sunday School Student Id does not exists";
 
     public Class<?>[] groups() default {};
 
