@@ -29,7 +29,7 @@ public class Organization {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "registration_number",unique = true)
+    @Column(name = "registration_number", unique = true)
     private String registrationNumber;
 
     @Column(name = "website")
@@ -50,14 +50,14 @@ public class Organization {
     @Column(name = "postal_code")
     private String postalcode;
 
-    @Column(name = "primary_contact_name")
-    private String primaryContactName;
+    @Column(name = "contact_name")
+    private String contactName;
 
-    @Column(name = "primary_contact_email")
-    private String primaryContactEmail;
+    @Column(name = "contact_email")
+    private String contactEmail;
 
-    @Column(name = "primary_contact_number")
-    private String primaryContactNumber;
+    @Column(name = "contact_number")
+    private String contactNumber;
 
     @Column(name = "status")
     private String status;

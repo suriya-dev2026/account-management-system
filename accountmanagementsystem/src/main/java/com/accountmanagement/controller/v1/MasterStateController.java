@@ -17,7 +17,7 @@ import com.accountmanagement.service.MasterStateService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(value = "v1/state")
+@RequestMapping(value = "/v1/state")
 @Tag(name = "MasterStateController")
 public class MasterStateController {
 

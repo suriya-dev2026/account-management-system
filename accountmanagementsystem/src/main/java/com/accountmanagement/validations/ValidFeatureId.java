@@ -10,7 +10,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
-@Target({ TYPE, FIELD, ANNOTATION_TYPE })
+@Target({ TYPE, FIELD, ANNOTATION_TYPE, TYPE_USE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = FeatureIdValidator.class)
 public @interface ValidFeatureId {

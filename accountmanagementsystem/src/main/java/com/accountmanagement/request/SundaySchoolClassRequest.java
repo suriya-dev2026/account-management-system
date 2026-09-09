@@ -1,11 +1,9 @@
 package com.accountmanagement.request;
 
 import java.util.UUID;
-
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidOrganizationId;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -22,6 +20,7 @@ public class SundaySchoolClassRequest {
     private String className;
 
     @NotNull(message = "Class Number Is Required")
+    // @ValidInput(message = "Class Number Contains Invalid Characters")
     private Integer classNumber;
 
     public void sanitizeInput() {

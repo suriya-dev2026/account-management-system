@@ -19,7 +19,7 @@ public class MemberIdValidator implements ConstraintValidator<ValidMemberId, UUI
     @Override
     public boolean isValid(UUID id, ConstraintValidatorContext arg1) {
         if (id == null) {
-            return false;
+            return true;
         }
         return memberRepository.existsById(id);
     }

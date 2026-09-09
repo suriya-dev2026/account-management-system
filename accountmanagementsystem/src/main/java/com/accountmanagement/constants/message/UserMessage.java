@@ -10,7 +10,7 @@ public class UserMessage {
 
     public static final String USER_NOT_FOUND = "user does not exists";
 
-    public static final String USER_REGISTER = "Your email verification OTP has been sent successfully. Please verify your email to continue.";
+    public static final String USER_REGISTER = "User Registered Successfully.";
 
     public static final String USER_LOGIN = "user logged in successfully";
 
@@ -28,6 +28,8 @@ public class UserMessage {
 
     public static final String USER_EMAIL_VERIFY = "user email verified successfully";
 
+    public static final String USER_EMAIL_NOT_FOUND = "user email not found";
+
     public static final String ACCESS_TOKEN = "access token not found";
 
     public static final String NEW_ACCESS_TOKEN = "new access token generated successfully";
@@ -42,12 +44,26 @@ public class UserMessage {
 
     public static final String ACCOUNT_LOCKED = "Account locked. Try again after 30 mins";
 
+    public static final String LOCKED = "Account locked";
+
     public static final String INVALID_TOKEN = "Invalid Token";
 
     public static final String TOKEN_EXPIRED = "Token Expired";
 
     public static final String INVALID_REQUEST = "Authentication Token Is Required";
 
-    public static final String RESEND_CREDENTIAL = "Temporary Credential Resend Successfully";
+    public static final String RESEND_EMAIL_VERIFICATION_LINK = "Email Verification Link Resend Successfully";
 
+    public static final String SEND_EMAIL_VERIFICATION_LINK = "Email Verification Link Sent Successfully";
+
+    public static final String TEMPORARY_CREDENTIAL = "Temporary Credential Send To User's Email Successfully. Please Change Your Password By Using The Link Below";
+
+    public static final String EMAIL_VERIFICATION_LINK = "http://localhost:8080/api/auth/v1/verify/email?token=";
+
+    public static final String TEMPORARY_PASSWORD_CHANGE_LINK = "http://localhost:3000/reset-password?resetToken=";
+
+    public static final String USER_INACTIVE = "User is inactive and cannot be updated.";
+
+     public static final String PASSWORD_MISMATCH = "New password and confirm password do not match";
+     
 }

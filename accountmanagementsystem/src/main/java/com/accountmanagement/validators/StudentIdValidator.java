@@ -22,7 +22,6 @@ public class StudentIdValidator implements ConstraintValidator<ValidStudentId, U
             return false;
         }
         return sundaySchoolStudentRepository.existsById(id);
-
     }
 
 }

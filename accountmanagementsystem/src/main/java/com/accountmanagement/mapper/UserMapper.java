@@ -1,8 +1,6 @@
 package com.accountmanagement.mapper;
 
 import java.util.UUID;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserProfile;
@@ -12,19 +10,18 @@ import com.accountmanagement.request.UserUpdationRequest;
 @Component
 public class UserMapper {
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    // private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserMapper(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    // public UserMapper(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    // this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    // }
 
-    public User toRegisterUser(UserRegistrationRequest userRegistrationRequest) {
+    public User toRegisterUser(UserRegistrationRequest userRegistrationRequest, String email) {
         User user = new User();
         user.setOrganizationId(userRegistrationRequest.getOrganizationId());
         user.setUserName(userRegistrationRequest.getUserName());
-        user.setEmail(userRegistrationRequest.getEmail());
+        user.setEmail(email);
         user.setContactNumber(userRegistrationRequest.getContactNumber());
-        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationRequest.getPassword()));
         user.setUserType(userRegistrationRequest.getUserType());
         return user;
     }

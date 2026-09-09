@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.UserVerificationMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.UserVerificationRepository;
@@ -20,8 +21,7 @@ public class UserVerificationService {
     }
 
     @Transactional
-    public void createUserVerification(UUID userId) {
-
+    public void completUserRegistration(UUID userId) {
         UserVerification verification = new UserVerification();
         verification.setUserId(userId);
         verification.setIsUserOnboarded(false);
@@ -38,7 +38,7 @@ public class UserVerificationService {
 
         UserVerification verification = userVerificationRepository
                 .findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("User verification not found"));
+                .orElseThrow(() -> new RuntimeException(UserVerificationMessage.VERIFICATION_RECORD_NOT_FOUND));
         verification.setIsEmailVerified(true);
         verification.setProfileCompletedPercentage(AppConstants.EMAIL_VERIFIED_COMPLETED);
         userVerificationRepository.save(verification);

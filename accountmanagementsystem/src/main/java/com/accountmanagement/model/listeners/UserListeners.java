@@ -2,6 +2,7 @@ package com.accountmanagement.model.listeners;
 
 import java.time.LocalDateTime;
 
+import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.model.User;
 
 import jakarta.persistence.PrePersist;
@@ -11,7 +12,7 @@ public class UserListeners {
 
     @PrePersist
     public void onCreate(User user) {
-        user.setStatus("active");
+        user.setStatus(AppConstants.ACTIVE);
         user.setCreatedAt(LocalDateTime.now());
     }
 

@@ -1,7 +1,6 @@
 package com.accountmanagement.mapper;
 
 import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 import com.accountmanagement.model.Organization;
 import com.accountmanagement.model.OrganizationSetting;
@@ -17,21 +16,19 @@ public class OrganizationMapper {
         organization.setName(organizationRequest.getName());
         organization.setRegistrationNumber(organizationRequest.getRegistrationNumber());
         organization.setWebsite(organizationRequest.getWebsite());
-        System.out.println("Save Organization Website" + organizationRequest.getWebsite());
         organization.setAddress(organizationRequest.getAddress());
         organization.setCountryId(organizationRequest.getCountryId());
         organization.setStateId(organizationRequest.getStateId());
         organization.setCityId(organizationRequest.getCityId());
         organization.setPostalcode(organizationRequest.getPostalCode());
-        organization.setPrimaryContactName(organizationRequest.getPrimaryContactName());
-        organization.setPrimaryContactEmail(organizationRequest.getPrimaryContactEmail());
-        organization.setPrimaryContactNumber(organizationRequest.getPrimaryContactNumber());
+        organization.setContactName(organizationRequest.getContactName());
+        organization.setContactEmail(organizationRequest.getContactEmail());
+        organization.setContactNumber(organizationRequest.getContactNumber());
         return organization;
     }
 
     public Organization toUpdateOrganization(Organization organization,
             OrganizationUpdationRequest organizationUpdateRequest) {
-        System.out.println("UpdateOrganization Website" + organizationUpdateRequest.getWebsite());
         if (organizationUpdateRequest.getName() != null && !organizationUpdateRequest.getName().trim().isEmpty()) {
             organization.setName(organizationUpdateRequest.getName());
         }
@@ -55,17 +52,17 @@ public class OrganizationMapper {
         if (organizationUpdateRequest.getPostalCode() != null) {
             organization.setPostalcode(organizationUpdateRequest.getPostalCode());
         }
-        if (organizationUpdateRequest.getPrimaryContactName() != null
-                && !organizationUpdateRequest.getPrimaryContactName().trim().isEmpty()) {
-            organization.setPrimaryContactName(organizationUpdateRequest.getPrimaryContactName());
+        if (organizationUpdateRequest.getContactName() != null
+                && !organizationUpdateRequest.getContactName().trim().isEmpty()) {
+            organization.setContactName(organizationUpdateRequest.getContactName());
         }
-        if (organizationUpdateRequest.getPrimaryContactEmail() != null
-                && !organizationUpdateRequest.getPrimaryContactEmail().trim().isEmpty()) {
-            organization.setPrimaryContactEmail(organizationUpdateRequest.getPrimaryContactEmail());
+        if (organizationUpdateRequest.getContactEmail() != null
+                && !organizationUpdateRequest.getContactEmail().trim().isEmpty()) {
+            organization.setContactEmail(organizationUpdateRequest.getContactEmail());
         }
-        if (organizationUpdateRequest.getPrimaryContactNumber() != null
-                && !organizationUpdateRequest.getPrimaryContactNumber().trim().isEmpty()) {
-            organization.setPrimaryContactNumber(organizationUpdateRequest.getPrimaryContactNumber());
+        if (organizationUpdateRequest.getContactNumber() != null
+                && !organizationUpdateRequest.getContactNumber().trim().isEmpty()) {
+            organization.setContactNumber(organizationUpdateRequest.getContactNumber());
         }
         return organization;
     }

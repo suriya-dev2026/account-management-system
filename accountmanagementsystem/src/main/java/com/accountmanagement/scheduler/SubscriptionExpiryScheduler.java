@@ -26,7 +26,7 @@ public class SubscriptionExpiryScheduler {
         this.subscriptionOrganizationService = subscriptionOrganizationService;
     }
 
-    @Scheduled(cron = "0 0 1 * * *")
+    @Scheduled(cron = "0 0 12 * * *")
     @Transactional
     public void checkSubscriptionExpiry() {
 

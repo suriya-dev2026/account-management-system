@@ -14,7 +14,7 @@ import com.accountmanagement.service.MasterCityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(value = "v1/city")
+@RequestMapping(value = "/v1/city")
 @Tag(name = "MasterCityController")
 public class MasterCityController {
 

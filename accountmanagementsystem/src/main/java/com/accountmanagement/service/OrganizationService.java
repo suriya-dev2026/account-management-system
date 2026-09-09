@@ -3,19 +3,25 @@ package com.accountmanagement.service;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.UserMessage;
+import com.accountmanagement.enums.UserType;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.OrganizationMapper;
 import com.accountmanagement.model.Organization;
 import com.accountmanagement.model.OrganizationSetting;
+import com.accountmanagement.model.User;
 import com.accountmanagement.repository.MasterCityRepository;
 import com.accountmanagement.repository.MasterCountryRepository;
 import com.accountmanagement.repository.MasterStateRepository;
 import com.accountmanagement.repository.OrganizationRepository;
 import com.accountmanagement.repository.OrganizationSettingRepository;
+import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.OrganizationUpdationRequest;
 
@@ -38,11 +44,13 @@ public class OrganizationService {
 
     private final OrganizationAuditLogService organizationAuditLogService;
 
+    private final UserRepository userRepository;
+
     OrganizationService(OrganizationRepository organizationRepository, OrganizationMapper organizationMapper,
             MasterCountryRepository masterCountryRepository, MasterStateRepository masterStateRepository,
             MasterCityRepository masterCityRepository,
             JdbcTemplate jdbcTemplate, OrganizationSettingRepository organizationSettingRepository,
-            OrganizationAuditLogService organizationAuditLogService) {
+            OrganizationAuditLogService organizationAuditLogService, UserRepository userRepository) {
         this.organizationRepository = organizationRepository;
         this.organizationMapper = organizationMapper;
         this.jdbcTemplate = jdbcTemplate;
@@ -51,6 +59,7 @@ public class OrganizationService {
         this.masterCityRepository = masterCityRepository;
         this.organizationSettingRepository = organizationSettingRepository;
         this.organizationAuditLogService = organizationAuditLogService;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -63,9 +72,9 @@ public class OrganizationService {
                 .toRegisterOrganizatinSetting(registeredOrganization.getId(), organizationRequest);
         organizationSettingRepository.save(registeredOrganizationSetting);
         organizationAuditLogService.log(organization.getCode(), null, "Organization",
-                registeredOrganization.getId().toString(), "Create Organization", null, null, "Registered Organiation",
+                registeredOrganization.getId().toString(), "Create Organization", null, null, "Registered Organization",
                 null);
-        return organization;
+        return registeredOrganization;
     }
 
     @Transactional
@@ -78,7 +87,8 @@ public class OrganizationService {
         OrganizationSetting updatedOrganizationSetting = organizationMapper
                 .toUpdateOrganizationSetting(organizationSetting, organizationUpdateRequest);
         organizationSettingRepository.save(updatedOrganizationSetting);
-        organizationAuditLogService.log(organization.getCode(), null, "Organization", updatedOrganization.getId().toString(), "Update Organization", null, null, null, null);
+        organizationAuditLogService.log(organization.getCode(), null, "Organization",
+                updatedOrganization.getId().toString(), "Update Organization", null, null, null, null);
         return organization;
     }
 
@@ -97,6 +107,29 @@ public class OrganizationService {
         return String.format("ORG-%05d", sequence);
     }
 
+    public void validateOrganizationAccess(UUID organizationId) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+        User currentUser = userRepository.findByUserName(username);
+        if (currentUser == null) {
+            throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
+        }
+        if (UserType.OWNER.equals(currentUser.getUserType())) {
+            return;
+        }
+        UUID currentOrganizationId = currentUser.getOrganizationId();
+        if (currentOrganizationId == null) {
+            throw new AccessDeniedException(
+                    "User is not associated with any organization");
+        }
+        if (!currentOrganizationId.equals(organizationId)) {
+            throw new AccessDeniedException(
+                    "You cannot access another organization");
+        }
+    }
+
     public Organization findById(UUID id) {
         return organizationRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Organization id not found"));
@@ -112,8 +145,8 @@ public class OrganizationService {
         validateCountry(request.getCountryId());
         validateState(request.getStateId());
         validateCity(request.getCityId());
-        validatePrimaryContactEmail(request.getPrimaryContactEmail());
-        validatePrimaryContactNumber(request.getPrimaryContactNumber());
+        validatePrimaryContactEmail(request.getContactEmail());
+        validatePrimaryContactNumber(request.getContactNumber());
     }
 
     private void validateRegistrationNumber(String registrationNumber) {
@@ -123,13 +156,13 @@ public class OrganizationService {
     }
 
     private void validatePrimaryContactEmail(String primaryContactEmail) {
-        if (organizationRepository.existsByPrimaryContactEmail(primaryContactEmail.trim())) {
+        if (organizationRepository.existsByContactEmail(primaryContactEmail.trim())) {
             throw new UserAlreadyExistsException("contact email already registered.");
         }
     }
 
     private void validatePrimaryContactNumber(String primaryContactNumber) {
-        if (organizationRepository.existsByPrimaryContactNumber(primaryContactNumber.trim())) {
+        if (organizationRepository.existsByContactNumber(primaryContactNumber.trim())) {
             throw new UserAlreadyExistsException("contact number already registered.");
         }
     }

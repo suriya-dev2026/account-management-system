@@ -3,6 +3,7 @@ package com.accountmanagement.request;
 import java.time.LocalDate;
 
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.enums.UserType;
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.validations.ValidDate;
 import com.accountmanagement.validations.ValidInput;
@@ -39,12 +40,11 @@ public class UserUpdationRequest {
 
         @NotBlank(message = "user type cannot be blank")
         @ValidInput(message = "Input contains invalid characters")
-        private String userType;
+        private UserType userType;
 
         public void sanitizeInput() {
                 setFirstName(Apputility.sanitizeInput(getFirstName()));
                 setLastName(Apputility.sanitizeInput(getLastName()));
                 setAddress(Apputility.sanitizeInput(getAddress()));
-                setUserType(Apputility.sanitizeInput(getUserType()));
         }
 }

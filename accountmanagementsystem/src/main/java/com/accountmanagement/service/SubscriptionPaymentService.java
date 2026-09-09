@@ -14,6 +14,7 @@ import com.accountmanagement.enums.BillingCycle;
 import com.accountmanagement.enums.PaymentStatus;
 import com.accountmanagement.enums.PaymentType;
 import com.accountmanagement.enums.SubscriptionOrganizationStatus;
+import com.accountmanagement.enums.UserType;
 import com.accountmanagement.exceptions.BusinessException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.mapper.SubscriptionPaymentMapper;
@@ -84,7 +85,7 @@ public class SubscriptionPaymentService {
             throw new BusinessException("Payment is already in progress");
         }
         User user = userRepository
-                .findByOrganizationIdAndUserType(subscriptionOrganization.getOrganizationId(), "SUPERADMIN")
+                .findByOrganizationIdAndUserType(subscriptionOrganization.getOrganizationId(), UserType.SUPERADMIN)
                 .orElseThrow(() -> new RecordNotFoundException("User not found"));
         SubscriptionPlan plan = subscriptionPlanService.findBySubscriptionPlanId(
                 subscriptionOrganization.getPlanId());
@@ -121,7 +122,7 @@ public class SubscriptionPaymentService {
                 plan.getId(), AuditLogAction.SUBSCRIBED,
                 "Subscription activated successfully");
         userVerificationService.completeSubscription(user.getId());
-        userService.sendTemporaryCredentials(user.getId());
+        userService.createTemporaryCredentials(user.getId());
     }
 
     @Transactional
@@ -141,7 +142,7 @@ public class SubscriptionPaymentService {
                 .findBySubscriptionOrganizationId(
                         savedPayment.getSubscriptionOrganizationId());
         User user = userRepository.findByOrganizationIdAndUserType(
-                subscriptionOrganization.getOrganizationId(), "SUPERADMIN")
+                subscriptionOrganization.getOrganizationId(), UserType.SUPERADMIN)
                 .orElseThrow(() -> new RecordNotFoundException("User not found"));
         SubscriptionPlan plan = subscriptionPlanService.findBySubscriptionPlanId(
                 subscriptionOrganization.getPlanId());

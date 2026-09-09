@@ -2,17 +2,19 @@ package com.accountmanagement.constants;
 
 public class AppConstants {
 
-    public static final String ACTIVE = "ACTIVE";
+    public static final String ACTIVE = "active";
 
-    public static final String SUCCESS = "SUCCESS";
+    public static final String SUCCESS = "success";
 
-    public static final String ERROR = "ERROR";
+    public static final String ERROR = "error";
 
-    public static final String INACTIVE = "INACTIVE";
+    public static final String LOGIN = "Login";
 
-    public static final String LOCKED = "LOCKED";
+    public static final String INACTIVE = "inactive";
 
-    public static final String DELETED = "DELETED";
+    public static final String LOCKED = "locked";
+
+    public static final String DELETED = "deleted";
 
     public static final int minNameLength = 3;
 
@@ -32,8 +34,12 @@ public class AppConstants {
 
     public static final int maxPasswordLength = 20;
 
-    public static final int REGISTRATION_COMPLETED = 25;
+    public static final int REGISTRATION_COMPLETED = 0;
 
     public static final int EMAIL_VERIFIED_COMPLETED = 50;
+
+    public static final String EMAIL_VERIFICATION = "USER_EMAIL_VERIFICATION:";
+
+    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
 }

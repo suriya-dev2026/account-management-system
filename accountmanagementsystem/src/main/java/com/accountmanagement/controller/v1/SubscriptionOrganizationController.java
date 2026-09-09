@@ -29,7 +29,7 @@ public class SubscriptionOrganizationController {
         List<SubscriptionOrganization> subscriptionOrganization = subscriptionOrganizationService
                 .viewAllSubscriptionOrganization();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 200);
+                SubscriptionMessage.VIEW_ALL_SUBSCRIPTION_ORGANIZATION, 200);
         response.setData(subscriptionOrganization);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -3,11 +3,14 @@ package com.accountmanagement.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
+import com.accountmanagement.enums.UserType;
 import com.accountmanagement.model.listeners.UserListeners;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -38,8 +41,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
-    private String userType;
+    private UserType userType;
 
     @Column(name = "status")
     private String status;

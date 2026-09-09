@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "v1/member")
+@RequestMapping(value = "/v1/member")
 @Tag(name = "MemberController")
 public class MemberController {
 
@@ -59,7 +59,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ApiResponse> viewAll() {
         List<Member> members = memberService.viewAll();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberMessage.MEMBER, 200);

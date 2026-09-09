@@ -2,7 +2,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.OrganizationMessage;
@@ -33,7 +33,6 @@ import com.accountmanagement.service.OrganizationService;
 import com.accountmanagement.service.SubscriptionOrganizationService;
 import com.accountmanagement.service.SubscriptionPaymentService;
 import com.accountmanagement.service.UserService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -68,11 +67,28 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/verify/email")
+    public ResponseEntity<ApiResponse> verifyEmail(@RequestParam String token) {
+        userService.verifyEmail(token);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_EMAIL_VERIFY, 200);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/resend/verification/email")
+    public ResponseEntity<ApiResponse> resendVerificationEmail(
+            @RequestBody ResendEmailVerificationRequest resendEmailVerificationRequest) {
+        userService.resendVerificationEmail(resendEmailVerificationRequest);
+        ApiResponse response = new ApiResponse(
+                AppConstants.SUCCESS, UserMessage.RESEND_EMAIL_VERIFICATION_LINK,
+                200);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/user/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserRegistrationRequest userRequest) {
         userRequest.sanitizeInput();
         userService.registerUser(userRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_REGISTER, 201);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.SEND_EMAIL_VERIFICATION_LINK, 201);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -84,29 +100,31 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/user/verify/email/otp")
-    public ResponseEntity<ApiResponse> verifyEmail(@Valid @RequestBody VerifyOtpRequest verifyOtpRequest) {
-        verifyOtpRequest.sanitizeInput();
-        userService.verifyEmailOtp(verifyOtpRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.USER_EMAIL_VERIFY, 200);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    // @PostMapping("/user/verify/email/otp")
+    // public ResponseEntity<ApiResponse> verifyEmail(@Valid @RequestBody
+    // VerifyOtpRequest verifyOtpRequest) {
+    // verifyOtpRequest.sanitizeInput();
+    // userService.verifyEmailOtp(verifyOtpRequest);
+    // ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+    // UserMessage.USER_EMAIL_VERIFY, 200);
+    // return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
 
-    @PostMapping("/user/resend/verification/otp")
-    public ResponseEntity<ApiResponse> verifyEmail(
-            @Valid @RequestBody ResendEmailVerificationRequest resendEmailVerificationRequest) {
-        userService.sendOtpForEmailVerification(resendEmailVerificationRequest.getOrganizationId(),
-                resendEmailVerificationRequest.getEmail());
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP_RESEND, 200);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    // @PostMapping("/user/resend/verification/otp")
+    // public ResponseEntity<ApiResponse> verifyEmail(
+    // @Valid @RequestBody ResendEmailVerificationRequest
+    // resendEmailVerificationRequest) {
+    // userService.sendOtpForEmailVerification(resendEmailVerificationRequest.getUserId(),
+    // resendEmailVerificationRequest.getEmail());
+    // ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+    // UserMessage.OTP_RESEND, 200);
+    // return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
 
-    @PostMapping("/subscription/organization/add")
+    @PostMapping("/subscription/organization/create")
     public ResponseEntity<ApiResponse> createSubscriptionOrganization(
             @Valid @RequestBody SubscriptionOrganizationRequest subscriptionOrganizationRequest) {
-        subscriptionOrganizationService.createSubscription(subscriptionOrganizationRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                SubscriptionMessage.CREATE_SUBSCRIPTION_ORGANIZATION, 200);
+        ApiResponse response = subscriptionOrganizationService.createSubscription(subscriptionOrganizationRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -130,10 +148,11 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/user/resend/temporary/password/{userId}")
+    @PostMapping("/user/send/temporary/password/{userId}")
     public ResponseEntity<ApiResponse> resendCredential(@PathVariable UUID userId) {
-        userService.resendTemporaryCredentials(userId);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.RESEND_CREDENTIAL, 200);
+        userService.createTemporaryCredentials(userId);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                UserMessage.TEMPORARY_CREDENTIAL, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -162,10 +181,11 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/user/resend/temporary/password")
+    @PutMapping("/user/send/temporary/password/{userId}")
     public ResponseEntity<ApiResponse> resendTemporaryPassword(@PathVariable UUID userId) {
-        userService.resendTemporaryCredentials(userId);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.TEMPORARY_PASSWORD_CHANGED,
+        userService.createTemporaryCredentials(userId);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                UserMessage.TEMPORARY_CREDENTIAL,
                 200);
         return ResponseEntity.ok(response);
     }

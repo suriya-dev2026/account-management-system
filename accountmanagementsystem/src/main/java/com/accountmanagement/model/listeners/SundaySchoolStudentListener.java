@@ -1,7 +1,6 @@
 package com.accountmanagement.model.listeners;
 
 import java.time.LocalDateTime;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.model.SundaySchoolStudent;
 import jakarta.persistence.PrePersist;
@@ -21,4 +20,5 @@ public class SundaySchoolStudentListener {
     public void onUpdate(SundaySchoolStudent sundaySchoolStudent) {
         sundaySchoolStudent.setUpdatedAt(LocalDateTime.now());
     }
+
 }

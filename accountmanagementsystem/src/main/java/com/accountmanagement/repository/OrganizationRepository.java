@@ -1,5 +1,6 @@
 package com.accountmanagement.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +14,10 @@ public interface OrganizationRepository extends JpaRepository<Organization, UUID
 
     boolean existsByWebsite(String website);
 
-    boolean existsByPrimaryContactEmail(String trim);
+    boolean existsByContactEmail(String email);
 
-    boolean existsByPrimaryContactNumber(String trim);
+    Optional<Organization> findByContactEmail(String email);
+
+    boolean existsByContactNumber(String primaryContactNumber);
 
 }

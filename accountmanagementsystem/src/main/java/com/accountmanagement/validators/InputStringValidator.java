@@ -31,7 +31,7 @@ public class InputStringValidator implements ConstraintValidator<ValidInputStrin
         value = StringUtils.trim(value);
 
         if (alphaOnly) {
-            return StringUtils.isAlpha(value);
+            return value.matches("[a-zA-Z ]+");
         }
 
         return value.matches("[a-z0-9]+");

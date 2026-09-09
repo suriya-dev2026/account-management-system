@@ -37,3 +37,5 @@ account_api.http
 *.zip
 
 accountmanagement_api/
+accountmanagement_api/accounts_api.http
+accountmanagement_api/api_token.http

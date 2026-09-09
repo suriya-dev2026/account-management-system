@@ -10,6 +10,7 @@ public class AccountmanagementsystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AccountmanagementsystemApplication.class, args);
+		
 	}
 
 }

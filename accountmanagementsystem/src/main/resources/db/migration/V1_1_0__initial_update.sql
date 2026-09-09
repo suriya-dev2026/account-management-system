@@ -1236,9 +1236,9 @@ CREATE TABLE IF NOT EXISTS organizations (
     state_id INTEGER,
     city_id INTEGER,
     postal_code VARCHAR(20),
-    primary_contact_name VARCHAR(150),
-    primary_contact_email VARCHAR(150) unique,
-    primary_contact_number VARCHAR(30) unique,
+    contact_name VARCHAR(150),
+    contact_email VARCHAR(150) unique,
+    contact_number VARCHAR(30) unique,
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -1246,7 +1246,7 @@ CREATE TABLE IF NOT EXISTS organizations (
     FOREIGN KEY(state_id) REFERENCES master_states(id),
     FOREIGN KEY(city_id) REFERENCES master_cities(id)
 );
-CREATE SEQUENCE organization_code_seq START 1 INCREMENT 1;
+CREATE SEQUENCE organization_code_seq START WITH 2 INCREMENT BY 1;
 CREATE TABLE organization_settings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID NOT NULL REFERENCES organizations(id),
@@ -1257,6 +1257,19 @@ CREATE TABLE organization_settings (
     currency VARCHAR(10),
     language VARCHAR(20),
     FOREIGN KEY (organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE organization_audit_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_code VARCHAR(25) NOT NULL,
+    user_id UUID,
+    logged_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    entity_name VARCHAR(100),
+    entity_pk VARCHAR(255),
+    action_name VARCHAR(50),
+    existing_value TEXT,
+    updated_value TEXT,
+    remarks TEXT,
+    ip_address VARCHAR(45)
 );
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1369,8 +1382,8 @@ CREATE TABLE IF NOT EXISTS members (
     organization_id UUID NOT NULL,
     organization_code VARCHAR(25) NOT NULL,
     family_head_id UUID,
-    category VARCHAR(30) not null,
-    location varchar(30) not null,
+    category_id VARCHAR(30) not null,
+    location_id varchar(30) not null,
     relation_ship varchar(50),
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -1493,15 +1506,39 @@ INSERT INTO subscription_plans (
         status
     )
 VALUES (
-        'BASIC_PLAN',
+        'FREETRIAL',
+        'Free Trial',
+        'Suitable for small churches and organizations.',
+        0.00,
+        'INR',
+        3,
+        50,
+        10,
+        3,
+        'ACTIVE'
+    ),
+    (
+        'FREEPLAN',
+        'Free Plan',
+        'Suitable for small churches and organizations.',
+        0.00,
+        'INR',
+        3,
+        50,
+        10,
+        3,
+        'ACTIVE'
+    ),
+    (
+        'BASICPLAN',
         'Basic Plan',
         'Suitable for small churches and organizations.',
-        999.00,
+        0.00,
         'INR',
-        15,
-        500,
+        3,
         50,
-        5,
+        10,
+        3,
         'ACTIVE'
     ),
     (
@@ -1528,3 +1565,222 @@ VALUES (
         25,
         'ACTIVE'
     );
+CREATE TABLE access_control_roles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    role_name VARCHAR(100) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE access_control_routes (
+    id SERIAL PRIMARY KEY,
+    controller_name VARCHAR(255) NOT NULL,
+    backend_route VARCHAR(255),
+    frontend_route VARCHAR(255),
+    description TEXT,
+    is_default INTEGER DEFAULT 0,
+    status VARCHAR(50)
+);
+CREATE TABLE access_control_module_presets (
+    id SERIAL PRIMARY KEY,
+    module_name VARCHAR(25),
+    preset_name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    status VARCHAR(10)
+);
+CREATE TABLE access_control_route_preset_access (
+    id SERIAL PRIMARY KEY,
+    module_preset_id INTEGER NOT NULL,
+    route_id INTEGER,
+    status VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (module_preset_id) REFERENCES access_control_module_presets(id),
+    FOREIGN KEY (route_id) REFERENCES access_control_routes(id)
+);
+CREATE TABLE access_control_role_preset_access (
+    id SERIAL PRIMARY KEY,
+    role_id UUID NOT NULL,
+    module_preset_id INTEGER NOT NULL,
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES access_control_roles(id),
+    FOREIGN KEY (module_preset_id) REFERENCES access_control_module_presets(id)
+);
+CREATE TABLE access_control_user_roles (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL,
+    role_id UUID NOT NULL,
+    status VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (role_id) REFERENCES access_control_roles(id)
+);
+CREATE TABLE sunday_school_classes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    class_name VARCHAR(50) NOT NULL,
+    class_number INTEGER,
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE sunday_school_teachers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    member_id UUID NOT NULL,
+    class_id UUID NOT NULL,
+    date_of_join DATE,
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(member_id) REFERENCES members(id),
+    FOREIGN KEY(class_id) REFERENCES sunday_school_classes(id),
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE sunday_school_students (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    member_id UUID NULL,
+    name VARCHAR(100) NOT NULL,
+    gender VARCHAR(20),
+    age INTEGER,
+    date_of_birth DATE,
+    class_id UUID NOT NULL,
+    teacher_id UUID,
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(member_id) REFERENCES members(id),
+    FOREIGN KEY(class_id) REFERENCES sunday_school_classes(id),
+    FOREIGN KEY(teacher_id) REFERENCES sunday_school_teachers(id),
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE sunday_school_attendance (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    student_id UUID NOT NULL,
+    attendance_date DATE NOT NULL,
+    attendance_status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(student_id) REFERENCES sunday_school_students(id),
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE sunday_school_transitions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    student_id UUID NOT NULL REFERENCES sunday_school_students(id),
+    from_class_id UUID NOT NULL REFERENCES sunday_school_classes(id),
+    to_class_id UUID NOT NULL REFERENCES sunday_school_classes(id),
+    transition_by UUID NOT NULL REFERENCES sunday_school_teachers(id),
+    transition_date DATE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE sunday_school_attendance
+ADD CONSTRAINT uk_sunday_school_attendance UNIQUE (organization_id, student_id, attendance_date);
+CREATE TABLE vbs_years (
+    id SERIAL PRIMARY KEY,
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    year INTEGER NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    remarks TEXT
+);
+CREATE TABLE vbs_classes (
+    id SERIAL PRIMARY KEY,
+    organization_id UUID NOT NULL,
+    class_name VARCHAR(50),
+    year_id INTEGER NOT NULL references vbs_years(id),
+    teacher_id UUID,
+    status VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(teacher_id) REFERENCES members(id)
+);
+CREATE TABLE vbs_students (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    vbs_year_id INTEGER NOT NULL REFERENCES vbs_years(id),
+    vbs_class_id INTEGER NOT NULL REFERENCES vbs_classes(id),
+    member_id UUID NULL,
+    student_name VARCHAR(50) NOT NULL,
+    gender VARCHAR(20),
+    mobile_number VARCHAR(20),
+    emergency_contact_number VARCHAR(20),
+    emergency_contact_person VARCHAR(20),
+    address VARCHAR(100),
+    status varchar(10),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE vbs_teachers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    member_id UUID NULL,
+    class_id UUID NOT NULL,
+    teacher_name VARCHAR(100) NOT NULL,
+    teacher_type VARCHAR(20) NOT NULL,
+    gender VARCHAR(20),
+    age INTEGER,
+    date_of_birth DATE,
+    date_of_join DATE,
+    interest_area VARCHAR(200),
+    priority varchar(20),
+    status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(member_id) REFERENCES members(id),
+    FOREIGN KEY(class_id) REFERENCES sunday_school_classes(id),
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE vbs_attendance (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    student_id UUID NOT NULL,
+    attendance_date DATE NOT NULL,
+    attendance_status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(student_id) REFERENCES vbs_students(id),
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE staffs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    user_id UUID NOT NULL REFERENCES users(id),
+    staff_code VARCHAR(10) UNIQUE NOT NULL,
+    staff_type VARCHAR(10) NOT NULL,
+    member_id UUID NULL REFERENCES members(id),
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    gender VARCHAR(10),
+    qualification VARCHAR(100),
+    designation VARCHAR(100),
+    age INTEGER,
+    date_of_birth DATE,
+    date_of_join DATE,
+    contact_number VARCHAR(20),
+    is_water_baptised BOOLEAN DEFAULT FALSE,
+    is_spirit_baptised BOOLEAN DEFAULT FALSE,
+    status varchar(10),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE SEQUENCE staff_code_seq START 1 INCREMENT 1;
+CREATE TABLE staff_attendance (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    staff_id UUID NOT NULL,
+    attendance_date DATE NOT NULL,
+    attendance_status VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(staff_id) REFERENCES staffs(id),
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);

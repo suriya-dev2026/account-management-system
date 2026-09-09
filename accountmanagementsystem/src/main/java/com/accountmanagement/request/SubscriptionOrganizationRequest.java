@@ -20,6 +20,9 @@ public class SubscriptionOrganizationRequest {
         @NotNull(message = "billing cycle is required")
         private BillingCycle billingCycle;
 
+        
+        private Integer trialDays;
+
         @NotNull(message = "auto renew is required")
         private Boolean autoRenew;
 }

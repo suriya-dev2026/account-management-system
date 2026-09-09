@@ -15,10 +15,8 @@ public class SundaySchoolStudentMapper {
         SundaySchoolStudent sundaySchoolStudent = new SundaySchoolStudent();
         sundaySchoolStudent.setOrganizationId(sundaySchoolStudentRequest.getOrganizationId());
         sundaySchoolStudent.setMemberId(sundaySchoolStudentRequest.getMemberId());
-        sundaySchoolStudent.setName(sundaySchoolStudentRequest.getName());
         sundaySchoolStudent.setGender(sundaySchoolStudentRequest.getGender());
         sundaySchoolStudent.setAge(sundaySchoolStudentRequest.getAge());
-        sundaySchoolStudent.setDateOfBirth(sundaySchoolStudentRequest.getDateOfBirth());
         sundaySchoolStudent.setClassId(sundaySchoolStudentRequest.getClassId());
         sundaySchoolStudent.setTeacherId(sundaySchoolStudentRequest.getTeacherId());
         if (member != null) {
@@ -37,6 +35,7 @@ public class SundaySchoolStudentMapper {
         sundaySchoolStudent.setAge(sundaySchoolStudentRequest.getAge());
         sundaySchoolStudent.setDateOfBirth(sundaySchoolStudentRequest.getDateOfBirth());
         sundaySchoolStudent.setClassId(sundaySchoolStudentRequest.getClassId());
+        sundaySchoolStudent.setTeacherId(sundaySchoolStudent.getTeacherId());
         return sundaySchoolStudent;
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.model.User;
 import com.accountmanagement.model.UserVerification;
@@ -71,7 +73,8 @@ public class AuthFilter extends OncePerRequestFilter {
                 sendError(response, UserMessage.ACCOUNT_LOCKED, 423);
                 return;
             }
-            String token = redisTemplate.opsForValue().get(accessToken);
+            String key = AppConstants.ACCESS_TOKEN + accessToken;
+            String token = redisTemplate.opsForValue().get(key);
             if (token == null) {
                 sendError(response, UserMessage.INVALID_TOKEN, 401);
                 return;
@@ -93,36 +96,12 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/auth/v1/organization/register")
-                || path.equals("/auth/v1/user/register")
-                || path.equals("/auth/v1/user/view/all")
-                || path.equals("/auth/v1/user/verify/email/otp")
-                || path.startsWith("/auth/v1/user/resend/verification/otp")
-                || path.equals("/auth/v1/subscription/organization/add")
-                || path.equals("/auth/v1/subscription/payment/add")
-                || path.equals("/auth/v1/subscription/payment/webhook")
-                || path.equals("/auth/v1/user/login")
+        return path.equals("/auth/v1/user/login")
+                || path.equals("/auth/v1/verify/email")
+                || path.equals("/auth/v1/resend/verification/email")
                 || path.equals("/auth/v1/user/verify/otp")
                 || path.equals("/auth/v1/user/change/temporary/password")
-                || path.startsWith("/auth/v1/user/resend/temporary/password/")
-                || path.startsWith("/v1/organization/update/")
-                || path.startsWith("/v1/organization/delete/")
-                || path.equals("/v1/organization")
-                || path.startsWith("/v1/user/update/")
-                || path.startsWith("/v1/user/delete/")
-                || path.equals("/v1/subscription/plan")
-                || path.equals("/v1/subscription/feature/add")
-                || path.startsWith("/v1/subscription/feature/update/")
-                || path.startsWith("/v1/subscription/feature/delete/")
-                || path.equals("/v1/subscription/feature")
-                || path.equals("/v1/subscription/plan/feature/add")
-                || path.startsWith("/v1/subscription/plan/feature/update/")
-                || path.startsWith("/v1/subscription/plan/feature/delete/")
-                || path.equals("/v1/subscription/plan/feature")
-                || path.startsWith("/v1/subscription/organization/update/")
-                || path.startsWith("/v1/subscription/organization/delete/")
-                || path.equals("/v1/subscription/organization")
-                || path.equals("/v1/subscription/payment")
+                || path.startsWith("/auth/v1/user/send/temporary/password/")
                 || path.startsWith("/v1/user/refreshKey")
                 || path.equals("/v1/user/verify/reset/otp")
                 || path.startsWith("/v1/user/forgot/password")

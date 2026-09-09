@@ -16,7 +16,7 @@ import com.accountmanagement.service.MasterCountryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(value = "v1/country")
+@RequestMapping(value = "/v1/country")
 @Tag(name = "MasterCountryController")
 public class MasterCountryController {
 

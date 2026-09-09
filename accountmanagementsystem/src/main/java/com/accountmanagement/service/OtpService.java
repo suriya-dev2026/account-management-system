@@ -4,12 +4,10 @@ import com.accountmanagement.repository.EmailQueueRepository;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.exceptions.InvalidOtpException;
 import com.accountmanagement.exceptions.MaxOtpAttemptException;
 import com.accountmanagement.exceptions.OtpExpiredException;
@@ -52,11 +50,11 @@ public class OtpService {
             message.setTo(emailQueue.getToEmail());
             message.setText(emailQueue.getBody());
             javaMailSender.send(message);
-            emailQueue.setStatus("Sent");
+            emailQueue.setStatus("sent");
             emailQueue.setSentAt(LocalDateTime.now());
         } catch (Exception e) {
             e.printStackTrace();
-            emailQueue.setStatus("Failed");
+            emailQueue.setStatus("failed");
         } finally {
             emailQueueRepository.save(emailQueue);
         }

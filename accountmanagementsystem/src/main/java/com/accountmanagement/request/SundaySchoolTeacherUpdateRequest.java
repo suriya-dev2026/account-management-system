@@ -2,10 +2,8 @@ package com.accountmanagement.request;
 
 import java.time.LocalDate;
 import java.util.UUID;
-
 import com.accountmanagement.validations.ValidClassId;
 import com.accountmanagement.validations.ValidDate;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

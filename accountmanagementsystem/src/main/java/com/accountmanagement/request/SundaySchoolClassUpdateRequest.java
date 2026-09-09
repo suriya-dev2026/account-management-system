@@ -15,6 +15,7 @@ public class SundaySchoolClassUpdateRequest {
     private String className;
 
     @NotNull(message = "Class Number Is Required")
+    @ValidInput(message = "Class Number Contains Invalid Characters")
     private Integer classNumber;
 
     public void sanitizeInput() {

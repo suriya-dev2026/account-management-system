@@ -7,6 +7,7 @@ import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.validations.ValidClassId;
 import com.accountmanagement.validations.ValidDate;
 import com.accountmanagement.validations.ValidInput;
+import com.accountmanagement.validations.ValidTeacherId;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,6 +31,10 @@ public class SundaySchoolStudentUpdateRequest {
     @ValidClassId(message = "Class Id Does Not Exists")
     @NotNull(message = "Class Id Is Required")
     private UUID classId;
+
+    @ValidTeacherId(message = "Teacher Id Does Not Exists")
+    @NotNull(message = "Teacher Id Is Required")
+    private UUID teacherId;
 
     public void sanitizeInput() {
         setName(Apputility.sanitizeInput(getName()));

@@ -55,7 +55,7 @@ public class MemberRequest {
         @Size(max = AppConstants.maxNameLength, message = "Last Name cannot exceed maximum of "
                         + AppConstants.maxNameLength
                         + " characters")
-        @ValidInputString(message = "last name should contain alphabets only ", allowNull = false, alphaOnly = true)
+        @ValidInputString(message = "last name should contain alphabets only ", allowNull = true, alphaOnly = true)
         @ValidInput(message = "Input contains invalid characters")
         private String lastName;
 
@@ -71,7 +71,7 @@ public class MemberRequest {
         private Gender gender;
 
         @NotNull(message = "please enter date of birth")
-        @ValidDate(message = "pleases enter a valid date. Birth date cannot be in the future")
+        @ValidDate(message = "please enter a valid date. Birth date cannot be in the future")
         private LocalDate dateOfBirth;
 
         @NotNull(message = "please enter date of join")

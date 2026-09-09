@@ -2,7 +2,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,15 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.SundaySchoolAttendanceMessage;
 import com.accountmanagement.model.SundaySchoolAttendance;
+import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.SundaySchoolAttendanceRequest;
-import com.accountmanagement.request.SundaySchoolAttendanceUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.SundaySchoolAttendanceService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -43,10 +40,10 @@ public class SundaySchoolAttendanceController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<ApiResponse> updateSundaySchoolAttendance(
-            @Valid @RequestBody SundaySchoolAttendanceUpdateRequest sundaySchoolAttendanceUpdateRequest) {
-        sundaySchoolAttendanceService.updateSundaySchoolAttendance(sundaySchoolAttendanceUpdateRequest);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateSundaySchoolAttendance(@PathVariable UUID id,
+            @Valid @RequestBody AttendanceUpdateRequest request) {
+        sundaySchoolAttendanceService.updateSundaySchoolAttendance(id, request);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 SundaySchoolAttendanceMessage.UPDATE_SUNDAY_SCHOOL_ATTENDANCE, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -23,13 +23,13 @@ public class SundaySchoolStudentRequest {
     @ValidOrganizationId(message = "Organization Id Does Not Exists")
     private UUID organizationId;
 
-    @NotNull(message = "Member Id Is Required")
     @ValidMemberId(message = "Membser Id Does Not Exists")
     private UUID memberId;
 
     @ValidInput(message = "Student Name Contains Invalid Characters")
     private String name;
 
+    @ValidInput(message = "Gender Contains Invalid Characters")
     private String gender;
 
     @NotNull(message = "Age is required")
@@ -37,7 +37,7 @@ public class SundaySchoolStudentRequest {
     @Max(value = 100, message = "Age should not exceed 100")
     private Integer age;
 
-    @ValidDate(message = "pleases enter a valid date birth date cannot be in the future")
+    @ValidDate(message = "Please Enter A Valid Date Of Birth.Birth Date Cannot Be In The Future")
     private LocalDate dateOfBirth;
 
     @ValidClassId(message = "Class Id Does Not Exists")

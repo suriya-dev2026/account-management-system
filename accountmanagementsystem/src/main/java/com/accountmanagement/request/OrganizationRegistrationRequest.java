@@ -50,17 +50,17 @@ public class OrganizationRegistrationRequest {
 
         @NotBlank(message = "primary contact name is required")
         @ValidInput(message = "Input contains invalid characters")
-        private String primaryContactName;
+        private String contactName;
 
         @NotBlank(message = "primary contact email is required")
         @Email(message = "invalid primary contact email")
         @ValidInput(message = "Input contains invalid characters")
-        private String primaryContactEmail;
+        private String contactEmail;
 
         @NotBlank(message = "primary contact number is required")
         @ValidContactNumber(message = "please enter a valid contact number")
         @ValidInput(message = "Input contains invalid characters")
-        private String primaryContactNumber;
+        private String contactNumber;
 
         @ValidInput(message = "input containts invalid characters")
         private String logoUrl;
@@ -87,9 +87,9 @@ public class OrganizationRegistrationRequest {
                 setRegistrationNumber(Apputility.sanitizeInput(getRegistrationNumber()));
                 setAddress(Apputility.sanitizeInput(getAddress()));
                 setPostalCode(Apputility.sanitizeInput(getPostalCode()));
-                setPrimaryContactName(Apputility.sanitizeInput(getPrimaryContactName()));
-                setPrimaryContactEmail(Apputility.sanitizeInput(getPrimaryContactEmail()));
-                setPrimaryContactNumber(Apputility.sanitizeInput(getPrimaryContactNumber()));
+                setContactName(Apputility.sanitizeInput(getContactName()));
+                setContactEmail(Apputility.sanitizeInput(getContactEmail()));
+                setContactNumber(Apputility.sanitizeInput(getContactNumber()));
                 setLogoUrl(Apputility.sanitizeInput(getLogoUrl()));
                 setFaviconUrl(Apputility.sanitizeInput(getFaviconUrl()));
                 setPrimaryColor(Apputility.sanitizeInput(getPrimaryColor()));

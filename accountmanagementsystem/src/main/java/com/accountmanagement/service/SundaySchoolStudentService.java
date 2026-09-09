@@ -35,7 +35,7 @@ public class SundaySchoolStudentService {
         Member member = null;
         if (sundaySchoolStudentRequest.getMemberId() != null) {
             member = memberRepository.findById(sundaySchoolStudentRequest.getMemberId())
-                    .orElseThrow(() -> new RecordNotFoundException("Member not found"));
+                    .orElseThrow(() -> new RecordNotFoundException("Member Id Not Found"));
         }
         SundaySchoolStudent student = sundaySchoolStudentMapper.toAddSundaySchoolStudent(sundaySchoolStudentRequest,
                 member);
