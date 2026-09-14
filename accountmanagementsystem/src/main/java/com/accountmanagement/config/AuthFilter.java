@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.model.User;

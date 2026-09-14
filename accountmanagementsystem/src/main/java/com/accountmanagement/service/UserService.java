@@ -102,7 +102,7 @@ public class UserService {
     @Transactional
     public String registerUser(UserRegistrationRequest request) {
         Organization organization = validateOrganization(request.getOrganizationId());
-        organizationService.validateOrganizationAccess(organization.getId());
+        // organizationService.validateOrganizationAccess(organization.getId());
         validateUser(request);
         String email = getRegistrationEmail(request, organization);
         User user = userMapper.toRegisterUser(request, email);

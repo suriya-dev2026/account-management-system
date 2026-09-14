@@ -48,16 +48,16 @@ public class OrganizationRegistrationRequest {
                         + AppConstants.minPostalCodeLength + " and " + AppConstants.maxPostalCodeLength + " characters")
         private String postalCode;
 
-        @NotBlank(message = "primary contact name is required")
+        @NotBlank(message = "contact name is required")
         @ValidInput(message = "Input contains invalid characters")
         private String contactName;
 
-        @NotBlank(message = "primary contact email is required")
+        @NotBlank(message = "contact email is required")
         @Email(message = "invalid primary contact email")
         @ValidInput(message = "Input contains invalid characters")
         private String contactEmail;
 
-        @NotBlank(message = "primary contact number is required")
+        @NotBlank(message = "contact number is required")
         @ValidContactNumber(message = "please enter a valid contact number")
         @ValidInput(message = "Input contains invalid characters")
         private String contactNumber;

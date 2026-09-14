@@ -1,7 +1,6 @@
 package com.accountmanagement.mapper;
 
 import org.springframework.stereotype.Component;
-
 import com.accountmanagement.model.Event;
 import com.accountmanagement.request.EventRequest;
 

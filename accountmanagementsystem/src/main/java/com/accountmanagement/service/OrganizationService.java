@@ -15,7 +15,6 @@ import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.OrganizationMapper;
 import com.accountmanagement.model.Organization;
 import com.accountmanagement.model.OrganizationSetting;
-import com.accountmanagement.model.User;
 import com.accountmanagement.repository.MasterCityRepository;
 import com.accountmanagement.repository.MasterCountryRepository;
 import com.accountmanagement.repository.MasterStateRepository;
@@ -107,28 +106,28 @@ public class OrganizationService {
         return String.format("ORG-%05d", sequence);
     }
 
-    public void validateOrganizationAccess(UUID organizationId) {
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-        User currentUser = userRepository.findByUserName(username);
-        if (currentUser == null) {
-            throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
-        }
-        if (UserType.OWNER.equals(currentUser.getUserType())) {
-            return;
-        }
-        UUID currentOrganizationId = currentUser.getOrganizationId();
-        if (currentOrganizationId == null) {
-            throw new AccessDeniedException(
-                    "User is not associated with any organization");
-        }
-        if (!currentOrganizationId.equals(organizationId)) {
-            throw new AccessDeniedException(
-                    "You cannot access another organization");
-        }
-    }
+    // public void validateOrganizationAccess(UUID organizationId) {
+    // String username = SecurityContextHolder
+    // .getContext()
+    // .getAuthentication()
+    // .getName();
+    // User currentUser = userRepository.findByUserName(username);
+    // if (currentUser == null) {
+    // throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
+    // }
+    // if (UserType.OWNER.equals(currentUser.getUserType())) {
+    // return;
+    // }
+    // UUID currentOrganizationId = currentUser.getOrganizationId();
+    // if (currentOrganizationId == null) {
+    // throw new AccessDeniedException(
+    // "User is not associated with any organization");
+    // }
+    // if (!currentOrganizationId.equals(organizationId)) {
+    // throw new AccessDeniedException(
+    // "You cannot access another organization");
+    // }
+    // }
 
     public Organization findById(UUID id) {
         return organizationRepository.findById(id)

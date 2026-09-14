@@ -3,7 +3,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.VbsAttendanceMessage;
 import com.accountmanagement.model.VbsAttendance;
@@ -22,7 +20,6 @@ import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.VbsAttendanceRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsAttendanceService;
-
 import jakarta.validation.Valid;
 
 @RestController
