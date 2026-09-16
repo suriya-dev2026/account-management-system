@@ -3,7 +3,6 @@ package com.accountmanagement.service;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,29 +104,6 @@ public class OrganizationService {
         Long sequence = jdbcTemplate.queryForObject("select nextval('organization_code_seq')", Long.class);
         return String.format("ORG-%05d", sequence);
     }
-
-    // public void validateOrganizationAccess(UUID organizationId) {
-    // String username = SecurityContextHolder
-    // .getContext()
-    // .getAuthentication()
-    // .getName();
-    // User currentUser = userRepository.findByUserName(username);
-    // if (currentUser == null) {
-    // throw new RecordNotFoundException(UserMessage.USER_NOT_FOUND);
-    // }
-    // if (UserType.OWNER.equals(currentUser.getUserType())) {
-    // return;
-    // }
-    // UUID currentOrganizationId = currentUser.getOrganizationId();
-    // if (currentOrganizationId == null) {
-    // throw new AccessDeniedException(
-    // "User is not associated with any organization");
-    // }
-    // if (!currentOrganizationId.equals(organizationId)) {
-    // throw new AccessDeniedException(
-    // "You cannot access another organization");
-    // }
-    // }
 
     public Organization findById(UUID id) {
         return organizationRepository.findById(id)

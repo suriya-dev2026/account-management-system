@@ -21,10 +21,12 @@ import com.accountmanagement.request.MeetingUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.MeetingService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/meeting")
+@Tag(name = "MeetingController")
 public class MeetingController {
 
     private final MeetingService meetingService;

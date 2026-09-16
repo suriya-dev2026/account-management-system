@@ -20,10 +20,13 @@ import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.VbsAttendanceRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsAttendanceService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/vbs/attendance")
+@Tag(name = "VbsAttendanceController")
 public class VbsAttendanceController {
     private final VbsAttendanceService vbsAttendanceService;
 

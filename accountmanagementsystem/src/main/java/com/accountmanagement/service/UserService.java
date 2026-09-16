@@ -44,8 +44,6 @@ import com.accountmanagement.utility.TokenUtility;
 @Service
 public class UserService {
 
-    private final OrganizationService organizationService;
-
     private final RedisService redisService;
 
     private final OtpService otpService;
@@ -81,7 +79,7 @@ public class UserService {
             EmailQueueService emailQueueService,
             OrganizationRepository organizationRepository,
             UserVerificationService userVerificationService, UserVerificationRepository userVerificationRepository,
-            RedisService redisService, OrganizationService organizationService) {
+            RedisService redisService) {
         this.otpService = otpService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.tokenUtility = tokenUtility;
@@ -96,13 +94,11 @@ public class UserService {
         this.userVerificationService = userVerificationService;
         this.userVerificationRepository = userVerificationRepository;
         this.redisService = redisService;
-        this.organizationService = organizationService;
     }
 
     @Transactional
     public String registerUser(UserRegistrationRequest request) {
         Organization organization = validateOrganization(request.getOrganizationId());
-        // organizationService.validateOrganizationAccess(organization.getId());
         validateUser(request);
         String email = getRegistrationEmail(request, organization);
         User user = userMapper.toRegisterUser(request, email);

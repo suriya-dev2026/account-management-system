@@ -2,6 +2,9 @@ package com.accountmanagement.request;
 
 import java.time.LocalDate;
 import java.util.UUID;
+
+import com.accountmanagement.utility.Apputility;
+import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidOrganizationId;
 import com.accountmanagement.validations.ValidVbsDate;
 import com.accountmanagement.validations.ValidYear;
@@ -25,5 +28,12 @@ public class VbsYearRequest {
 
     @NotNull(message = "End Date Is Required")
     private LocalDate endDate;
+
+    @ValidInput(message = "Remarks Contains Invalid Characters")
+    private String remarks;
+
+    public void sanitizeInput() {
+        setRemarks(Apputility.sanitizeInput(getRemarks()));
+    }
 
 }

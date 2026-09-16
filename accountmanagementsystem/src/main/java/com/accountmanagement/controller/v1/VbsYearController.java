@@ -19,10 +19,12 @@ import com.accountmanagement.request.VbsYearRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsYearService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/vbs/year")
+@Tag(name = "VbsYearController")
 public class VbsYearController {
 
     private final VbsYearService vbsYearService;
@@ -33,6 +35,7 @@ public class VbsYearController {
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addVbsYear(@Valid @RequestBody VbsYearRequest vbsYearRequest) {
+        vbsYearRequest.sanitizeInput();
         vbsYearService.createVbsYear(vbsYearRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, VbsYearMessage.ADD_VBS_YEAR, 201);
         return new ResponseEntity<>(response, HttpStatus.OK);

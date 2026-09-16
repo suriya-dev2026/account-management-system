@@ -1,7 +1,6 @@
 package com.accountmanagement.mapper;
 
 import org.springframework.stereotype.Component;
-
 import com.accountmanagement.model.Meeting;
 import com.accountmanagement.request.MeetingRequest;
 import com.accountmanagement.request.MeetingUpdateRequest;

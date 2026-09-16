@@ -22,10 +22,12 @@ import com.accountmanagement.request.StaffAttendanceUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.StaffAttendanceService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/staff/attendance")
+@Tag(name = "StaffAttendanceController")
 public class StaffAttendanceController {
 
     private final StaffAttendanceService staffAttendanceService;

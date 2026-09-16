@@ -100,27 +100,6 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // @PostMapping("/user/verify/email/otp")
-    // public ResponseEntity<ApiResponse> verifyEmail(@Valid @RequestBody
-    // VerifyOtpRequest verifyOtpRequest) {
-    // verifyOtpRequest.sanitizeInput();
-    // userService.verifyEmailOtp(verifyOtpRequest);
-    // ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-    // UserMessage.USER_EMAIL_VERIFY, 200);
-    // return new ResponseEntity<>(response, HttpStatus.OK);
-    // }
-
-    // @PostMapping("/user/resend/verification/otp")
-    // public ResponseEntity<ApiResponse> verifyEmail(
-    // @Valid @RequestBody ResendEmailVerificationRequest
-    // resendEmailVerificationRequest) {
-    // userService.sendOtpForEmailVerification(resendEmailVerificationRequest.getUserId(),
-    // resendEmailVerificationRequest.getEmail());
-    // ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-    // UserMessage.OTP_RESEND, 200);
-    // return new ResponseEntity<>(response, HttpStatus.OK);
-    // }
-
     @PostMapping("/subscription/organization/create")
     public ResponseEntity<ApiResponse> createSubscriptionOrganization(
             @Valid @RequestBody SubscriptionOrganizationRequest subscriptionOrganizationRequest) {

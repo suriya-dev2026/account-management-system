@@ -29,41 +29,16 @@ public class OrganizationMapper {
 
     public Organization toUpdateOrganization(Organization organization,
             OrganizationUpdationRequest organizationUpdateRequest) {
-        if (organizationUpdateRequest.getName() != null && !organizationUpdateRequest.getName().trim().isEmpty()) {
-            organization.setName(organizationUpdateRequest.getName());
-        }
-        if (organizationUpdateRequest.getAddress() != null
-                && !organizationUpdateRequest.getAddress().trim().isEmpty()) {
-            organization.setAddress(organizationUpdateRequest.getAddress());
-        }
-        if (organizationUpdateRequest.getWebsite() != null
-                && !organizationUpdateRequest.getWebsite().trim().isEmpty()) {
-            organization.setWebsite(organizationUpdateRequest.getWebsite());
-        }
-        if (organizationUpdateRequest.getCountryId() != null) {
-            organization.setCountryId(organizationUpdateRequest.getCountryId());
-        }
-        if (organizationUpdateRequest.getStateId() != null) {
-            organization.setStateId(organizationUpdateRequest.getStateId());
-        }
-        if (organizationUpdateRequest.getCityId() != null) {
-            organization.setCityId(organizationUpdateRequest.getCityId());
-        }
-        if (organizationUpdateRequest.getPostalCode() != null) {
-            organization.setPostalcode(organizationUpdateRequest.getPostalCode());
-        }
-        if (organizationUpdateRequest.getContactName() != null
-                && !organizationUpdateRequest.getContactName().trim().isEmpty()) {
-            organization.setContactName(organizationUpdateRequest.getContactName());
-        }
-        if (organizationUpdateRequest.getContactEmail() != null
-                && !organizationUpdateRequest.getContactEmail().trim().isEmpty()) {
-            organization.setContactEmail(organizationUpdateRequest.getContactEmail());
-        }
-        if (organizationUpdateRequest.getContactNumber() != null
-                && !organizationUpdateRequest.getContactNumber().trim().isEmpty()) {
-            organization.setContactNumber(organizationUpdateRequest.getContactNumber());
-        }
+        organization.setName(organizationUpdateRequest.getName());
+        organization.setWebsite(organizationUpdateRequest.getWebsite());
+        organization.setAddress(organizationUpdateRequest.getAddress());
+        organization.setCountryId(organizationUpdateRequest.getCountryId());
+        organization.setStateId(organizationUpdateRequest.getStateId());
+        organization.setCityId(organizationUpdateRequest.getCityId());
+        organization.setPostalcode(organizationUpdateRequest.getPostalCode());
+        organization.setContactName(organizationUpdateRequest.getContactName());
+        organization.setContactEmail(organizationUpdateRequest.getContactEmail());
+        organization.setContactNumber(organizationUpdateRequest.getContactNumber());
         return organization;
     }
 
@@ -77,36 +52,17 @@ public class OrganizationMapper {
         organizationSetting.setTimeZone(organizationRequest.getTimeZone());
         organizationSetting.setCurrency(organizationRequest.getCurrency());
         organizationSetting.setLanguage(organizationRequest.getLanguage());
-        System.out.println("PrimaryColor" + organizationRequest.getPrimaryColor());
         return organizationSetting;
     }
 
     public OrganizationSetting toUpdateOrganizationSetting(OrganizationSetting organizationSetting,
             OrganizationUpdationRequest organizationUpdateRequest) {
-        if (organizationUpdateRequest.getLogoUrl() != null
-                && !organizationUpdateRequest.getLogoUrl().trim().isEmpty()) {
-            organizationSetting.setLogoUrl((organizationUpdateRequest.getLogoUrl()));
-        }
-        if (organizationUpdateRequest.getFaviconUrl() != null
-                && !organizationUpdateRequest.getFaviconUrl().trim().isEmpty()) {
-            organizationSetting.setFaviconUrl(organizationUpdateRequest.getFaviconUrl());
-        }
-        if (organizationUpdateRequest.getPrimaryColor() != null
-                && !organizationUpdateRequest.getPrimaryColor().trim().isEmpty()) {
-            organizationSetting.setPrimaryColor(organizationUpdateRequest.getPrimaryColor());
-        }
-        if (organizationUpdateRequest.getTimeZone() != null
-                && !organizationUpdateRequest.getTimeZone().trim().isEmpty()) {
-            organizationSetting.setTimeZone(organizationUpdateRequest.getTimeZone());
-        }
-        if (organizationUpdateRequest.getCurrency() != null
-                && !organizationUpdateRequest.getCurrency().trim().isEmpty()) {
-            organizationSetting.setCurrency(organizationUpdateRequest.getCurrency());
-        }
-        if (organizationUpdateRequest.getLanguage() != null
-                && !organizationUpdateRequest.getLanguage().trim().isEmpty()) {
-            organizationSetting.setLanguage(organizationUpdateRequest.getLanguage());
-        }
+        organizationSetting.setLogoUrl((organizationUpdateRequest.getLogoUrl()));
+        organizationSetting.setFaviconUrl(organizationUpdateRequest.getFaviconUrl());
+        organizationSetting.setPrimaryColor(organizationUpdateRequest.getPrimaryColor());
+        organizationSetting.setTimeZone(organizationUpdateRequest.getTimeZone());
+        organizationSetting.setCurrency(organizationUpdateRequest.getCurrency());
+        organizationSetting.setLanguage(organizationUpdateRequest.getLanguage());
         return organizationSetting;
     }
 

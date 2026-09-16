@@ -19,10 +19,13 @@ import com.accountmanagement.request.EventParticipantRequest;
 import com.accountmanagement.request.EventParticipantUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.EventParticipantService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/event/participant")
+@Tag(name = "EventParticipantController")
 public class EventParticipantController {
 
     private final EventParticipantService eventParticipantService;

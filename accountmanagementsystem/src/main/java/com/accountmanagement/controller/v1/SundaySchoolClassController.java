@@ -19,10 +19,13 @@ import com.accountmanagement.request.SundaySchoolClassRequest;
 import com.accountmanagement.request.SundaySchoolClassUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.SundaySchoolClassService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/sunday/school/class")
+@Tag(name = "SundayClassController")
 public class SundaySchoolClassController {
 
     private final SundaySchoolClassService sundaySchoolClassService;

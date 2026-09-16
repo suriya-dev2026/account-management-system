@@ -18,10 +18,13 @@ import com.accountmanagement.model.Event;
 import com.accountmanagement.request.EventRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.EventService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/event")
+@Tag(name = "EventController")
 public class EventController {
 
     private final EventService eventService;

@@ -17,10 +17,13 @@ import com.accountmanagement.model.MeetingType;
 import com.accountmanagement.request.MeetingTypeRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.MeetingTypeService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/meeting/type")
+@Tag(name = "MeetingTypeController")
 public class MeetingTypeController {
 
     private final MeetingTypeService meetingTypeService;

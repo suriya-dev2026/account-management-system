@@ -19,44 +19,53 @@ import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.EventAttendanceRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.EventAttendanceService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@RestController 
-@RequestMapping (value = "/v1/event/attendance")
+@RestController
+@RequestMapping(value = "/v1/event/attendance")
+@Tag(name = "EventAttendanceController")
 public class EventAttendanceController {
 
     private final EventAttendanceService eventAttendanceService;
 
-    public EventAttendanceController(EventAttendanceService eventAttendanceService){
+    public EventAttendanceController(EventAttendanceService eventAttendanceService) {
         this.eventAttendanceService = eventAttendanceService;
     }
 
-    @PostMapping ("/create")
-    public ResponseEntity<ApiResponse> createEventAttendance(@Valid @RequestBody EventAttendanceRequest eventAttendanceRequest){
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse> createEventAttendance(
+            @Valid @RequestBody EventAttendanceRequest eventAttendanceRequest) {
         eventAttendanceService.createEventAttendance(eventAttendanceRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.CREATE_EVENT_ATTENDANCE, 201);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.CREATE_EVENT_ATTENDANCE,
+                201);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping ("/update/{id}")
-    public ResponseEntity<ApiResponse> updateEventAttendance(@PathVariable UUID id,@Valid @RequestBody AttendanceUpdateRequest updateRequest){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateEventAttendance(@PathVariable UUID id,
+            @Valid @RequestBody AttendanceUpdateRequest updateRequest) {
         eventAttendanceService.updateEventAttendance(id, updateRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.UPDATE_EVENT_ATTENDANCE, 200);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.UPDATE_EVENT_ATTENDANCE,
+                200);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping ("/delete/{id}")
-    public ResponseEntity<ApiResponse> deleteEventAttendanceById(@PathVariable UUID id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteEventAttendanceById(@PathVariable UUID id) {
         eventAttendanceService.deleteEventAttendanceById(id);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.DELETE_EVENT_ATTENDANCE, 200);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.DELETE_EVENT_ATTENDANCE,
+                200);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse> viewAllEventAttendance(){
+    public ResponseEntity<ApiResponse> viewAllEventAttendance() {
         List<EventAttendance> eventAttendance = eventAttendanceService.viewAllEventAttendance();
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.VIEW_ALL_EVENT_ATTENDANCE, 200);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.VIEW_ALL_EVENT_ATTENDANCE,
+                200);
         response.setData(eventAttendance);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

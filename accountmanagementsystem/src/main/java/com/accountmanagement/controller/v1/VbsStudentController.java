@@ -19,10 +19,13 @@ import com.accountmanagement.request.VbsStudentRequest;
 import com.accountmanagement.request.VbsStudentUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsStudentService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/vbs/student")
+@Tag(name = "VbsStudentController")
 public class VbsStudentController {
 
     private final VbsStudentService vbsStudentService;

@@ -25,6 +25,7 @@ public class VbsYearService {
         vbsYear.setYear(vbsYearRequest.getYear());
         vbsYear.setStartDate(vbsYearRequest.getStartDate());
         vbsYear.setEndDate(vbsYearRequest.getEndDate());
+        vbsYear.setRemarks(vbsYearRequest.getRemarks());
         return vbsYearRepository.save(vbsYear);
     }
 
@@ -34,6 +35,7 @@ public class VbsYearService {
         vbsYear.setYear(vbsYearRequest.getYear());
         vbsYear.setStartDate(vbsYearRequest.getStartDate());
         vbsYear.setEndDate(vbsYearRequest.getEndDate());
+        vbsYear.setRemarks(vbsYearRequest.getRemarks());
         return vbsYearRepository.save(vbsYear);
     }
 

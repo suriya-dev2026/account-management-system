@@ -20,10 +20,12 @@ import com.accountmanagement.request.VbsClassRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsClassService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/vbs/class")
+@Tag(name = "VbsClassController")
 public class VbsClassController {
 
     private final VbsClassService vbsClassService;

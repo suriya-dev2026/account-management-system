@@ -19,10 +19,13 @@ import com.accountmanagement.request.PastoralCareRequest;
 import com.accountmanagement.request.PastoralCareUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.PastoralCareService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/pastoral/care")
+@Tag(name = "PastoralCareController")
 public class PastoralCareController {
 
     private final PastoralCareService pastoralCareService;

@@ -18,10 +18,13 @@ import com.accountmanagement.model.Baptism;
 import com.accountmanagement.request.BaptismRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.BaptismService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/baptism")
+@Tag(name = "BaptismController")
 public class BaptismController {
 
     private final BaptismService baptismService;

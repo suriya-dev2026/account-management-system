@@ -18,20 +18,20 @@ public class OrganizationRegistrationRequest {
         @NotBlank(message = "name is required")
         @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "Organization Name must be between "
                         + AppConstants.minNameLength + " and " + AppConstants.maxNameLength + " characters")
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Organization Name contains invalid characters")
         private String name;
 
         @NotBlank(message = "registration number is required")
         @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "Registration number must be between "
                         + AppConstants.minNameLength + " and " + AppConstants.maxNameLength + " characters")
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Registration Number contains invalid characters")
         private String registrationNumber;
 
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Website contains invalid characters")
         @ValidWebsite(message = "invalid website format")
         private String website;
 
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Address contains invalid characters")
         @NotBlank(message = "address is required")
         private String address;
 
@@ -49,37 +49,37 @@ public class OrganizationRegistrationRequest {
         private String postalCode;
 
         @NotBlank(message = "contact name is required")
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Contact Name contains invalid characters")
         private String contactName;
 
         @NotBlank(message = "contact email is required")
         @Email(message = "invalid primary contact email")
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Contact Email contains invalid characters")
         private String contactEmail;
 
         @NotBlank(message = "contact number is required")
         @ValidContactNumber(message = "please enter a valid contact number")
-        @ValidInput(message = "Input contains invalid characters")
+        @ValidInput(message = "Contact Number contains invalid characters")
         private String contactNumber;
 
-        @ValidInput(message = "input containts invalid characters")
+        @ValidInput(message = "Logourl containts invalid characters")
         private String logoUrl;
 
-        @ValidInput(message = "input containts invalid characters")
+        @ValidInput(message = "FaviconUrl containts invalid characters")
         @ValidWebsite(message = "invalid url format")
         private String faviconUrl;
 
-        @ValidInput(message = "input containts invalid characters")
+        @ValidInput(message = "primarycolor containts invalid characters")
         private String primaryColor;
 
-        @ValidInput(message = "input containts invalid characters")
+        @ValidInput(message = "timezone containts invalid characters")
         private String timeZone;
 
-        @ValidInput(message = "input containts invalid characters")
+        @ValidInput(message = "currency containts invalid characters")
         @ValidCurrency(message = "Currency must be a valid 3-letter ISO code (e.g. INR, USD, EUR)")
         private String currency;
 
-        @ValidInput(message = "input containts invalid characters")
+        @ValidInput(message = "language containts invalid characters")
         private String language;
 
         public void sanitizeInput() {

@@ -22,10 +22,12 @@ import com.accountmanagement.request.VbsTeacherUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsTeacherService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/vbs/teacher")
+@Tag(name = "VbsTeacherController")
 public class VbsTeacherController {
 
     private final VbsTeacherService vbsTeacherService;

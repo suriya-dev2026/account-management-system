@@ -20,10 +20,12 @@ import com.accountmanagement.request.SundaySchoolTransitionRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.SundaySchoolTransitionService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/sunday/school/transition")
+@Tag(name = "SundayTransitionController")
 public class SundaySchoolTransitionController {
 
     private final SundaySchoolTransitionService sundaySchoolTransitionService;
