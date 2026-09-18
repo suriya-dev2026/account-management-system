@@ -10,4 +10,6 @@ public class SundaySchoolStudentMessage {
 
     public static final String VIEW_ALL_SUNDAY_SCHOOL_STUDENT = "Sunday School Student Fetched Successfully";
 
+    public static final String SUNDAY_SCHOOL_STUDENT_ID_NOT_FOUND = "Sunday School Student Id Not Found";
+
 }

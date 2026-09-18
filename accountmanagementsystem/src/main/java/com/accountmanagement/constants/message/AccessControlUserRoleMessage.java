@@ -10,4 +10,6 @@ public class AccessControlUserRoleMessage {
 
     public static final String VIEW_ALL_USER_ROLES = "Access Control User Role Fetched Successfully";
 
+    public static final String USER_ROLE_ID_NOT_FOUND = "Access Control User Role Id Not Found";
+
 }

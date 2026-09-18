@@ -2,10 +2,10 @@ package com.accountmanagement.service;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.MemberMessage;
+import com.accountmanagement.constants.message.SundaySchoolStudentMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.mapper.SundaySchoolStudentMapper;
 import com.accountmanagement.model.Member;
@@ -35,7 +35,7 @@ public class SundaySchoolStudentService {
         Member member = null;
         if (sundaySchoolStudentRequest.getMemberId() != null) {
             member = memberRepository.findById(sundaySchoolStudentRequest.getMemberId())
-                    .orElseThrow(() -> new RecordNotFoundException("Member Id Not Found"));
+                    .orElseThrow(() -> new RecordNotFoundException(MemberMessage.MEMBER_ID_NOT_FOUND));
         }
         SundaySchoolStudent student = sundaySchoolStudentMapper.toAddSundaySchoolStudent(sundaySchoolStudentRequest,
                 member);
@@ -58,7 +58,8 @@ public class SundaySchoolStudentService {
 
     public SundaySchoolStudent findSundaySchoolStudentById(UUID id) {
         return sundaySchoolStudentRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Sunday School Student Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        SundaySchoolStudentMessage.SUNDAY_SCHOOL_STUDENT_ID_NOT_FOUND));
     }
 
     public List<SundaySchoolStudent> viewAllSundaySchoolStudent() {

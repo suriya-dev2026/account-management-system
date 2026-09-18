@@ -2,7 +2,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +19,6 @@ import com.accountmanagement.request.SundaySchoolTeacherRequest;
 import com.accountmanagement.request.SundaySchoolTeacherUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.SundaySchoolTeacherService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -42,7 +40,7 @@ public class SundaySchoolTeacherController {
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 SundaySchoolTeacherMessage.ADD_SUNDAY_SCHOOL_TEACHER,
                 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

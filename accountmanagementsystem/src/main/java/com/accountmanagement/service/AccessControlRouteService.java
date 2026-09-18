@@ -1,10 +1,9 @@
 package com.accountmanagement.service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.AccessControlRouteMessage;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.mapper.AccessControlRouteMapper;
@@ -40,7 +39,7 @@ public class AccessControlRouteService {
 
     public AccessControlRoute findByAccessControlRouteId(Integer id) {
         return accessControlRouteRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Access Control Route id not found"));
+                .orElseThrow(() -> new RecordNotFoundException(AccessControlRouteMessage.ROUTE_ID_NOT_FOUND));
     }
 
     public List<AccessControlRoute> viewAllAccessControlRoutes() {
@@ -57,7 +56,7 @@ public class AccessControlRouteService {
         if (accessControlRouteRepository
                 .existsByBackendRouteIgnoreCase(backendRoute.trim())) {
             throw new DuplicateRecordException(
-                    "BAckend Route Already Exists");
+                    AccessControlRouteMessage.BACKEND_ROUTE_EXISTS);
         }
     }
 
@@ -65,7 +64,7 @@ public class AccessControlRouteService {
         if (accessControlRouteRepository
                 .existsByFrontendRouteIgnoreCase(frontendRoute.trim())) {
             throw new DuplicateRecordException(
-                    "Frontend Route Already Exists");
+                    AccessControlRouteMessage.FRONTEND_ROUTE_EXISTS);
         }
     }
 

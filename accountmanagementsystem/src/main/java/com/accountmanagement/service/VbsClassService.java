@@ -1,9 +1,7 @@
 package com.accountmanagement.service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;

@@ -1,16 +1,12 @@
 package com.accountmanagement.service;
 
 import com.accountmanagement.repository.UserSessionRepository;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
-
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserSession;
 

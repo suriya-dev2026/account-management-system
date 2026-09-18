@@ -2,7 +2,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.VbsTeacherMessage;
 import com.accountmanagement.model.VbsTeacher;
@@ -21,7 +19,6 @@ import com.accountmanagement.request.VbsTeacherRequest;
 import com.accountmanagement.request.VbsTeacherUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsTeacherService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -41,7 +38,7 @@ public class VbsTeacherController {
         vbsTeacherRequest.sanitizeInput();
         vbsTeacherService.createVbsTeacher(vbsTeacherRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, VbsTeacherMessage.ADD_VBS_TEACHER, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

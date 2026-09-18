@@ -1,7 +1,6 @@
 package com.accountmanagement.controller.v1;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,14 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.VbsClassMessage;
 import com.accountmanagement.model.VbsClass;
 import com.accountmanagement.request.VbsClassRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsClassService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -39,7 +36,7 @@ public class VbsClassController {
         vbsClassRequest.sanitizeInput();
         vbsClassService.createVbsClass(vbsClassRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, VbsClassMessage.ADD_VBS_CLASS, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

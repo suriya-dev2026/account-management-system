@@ -40,7 +40,7 @@ public class SundaySchoolTransitionController {
         sundaySchoolTransitionService.addSundaySchoolTransition(sundaySchoolTransitionRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 SundaySchoolTransitionMessage.ADD_SUNDAY_SCHOOL_TRANSITION, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

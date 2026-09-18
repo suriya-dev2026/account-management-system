@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.constants.message.UserVerificationMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserVerification;
@@ -56,7 +57,7 @@ public class UserVerificationService {
 
     public UserVerification findByUserId(UUID id) {
         return userVerificationRepository.findByUserId(id)
-                .orElseThrow(() -> new RecordNotFoundException("user id not found"));
+                .orElseThrow(() -> new RecordNotFoundException(UserMessage.USER_NOT_FOUND));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

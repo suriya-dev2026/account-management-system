@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.VbsYearMessage;
 import com.accountmanagement.model.VbsYear;
 import com.accountmanagement.request.VbsYearRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsYearService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -38,7 +36,7 @@ public class VbsYearController {
         vbsYearRequest.sanitizeInput();
         vbsYearService.createVbsYear(vbsYearRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, VbsYearMessage.ADD_VBS_YEAR, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

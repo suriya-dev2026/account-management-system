@@ -40,7 +40,7 @@ public class MeetingAttendanceController {
         meetingAttendanceService.createMeetingAttendance(meetingAttendanceRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MeetingAttendanceMessage.ADD_MEETING_ATTENDANCE,
                 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

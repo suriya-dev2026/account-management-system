@@ -40,7 +40,7 @@ public class MemberCategoryController {
         memberCategoryRequest.sanitizeInput();
         memberCategoryService.addMemberCategory(memberCategoryRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberCategoryMessage.ADD_MEMBER_CATEGORY, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

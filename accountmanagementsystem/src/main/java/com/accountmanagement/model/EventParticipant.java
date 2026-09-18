@@ -1,11 +1,9 @@
 package com.accountmanagement.model;
 
-import java.rmi.server.UID;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
-
 import com.accountmanagement.model.listeners.EventParticipantListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;

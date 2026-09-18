@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.SundaySchoolTeacherMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.model.SundaySchoolTeacher;
@@ -46,7 +47,8 @@ public class SundaySchoolTeacherService {
 
     public SundaySchoolTeacher findBySundaySchoolTeacherById(UUID id) {
         return sundaySchoolTeacherRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Sunday School Teacher Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        SundaySchoolTeacherMessage.SUNDAY_SCHOOL_TEACHER_ID_NOT_FOUND));
     }
 
     public List<SundaySchoolTeacher> viewAllSundaySchoolTeachers() {
@@ -55,7 +57,7 @@ public class SundaySchoolTeacherService {
 
     private void validateMemberAndClassId(UUID memberId, UUID classId) {
         if (sundaySchoolTeacherRepository.existsByMemberIdAndClassId(memberId, classId)) {
-            throw new UserAlreadyExistsException("Member Is Already Assigned To This Class.");
+            throw new UserAlreadyExistsException(SundaySchoolTeacherMessage.MEMBER_EXISTS);
         }
     }
 }

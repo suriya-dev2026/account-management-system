@@ -19,7 +19,6 @@ import com.accountmanagement.request.SundaySchoolClassRequest;
 import com.accountmanagement.request.SundaySchoolClassUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.SundaySchoolClassService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -41,7 +40,7 @@ public class SundaySchoolClassController {
         sundaySchoolClassService.addSundaySchoolClass(sundaySchoolClassRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, SundaySchoolClassMessage.ADD_SUNDAY_SCHOOL_CLASS,
                 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

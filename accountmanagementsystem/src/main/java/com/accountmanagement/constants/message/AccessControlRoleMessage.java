@@ -10,4 +10,8 @@ public class AccessControlRoleMessage {
 
     public static final String VIEW_ALL_ROLES = "Access Control Role Fetched Successfully";
 
+    public static final String ROLE_ID_NOT_FOUND = "Access Control Role Id Not Found";
+
+    public static final String ROLE_NAME_EXISTS = "Access Control Role Name Already Exists";
+
 }

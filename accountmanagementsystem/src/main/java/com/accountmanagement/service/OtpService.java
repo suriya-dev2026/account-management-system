@@ -8,6 +8,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.UserMessage;
+import com.accountmanagement.enums.DeliveryStatus;
 import com.accountmanagement.exceptions.InvalidOtpException;
 import com.accountmanagement.exceptions.MaxOtpAttemptException;
 import com.accountmanagement.exceptions.OtpExpiredException;
@@ -30,13 +33,16 @@ public class OtpService {
 
     private final JavaMailSender javaMailSender;
 
+    private final BroadcastDeliveryService broadcastDeliveryService;
+
     OtpService(BCryptPasswordEncoder bCryptPasswordEncoder,
             UserSessionRepository userSessionRepository, JavaMailSender javaMailSender,
-            EmailQueueRepository emailQueueRepository) {
+            EmailQueueRepository emailQueueRepository, BroadcastDeliveryService broadcastDeliveryService) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userSessionRepository = userSessionRepository;
         this.javaMailSender = javaMailSender;
         this.emailQueueRepository = emailQueueRepository;
+        this.broadcastDeliveryService = broadcastDeliveryService;
     }
 
     public String generateOtp() {
@@ -50,11 +56,19 @@ public class OtpService {
             message.setTo(emailQueue.getToEmail());
             message.setText(emailQueue.getBody());
             javaMailSender.send(message);
-            emailQueue.setStatus("sent");
+            emailQueue.setStatus(AppConstants.SENT);
             emailQueue.setSentAt(LocalDateTime.now());
+            broadcastDeliveryService.updateBroadcastDeliveryStatus(
+                    emailQueue.getUserId(),
+                    emailQueue.getToEmail(),
+                    DeliveryStatus.SENT);
         } catch (Exception e) {
             e.printStackTrace();
-            emailQueue.setStatus("failed");
+            emailQueue.setStatus(AppConstants.FAILED);
+            broadcastDeliveryService.updateBroadcastDeliveryStatus(
+                    emailQueue.getUserId(),
+                    emailQueue.getToEmail(),
+                    DeliveryStatus.FAILED);
         } finally {
             emailQueueRepository.save(emailQueue);
         }
@@ -63,24 +77,24 @@ public class OtpService {
     public void verifyOtp(UUID id, String enteredOtp) {
 
         UserSession session = userSessionRepository.findTopByUserIdOrderByCreatedAtDesc(id)
-                .orElseThrow(() -> new RecordNotFoundException("User session not found"));
+                .orElseThrow(() -> new RecordNotFoundException(UserMessage.USER_SESSION_NOT_FOUND));
         if (session.getOtp() == null) {
-            throw new OtpNotFoundException("Otp not found");
+            throw new OtpNotFoundException(UserMessage.OTP_NOT_FOUND);
         }
         if (session.getOtpVerificationCount() >= 3) {
-            throw new MaxOtpAttemptException("Maximum attempts reached");
+            throw new MaxOtpAttemptException(UserMessage.MAXIMUM_ATTEMPTS_REACHED);
         }
         if (LocalDateTime.now().isAfter(session.getOtpExpiration())) {
-            throw new OtpExpiredException("OTP expired");
+            throw new OtpExpiredException(UserMessage.OTP_EXPIRED);
         }
         if (!bCryptPasswordEncoder.matches(enteredOtp, session.getOtp())) {
             int attempts = session.getOtpVerificationCount() + 1;
             session.setOtpVerificationCount(attempts);
             userSessionRepository.save(session);
             if (attempts >= 3) {
-                throw new MaxOtpAttemptException("Maximum otp verification attempts reached");
+                throw new MaxOtpAttemptException(UserMessage.MAXIMUM_ATTEMPTS_REACHED);
             }
-            throw new InvalidOtpException("Invalid Otp");
+            throw new InvalidOtpException(UserMessage.INVALID_OTP);
         }
         session.setIsOtpVerified(true);
         session.setOtpVerificationCount(0);

@@ -3,6 +3,7 @@ package com.accountmanagement.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.AccessControlRoutePresetAccessMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccessControlRoutePresetAccess;
 import com.accountmanagement.repository.AccessControlRoutePresetAccessRepository;
@@ -46,7 +47,8 @@ public class AccessControlRoutePresetAccessService {
 
     public AccessControlRoutePresetAccess findByAccessControlRoutePresetAccessById(Integer id) {
         return accessControlRoutePresetAccessRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Access Control Route Preset Access Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        AccessControlRoutePresetAccessMessage.ROUTE_PRESET_ACCESS_ID_NOT_FOUND));
     }
 
 }

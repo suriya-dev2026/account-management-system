@@ -2,8 +2,8 @@ package com.accountmanagement.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.AccessControlRolePresetAccessMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccessControlRolePresetAccess;
 import com.accountmanagement.repository.AccessControlRolePresetAccessRepository;
@@ -19,7 +19,7 @@ public class AccessControlRolePresetAccessService {
         this.accessControlRolePresetAccessRepository = accessControlRolePresetAccessRepository;
     }
 
-    public AccessControlRolePresetAccess addAccessControlRolePresetAccess(
+    public AccessControlRolePresetAccess createAccessControlRolePresetAccess(
             AccessControlRolePresetAccessRequest accessControlRolePresetAccessRequest) {
         AccessControlRolePresetAccess accessControlRolePresetAccess = new AccessControlRolePresetAccess();
         accessControlRolePresetAccess.setRoleId(accessControlRolePresetAccessRequest.getRoleId());
@@ -43,7 +43,8 @@ public class AccessControlRolePresetAccessService {
 
     public AccessControlRolePresetAccess findByAccessControlRolePresetAccessId(Integer id) {
         return accessControlRolePresetAccessRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Access Control Role Preset Access Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        AccessControlRolePresetAccessMessage.ACCESS_CONTROL_ROLE_PRESET_ACCESS_ID_NOT_FOUND));
     }
 
     public List<AccessControlRolePresetAccess> viewAllAccessControlRolePresetAccess() {

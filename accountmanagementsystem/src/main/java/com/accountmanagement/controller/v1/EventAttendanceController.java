@@ -40,7 +40,7 @@ public class EventAttendanceController {
         eventAttendanceService.createEventAttendance(eventAttendanceRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventAttendanceMessage.CREATE_EVENT_ATTENDANCE,
                 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

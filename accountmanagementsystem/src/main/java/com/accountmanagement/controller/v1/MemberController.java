@@ -2,7 +2,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,14 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.MemberMessage;
 import com.accountmanagement.model.Member;
 import com.accountmanagement.request.MemberRequest;
+import com.accountmanagement.request.MemberUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.MemberService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -40,14 +38,14 @@ public class MemberController {
         memberRequest.sanitizeInput();
         memberService.addMember(memberRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberMessage.ADD_MEMBER, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateMemberById(@PathVariable UUID id,
-            @Valid @RequestBody MemberRequest memberRequest) {
-        memberRequest.sanitizeInput();
-        memberService.updateMember(id, memberRequest);
+            @Valid @RequestBody MemberUpdateRequest memberUpdateRequest) {
+        memberUpdateRequest.sanitizeInput();
+        memberService.updateMember(id, memberUpdateRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberMessage.UPDATE_MEMBER, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

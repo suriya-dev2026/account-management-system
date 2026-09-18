@@ -10,4 +10,6 @@ public class AccessControlRolePresetAccessMessage {
 
     public static final String VIEW_ALL_ACCESS_CONTROL_ROLE_PRESET_ACCESS = "Access Control Role Preset Access Fetched Successfully";
 
+    public static final String ACCESS_CONTROL_ROLE_PRESET_ACCESS_ID_NOT_FOUND = "Access Control Role Preset Access Id Not Found";
+
 }

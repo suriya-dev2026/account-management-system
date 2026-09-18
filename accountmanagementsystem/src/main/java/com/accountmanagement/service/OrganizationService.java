@@ -3,12 +3,10 @@ package com.accountmanagement.service;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.AppConstants;
-import com.accountmanagement.constants.message.UserMessage;
-import com.accountmanagement.enums.UserType;
+import com.accountmanagement.constants.message.OrganizationMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.mapper.OrganizationMapper;
@@ -19,7 +17,6 @@ import com.accountmanagement.repository.MasterCountryRepository;
 import com.accountmanagement.repository.MasterStateRepository;
 import com.accountmanagement.repository.OrganizationRepository;
 import com.accountmanagement.repository.OrganizationSettingRepository;
-import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.OrganizationUpdationRequest;
 
@@ -42,13 +39,11 @@ public class OrganizationService {
 
     private final OrganizationAuditLogService organizationAuditLogService;
 
-    private final UserRepository userRepository;
-
     OrganizationService(OrganizationRepository organizationRepository, OrganizationMapper organizationMapper,
             MasterCountryRepository masterCountryRepository, MasterStateRepository masterStateRepository,
             MasterCityRepository masterCityRepository,
             JdbcTemplate jdbcTemplate, OrganizationSettingRepository organizationSettingRepository,
-            OrganizationAuditLogService organizationAuditLogService, UserRepository userRepository) {
+            OrganizationAuditLogService organizationAuditLogService) {
         this.organizationRepository = organizationRepository;
         this.organizationMapper = organizationMapper;
         this.jdbcTemplate = jdbcTemplate;
@@ -57,7 +52,6 @@ public class OrganizationService {
         this.masterCityRepository = masterCityRepository;
         this.organizationSettingRepository = organizationSettingRepository;
         this.organizationAuditLogService = organizationAuditLogService;
-        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -107,12 +101,12 @@ public class OrganizationService {
 
     public Organization findById(UUID id) {
         return organizationRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Organization id not found"));
+                .orElseThrow(() -> new RecordNotFoundException(OrganizationMessage.ORGANIZATION_ID_NOT_FOUND));
     }
 
     public OrganizationSetting findByOrganizationId(UUID id) {
         return organizationSettingRepository.findByOrganizationId(id)
-                .orElseThrow(() -> new RecordNotFoundException("Organization setting not found."));
+                .orElseThrow(() -> new RecordNotFoundException(OrganizationMessage.ORGANIZATION_ID_NOT_FOUND));
     }
 
     private void validateOrganization(OrganizationRegistrationRequest request) {
@@ -126,37 +120,37 @@ public class OrganizationService {
 
     private void validateRegistrationNumber(String registrationNumber) {
         if (organizationRepository.existsByRegistrationNumber(registrationNumber)) {
-            throw new UserAlreadyExistsException("Registration number already exists.");
+            throw new UserAlreadyExistsException(OrganizationMessage.REGISTRATION_EXISTS);
         }
     }
 
     private void validatePrimaryContactEmail(String primaryContactEmail) {
         if (organizationRepository.existsByContactEmail(primaryContactEmail.trim())) {
-            throw new UserAlreadyExistsException("contact email already registered.");
+            throw new UserAlreadyExistsException(OrganizationMessage.EMAIL_EXISTS);
         }
     }
 
     private void validatePrimaryContactNumber(String primaryContactNumber) {
         if (organizationRepository.existsByContactNumber(primaryContactNumber.trim())) {
-            throw new UserAlreadyExistsException("contact number already registered.");
+            throw new UserAlreadyExistsException(OrganizationMessage.CONTACT_NUMBER_EXISTS);
         }
     }
 
     private void validateCountry(Integer countryId) {
         if (!masterCountryRepository.existsById(countryId)) {
-            throw new RecordNotFoundException("Country id not found.");
+            throw new RecordNotFoundException(OrganizationMessage.COUNTRY_ID_NOT_FOUND);
         }
     }
 
     private void validateState(Integer stateId) {
         if (!masterStateRepository.existsById(stateId)) {
-            throw new RecordNotFoundException("State id not found.");
+            throw new RecordNotFoundException(OrganizationMessage.STATE_ID_NOT_FOUND);
         }
     }
 
     private void validateCity(Integer cityId) {
         if (!masterCityRepository.existsById(cityId)) {
-            throw new RecordNotFoundException("City id not found.");
+            throw new RecordNotFoundException(OrganizationMessage.CITY_ID_NOT_FOUND);
         }
     }
 }

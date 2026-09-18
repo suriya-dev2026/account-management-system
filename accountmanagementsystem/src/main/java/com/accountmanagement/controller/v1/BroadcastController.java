@@ -38,7 +38,7 @@ public class BroadcastController {
         broadcastRequest.sanitizeInput();
         broadcastService.createBroadcast(broadcastRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, BroadcastMessage.CREATE_BROADCAST, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

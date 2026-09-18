@@ -2,9 +2,7 @@ package com.accountmanagement.service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.EmailQueue;
 import com.accountmanagement.repository.EmailQueueRepository;

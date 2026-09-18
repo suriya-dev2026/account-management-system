@@ -10,4 +10,6 @@ public class AccessControlRoutePresetAccessMessage {
 
     public static final String VIEW_ALL_ROUTE_PRESET_ACCESS = "Access Control Route Preset Access Fetched Successfully";
 
+    public static final String ROUTE_PRESET_ACCESS_ID_NOT_FOUND = "Access Control Route Preset Access Id Not Found";
+
 }

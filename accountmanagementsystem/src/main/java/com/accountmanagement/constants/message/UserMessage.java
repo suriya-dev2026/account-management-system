@@ -10,6 +10,8 @@ public class UserMessage {
 
     public static final String USER_NOT_FOUND = "user does not exists";
 
+    public static final String USER_ID_NOT_FOUND = "User Id Not Found";
+
     public static final String USER_REGISTER = "User Registered Successfully.";
 
     public static final String USER_LOGIN = "user logged in successfully";
@@ -20,7 +22,7 @@ public class UserMessage {
 
     public static final String USER_REGISTERED_OTP = "User registered successfully. A verification OTP has been sent to your registered email address";
 
-    public static final String OTP = "Otp send successfully";
+    public static final String OTP_SENT = "Otp send successfully";
 
     public static final String TEMPORARY_PASSWORD_CHANGED = "Temporary password changed successfully. Please login with your new one.";
 
@@ -64,6 +66,16 @@ public class UserMessage {
 
     public static final String USER_INACTIVE = "User is inactive and cannot be updated.";
 
-     public static final String PASSWORD_MISMATCH = "New password and confirm password do not match";
-     
+    public static final String PASSWORD_MISMATCH = "New password and confirm password do not match";
+
+    public static final String USER_ID_EXISTS = "User Id Already Exists.";
+
+    public static final String USER_SESSION_NOT_FOUND = "User Session Not Found";
+
+    public static final String OTP_NOT_FOUND = "OTP Not Found";
+
+    public static final String MAXIMUM_ATTEMPTS_REACHED = "Maximum Attempts Reached";
+
+    public static final String OTP_EXPIRED = "OTP Expired";
+
 }

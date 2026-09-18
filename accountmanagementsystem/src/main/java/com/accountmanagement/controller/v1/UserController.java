@@ -64,7 +64,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         passwordResetService.forgotPassword(forgotPasswordRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                UserMessage.OTP, 200);
+                UserMessage.OTP_SENT, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

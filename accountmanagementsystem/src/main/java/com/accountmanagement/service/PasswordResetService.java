@@ -67,7 +67,7 @@ public class PasswordResetService {
         PasswordReset passwordReset = passwordResetMapper.toPasswordReset(user.getId(), hashedOtp);
         passwordResetRepository.save(passwordReset);
         userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "password reset", "success");
-        return "otp sent successfully";
+        return UserMessage.OTP_SENT;
     }
 
     @Transactional
@@ -80,7 +80,8 @@ public class PasswordResetService {
         String resetToken = markOtpVerified(passwordReset);
         passwordResetRepository.save(passwordReset);
         System.out.println(passwordReset.getIsOtpVerified());
-        userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "verify otp", "success");
+        userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "verify otp",
+                AppConstants.SUCCESS);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP_VERIFY, 200);
         response.setRefreshKey(resetToken);
         return response;
@@ -91,7 +92,7 @@ public class PasswordResetService {
         validateChangePassword(changePasswordRequest);
         PasswordReset passwordReset = getValidResetToken(changePasswordRequest.getResetToken());
         User user = userRepository.findById(passwordReset.getUserId())
-                .orElseThrow(() -> new RecordNotFoundException("User not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(UserMessage.USER_NOT_FOUND));
         user.setPassword(bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);
         clearPasswordReset(passwordReset);
@@ -137,20 +138,20 @@ public class PasswordResetService {
 
     private void validateOtp(PasswordReset passwordReset, String enteredOtp) {
         if (passwordReset.getOtp() == null) {
-            throw new OtpNotFoundException("Otp not found");
+            throw new OtpNotFoundException(UserMessage.OTP_NOT_FOUND);
         }
 
         if (passwordReset.getOtpExpiration() == null || LocalDateTime.now().isAfter(passwordReset.getOtpExpiration())) {
-            throw new OtpExpiredException("otp expired");
+            throw new OtpExpiredException(UserMessage.OTP_EXPIRED);
         }
         if (passwordReset.getOtpVerificationCount() >= 3) {
-            throw new MaxOtpAttemptException("Maximum attempts reached");
+            throw new MaxOtpAttemptException(UserMessage.MAXIMUM_ATTEMPTS_REACHED);
         }
         if (!bCryptPasswordEncoder.matches(enteredOtp, passwordReset.getOtp())) {
             int attempts = passwordReset.getOtpVerificationCount() + 1;
             passwordReset.setOtpVerificationCount(attempts);
             passwordResetRepository.save(passwordReset);
-            throw new InvalidOtpException("Invalid otp");
+            throw new InvalidOtpException(UserMessage.INVALID_OTP);
         }
     }
 

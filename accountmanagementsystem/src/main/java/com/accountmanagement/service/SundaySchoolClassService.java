@@ -2,10 +2,9 @@ package com.accountmanagement.service;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.SundaySchoolClassMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.exceptions.UserAlreadyExistsException;
 import com.accountmanagement.model.SundaySchoolClass;
@@ -46,7 +45,8 @@ public class SundaySchoolClassService {
 
     public SundaySchoolClass findBySundaySchoolClassById(UUID id) {
         return sundaySchoolClassRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Sunday School Class Id Not Found"));
+                .orElseThrow(
+                        () -> new RecordNotFoundException(SundaySchoolClassMessage.SUNDAY_SCHOOL_CLASS_ID_NOT_FOUND));
     }
 
     public List<SundaySchoolClass> viewAllSundaySchoolClasses() {
@@ -55,13 +55,13 @@ public class SundaySchoolClassService {
 
     private void validateClassName(String className) {
         if (sundaySchoolClassRepository.existsByClassName(className)) {
-            throw new UserAlreadyExistsException("Class Name Already Exists.");
+            throw new UserAlreadyExistsException(SundaySchoolClassMessage.CLASS_NAME_EXISTS);
         }
     }
 
     private void validateClassNumber(Integer classNumber) {
         if (sundaySchoolClassRepository.existsByClassNumber(classNumber)) {
-            throw new UserAlreadyExistsException("Class Number Already Exists.");
+            throw new UserAlreadyExistsException(SundaySchoolClassMessage.CLASS_NUMBER_EXISTS);
         }
     }
 

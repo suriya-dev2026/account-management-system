@@ -34,13 +34,13 @@ public class AccessControlRolePresetAccessController {
         }
 
         @PostMapping("/add")
-        public ResponseEntity<ApiResponse> addAccessControlRolePresetAccess(
+        public ResponseEntity<ApiResponse> createAccessControlRolePresetAccess(
                         @Valid @RequestBody AccessControlRolePresetAccessRequest accessControlRolePresetAccessRequest) {
                 accessControlRolePresetAccessService
-                                .addAccessControlRolePresetAccess(accessControlRolePresetAccessRequest);
+                                .createAccessControlRolePresetAccess(accessControlRolePresetAccessRequest);
                 ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                                 AccessControlRolePresetAccessMessage.ADD_ACCESS_CONTROL_ROLE_PRESET_ACCESS, 201);
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
 
         @PutMapping("/update/{id}")

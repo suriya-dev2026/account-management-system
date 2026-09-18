@@ -2,10 +2,9 @@ package com.accountmanagement.service;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.AccessControlRoleMessage;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccessControlRole;
@@ -38,7 +37,7 @@ public class AccessControlRoleService {
 
     public AccessControlRole findByAccessControlRoleId(UUID id) {
         return accessControlRoleRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Access Control Role id not found"));
+                .orElseThrow(() -> new RecordNotFoundException(AccessControlRoleMessage.ROLE_ID_NOT_FOUND));
     }
 
     public List<AccessControlRole> viewAllAccessControlRole() {
@@ -55,7 +54,7 @@ public class AccessControlRoleService {
         if (accessControlRoleRepository
                 .existsByRoleNameIgnoreCase(roleName.trim())) {
             throw new DuplicateRecordException(
-                    "Role Name Already Exists");
+                    AccessControlRoleMessage.ROLE_NAME_EXISTS);
         }
     }
 

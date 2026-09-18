@@ -36,7 +36,7 @@ public class LocationController {
         locationRequest.sanitizeInput();
         locationService.addLocation(locationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, LocationMessage.ADD_LOCATION, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

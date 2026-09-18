@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.accountmanagement.constants.message.SundaySchoolAttendanceMessage;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.SundaySchoolAttendance;
@@ -32,12 +33,12 @@ public class SundaySchoolAttendanceService {
         for (AttendanceItemRequest item : request.getAttendanceList()) {
             if (!studentIds.add(item.getStudentId())) {
                 throw new DuplicateRecordException(
-                        "Duplicate Student Id Found In The Request.");
+                        SundaySchoolAttendanceMessage.DUPLICATE_STUDENT_ID);
             }
             if (sundaySchoolAttendanceRepository.existsByOrganizationIdAndStudentIdAndAttendanceDate(
                     request.getOrganizationId(), item.getStudentId(), request.getAttendanceDate())) {
                 throw new DuplicateRecordException(
-                        "Attendance Record already exists for this student.");
+                        SundaySchoolAttendanceMessage.ATTENDANCE_ALREADY_EXISTS);
             }
             SundaySchoolAttendance attendance = new SundaySchoolAttendance();
             attendance.setOrganizationId(request.getOrganizationId());
@@ -57,7 +58,8 @@ public class SundaySchoolAttendanceService {
 
     public SundaySchoolAttendance findBySundaySchoolAttendanceById(UUID id) {
         return sundaySchoolAttendanceRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Sunday School Attendance Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        SundaySchoolAttendanceMessage.SUNDAY_SCHOOL_ATTENDANCE_ID_NOT_FOUND));
     }
 
     public void deleteSundaySchoolAttendanceById(UUID id) {

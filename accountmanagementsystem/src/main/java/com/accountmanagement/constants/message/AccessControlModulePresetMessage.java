@@ -10,4 +10,6 @@ public class AccessControlModulePresetMessage {
 
     public static final String VIEW_ALL_ACCESS_CONTROL_MODULE_PRESETS = "Access Control Module Preset Fetched Successfully";
 
+    public static final String ACCESS_CONTROL_MODULE_PRESET_ID_NOT_FOUND = "Access Control Module Preset Id Not Found";
+
 }

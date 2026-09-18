@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.AccessControlModulePresetMessage;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccessControlModulePreset;
 import com.accountmanagement.repository.AccessControlModulePresetRepository;
@@ -18,7 +19,7 @@ public class AccessControlModulePresetService {
         this.accessControlModulePresetRepository = accessControlModulePresetRepository;
     }
 
-    public AccessControlModulePreset addAccessControlModulePreset(
+    public AccessControlModulePreset createAccessControlModulePreset(
             AccessControlModulePresetRequest accessControlModulePresetRequest) {
         AccessControlModulePreset accessControlModulePreset = new AccessControlModulePreset();
         accessControlModulePreset.setModuleName(accessControlModulePresetRequest.getModuleName());
@@ -44,7 +45,8 @@ public class AccessControlModulePresetService {
 
     public AccessControlModulePreset findByAccessControlModulePresetId(Integer id) {
         return accessControlModulePresetRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Access Control Module Preset Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        AccessControlModulePresetMessage.ACCESS_CONTROL_MODULE_PRESET_ID_NOT_FOUND));
     }
 
     public List<AccessControlModulePreset> viewAllAccessControlModulePreset() {

@@ -12,4 +12,6 @@ public class MemberMessage {
 
     public static final String MEMBER_NOT_FOUND = "member does not exists";
 
+    public static final String MEMBER_ID_NOT_FOUND = "member does not found";
+
 }

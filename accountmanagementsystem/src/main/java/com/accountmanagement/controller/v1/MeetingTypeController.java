@@ -37,7 +37,7 @@ public class MeetingTypeController {
         meetingTypeRequest.sanitizeInput();
         meetingTypeService.createMeetingType(meetingTypeRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MeetingTypeMessage.ADD_MEETING_TYPE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

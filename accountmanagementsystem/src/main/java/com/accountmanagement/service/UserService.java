@@ -147,7 +147,7 @@ public class UserService {
                 user.getEmail(), otp);
         userLoginAuditLogService.createUserLog(user.getOrganizationId(),
                 user.getId(), AppConstants.LOGIN, AppConstants.SUCCESS);
-        return UserMessage.OTP;
+        return UserMessage.OTP_SENT;
     }
 
     public ApiResponse verifyLoginOtp(VerifyOtpRequest verifyOtpRequest) {
@@ -228,7 +228,7 @@ public class UserService {
             throw new InvalidSessionException("Please login again");
         }
         User user = userRepository.findById(userSession.getUserId())
-                .orElseThrow(() -> new RecordNotFoundException("User not found"));
+                .orElseThrow(() -> new RecordNotFoundException(UserMessage.USER_NOT_FOUND));
         String newToken = tokenUtility.generateJwt(user.getUserName());
         String key = AppConstants.ACCESS_TOKEN + newToken;
         redisService.save(key, user.getId().toString(), 10, TimeUnit.MINUTES);

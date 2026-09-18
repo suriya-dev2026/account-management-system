@@ -64,7 +64,7 @@ public class AuthController {
         organizationRequest.sanitizeInput();
         organizationService.registerOrganization(organizationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, OrganizationMessage.ADD_ORGANIZATION, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/verify/email")
@@ -139,7 +139,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         loginRequest.sanitizeInput();
         userService.loginUser(loginRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP,
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.OTP_SENT,
                 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -38,7 +38,7 @@ public class BaptismController {
         baptismRequest.sanitizeInput();
         baptismService.createBaptism(baptismRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, BaptismMessage.CREATE_BAPTISM, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

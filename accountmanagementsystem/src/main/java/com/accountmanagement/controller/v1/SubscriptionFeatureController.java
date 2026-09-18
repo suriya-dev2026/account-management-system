@@ -2,7 +2,6 @@ package com.accountmanagement.controller.v1;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +39,7 @@ public class SubscriptionFeatureController {
         subscriptionFeatureService.addSubscriptionFeature(subscriptionFeatureRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, SubscriptionMessage.ADD_SUBSCRIPTION_FEATURE,
                 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

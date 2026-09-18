@@ -26,9 +26,7 @@ public class MasterCityService {
     public List<MasterCity> getCitiesByStateId(Integer stateId) {
         masterStateRepository.findById(stateId)
                 .orElseThrow(() -> new RecordNotFoundException("State not found"));
-
         List<MasterCity> cities = cityRepository.findByStateId(stateId);
-
         if (cities.isEmpty()) {
             throw new RecordNotFoundException("No cities found for this state");
         }

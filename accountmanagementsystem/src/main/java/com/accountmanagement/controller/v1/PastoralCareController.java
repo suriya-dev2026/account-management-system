@@ -39,7 +39,7 @@ public class PastoralCareController {
         pastoralCareRequest.sanitizeInput();
         pastoralCareService.createPastoralCare(pastoralCareRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, PastoralCareMessage.ADD_PASTORAL_CARE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

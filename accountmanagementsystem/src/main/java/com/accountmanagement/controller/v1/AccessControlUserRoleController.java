@@ -1,7 +1,6 @@
 package com.accountmanagement.controller.v1;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,14 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.AccessControlUserRoleMessage;
 import com.accountmanagement.model.AccessControlUserRole;
 import com.accountmanagement.request.AccessControlUserRoleRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.AccessControlUserRoleService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -37,9 +34,9 @@ public class AccessControlUserRoleController {
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addAccessControlUserRole(
             @Valid @RequestBody AccessControlUserRoleRequest accessControlUserRoleRequest) {
-        accessControlUserRoleService.addAccessControlUserRole(accessControlUserRoleRequest);
+        accessControlUserRoleService.createAccessControlUserRole(accessControlUserRoleRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, AccessControlUserRoleMessage.ADD_USER_ROLE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

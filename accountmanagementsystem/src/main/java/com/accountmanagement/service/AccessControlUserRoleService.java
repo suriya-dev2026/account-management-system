@@ -2,9 +2,10 @@ package com.accountmanagement.service;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.AccessControlUserRoleMessage;
+import com.accountmanagement.constants.message.UserMessage;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccessControlUserRole;
@@ -20,7 +21,8 @@ public class AccessControlUserRoleService {
         this.accessControlUserRoleRepository = accessControlUserRoleRepository;
     }
 
-    public AccessControlUserRole addAccessControlUserRole(AccessControlUserRoleRequest accessControlUserRoleRequest) {
+    public AccessControlUserRole createAccessControlUserRole(
+            AccessControlUserRoleRequest accessControlUserRoleRequest) {
         validateUserId(accessControlUserRoleRequest.getUserId());
         AccessControlUserRole accessControlUserRole = new AccessControlUserRole();
         accessControlUserRole.setUserId(accessControlUserRoleRequest.getUserId());
@@ -44,7 +46,7 @@ public class AccessControlUserRoleService {
 
     public AccessControlUserRole findAccessControlUserRoleById(Integer id) {
         return accessControlUserRoleRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Access Control User Role Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(AccessControlUserRoleMessage.USER_ROLE_ID_NOT_FOUND));
     }
 
     public List<AccessControlUserRole> viewAllAccessControlRole() {
@@ -55,7 +57,7 @@ public class AccessControlUserRoleService {
         if (accessControlUserRoleRepository
                 .existsByUserId(id)) {
             throw new DuplicateRecordException(
-                    "User Id Already Exists");
+                    UserMessage.USER_ID_EXISTS);
         }
     }
 

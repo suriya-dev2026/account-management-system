@@ -3,6 +3,7 @@ package com.accountmanagement.mapper;
 import org.springframework.stereotype.Component;
 import com.accountmanagement.model.Member;
 import com.accountmanagement.request.MemberRequest;
+import com.accountmanagement.request.MemberUpdateRequest;
 
 @Component
 public class MemberMapper {
@@ -30,9 +31,7 @@ public class MemberMapper {
         return member;
     }
 
-    public Member toUpdateMember(Member member, MemberRequest memberRequest) {
-        member.setOrganizationId(memberRequest.getOrganizationId());
-        member.setOrganizationCode(memberRequest.getOrganizationCode());
+    public Member toUpdateMember(Member member, MemberUpdateRequest memberRequest) {
         member.setCategoryId(memberRequest.getCategoryId());
         member.setLocationId(memberRequest.getLocationId());
         member.setFamilyHeadId(memberRequest.getFamilyHeadId());
@@ -50,6 +49,5 @@ public class MemberMapper {
         member.setIsWaterBaptised(memberRequest.getIsWaterBaptised());
         member.setIsSpiritBaptised(memberRequest.getIsSpiritBaptised());
         return member;
-
     }
 }

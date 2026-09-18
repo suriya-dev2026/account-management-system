@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.SubscriptionMessage;
 import com.accountmanagement.model.SubscriptionPlanFeature;
 import com.accountmanagement.request.SubscriptionPlanFeatureRequest;
@@ -35,15 +37,16 @@ public class SubscriptionPlanFeatureController {
     public ResponseEntity<ApiResponse> addSubscriptionPlanFeature(
             @Valid @RequestBody SubscriptionPlanFeatureRequest subscriptionPlanFeatureRequest) {
         subscriptionPlanFeatureService.addSubscriptionPlanFeature(subscriptionPlanFeatureRequest);
-        ApiResponse response = new ApiResponse("Success", SubscriptionMessage.ADD_SUBSCRIPTION_PLAN_FEATURE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, SubscriptionMessage.ADD_SUBSCRIPTION_PLAN_FEATURE,
+                201);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{planId}")
     public ResponseEntity<ApiResponse> updateSubscriptionPlanFeature(@PathVariable UUID planId,
             @Valid @RequestBody UpdateSubscriptionPlanFeatureRequest updateSubscriptionPlanFeatureRequest) {
         subscriptionPlanFeatureService.updateSubscriptionPlanFeature(planId, updateSubscriptionPlanFeatureRequest);
-        ApiResponse response = new ApiResponse("Success",
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 SubscriptionMessage.UPDATE_SUBSCRIPTION_PLAN_FEATURE, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -51,7 +54,8 @@ public class SubscriptionPlanFeatureController {
     @PutMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteSubscriptionPlanFeatureById(@PathVariable UUID id) {
         subscriptionPlanFeatureService.deleteSubscriptionPlanFeatureById(id);
-        ApiResponse response = new ApiResponse("Success", SubscriptionMessage.DELETE_SUBSCRIPTION_PLAN_FEATURE, 200);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                SubscriptionMessage.DELETE_SUBSCRIPTION_PLAN_FEATURE, 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -59,7 +63,8 @@ public class SubscriptionPlanFeatureController {
     public ResponseEntity<ApiResponse> viewAllSubscriptionPlanFeature() {
         List<SubscriptionPlanFeature> subscriptionPlanFeature = subscriptionPlanFeatureService
                 .viewAllSubscriptionPlanFeature();
-        ApiResponse response = new ApiResponse("Success", SubscriptionMessage.ADD_SUBSCRIPTION_PLAN_FEATURE, 201);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, SubscriptionMessage.ADD_SUBSCRIPTION_PLAN_FEATURE,
+                201);
         response.setData(subscriptionPlanFeature);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

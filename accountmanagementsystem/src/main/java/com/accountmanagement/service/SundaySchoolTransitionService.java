@@ -2,9 +2,8 @@ package com.accountmanagement.service;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
+import com.accountmanagement.constants.message.SundaySchoolTransitionMessage;
 import com.accountmanagement.exceptions.DuplicateRecordException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.SundaySchoolTransition;
@@ -54,7 +53,8 @@ public class SundaySchoolTransitionService {
 
     public SundaySchoolTransition findSundaySchoolTransitionById(UUID id) {
         return sundaySchoolTransitionRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Sunday School Transition Id Not Found"));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        SundaySchoolTransitionMessage.SUNDAY_SCHOOL_TRANSITION_ID_NOT_FOUND));
     }
 
     public void validateStudentAndClass(SundaySchoolTransitionRequest schoolTransitionRequest) {
@@ -62,7 +62,7 @@ public class SundaySchoolTransitionService {
                 schoolTransitionRequest.getStudentId(), schoolTransitionRequest.getFromClassId(),
                 schoolTransitionRequest.getToClassId());
         if (exists) {
-            throw new DuplicateRecordException("Student Record Already Exists");
+            throw new DuplicateRecordException(SundaySchoolTransitionMessage.STUDENT_EXISTS);
         }
     }
 }

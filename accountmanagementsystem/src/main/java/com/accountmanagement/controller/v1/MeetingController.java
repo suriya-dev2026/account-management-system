@@ -40,7 +40,7 @@ public class MeetingController {
         meetingRequest.sanitizeInput();
         meetingService.createMeeting(meetingRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MeetingMessage.ADD_MEETING, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

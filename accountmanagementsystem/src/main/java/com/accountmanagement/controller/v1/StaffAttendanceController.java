@@ -41,7 +41,7 @@ public class StaffAttendanceController {
             @Valid @RequestBody StaffAttendanceRequest staffAttendanceRequest) {
         staffAttendanceService.createStaffAttendance(staffAttendanceRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, StaffAttendanceMessage.ADD_STAFF_ATTENDANCE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

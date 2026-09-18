@@ -2,6 +2,10 @@ package com.accountmanagement.constants;
 
 public class AppConstants {
 
+    public static final String SENT = "sent";
+
+    public static final String FAILED = "failed";
+
     public static final String ACTIVE = "active";
 
     public static final String SUCCESS = "success";

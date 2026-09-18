@@ -39,7 +39,7 @@ public class AccessControlRoleController {
         accessControlRoleRequest.sanitizeInput();
         accessControlRoleService.createRole(accessControlRoleRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, AccessControlRoleMessage.ADD_ROLE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

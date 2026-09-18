@@ -40,7 +40,7 @@ public class SundaySchoolAttendanceController {
         sundaySchoolAttendanceService.saveAttendance(sundaySchoolAttendanceRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 SundaySchoolAttendanceMessage.ADD_SUNDAY_SCHOOL_ATTENDANCE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

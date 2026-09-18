@@ -19,7 +19,6 @@ import com.accountmanagement.request.VbsStudentRequest;
 import com.accountmanagement.request.VbsStudentUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsStudentService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -39,7 +38,7 @@ public class VbsStudentController {
         vbsStudentRequest.sanitizeInput();
         vbsStudentService.createVbsStudent(vbsStudentRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, VbsStudentMessage.ADD_VBS_STUDENT, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

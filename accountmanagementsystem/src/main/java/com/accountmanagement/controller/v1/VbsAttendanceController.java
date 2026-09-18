@@ -20,7 +20,6 @@ import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.VbsAttendanceRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.VbsAttendanceService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -39,7 +38,7 @@ public class VbsAttendanceController {
             @Valid @RequestBody VbsAttendanceRequest vbsAttendanceRequest) {
         vbsAttendanceService.createVbsAttendance(vbsAttendanceRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, VbsAttendanceMessage.ADD_VBS_ATTENDANCE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

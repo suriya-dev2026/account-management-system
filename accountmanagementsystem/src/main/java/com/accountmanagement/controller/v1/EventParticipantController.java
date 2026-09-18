@@ -41,7 +41,7 @@ public class EventParticipantController {
         eventParticipantService.createEventParticipant(eventParticipantRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventParticipantMessage.ADD_EVENT_PARTICIPANT,
                 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

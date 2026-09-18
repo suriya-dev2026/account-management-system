@@ -38,7 +38,7 @@ public class EventController {
         eventRequest.sanitizeInput();
         eventService.createEvent(eventRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EventMessage.ADD_EVENT, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

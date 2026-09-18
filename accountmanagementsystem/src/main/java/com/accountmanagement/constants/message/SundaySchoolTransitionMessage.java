@@ -10,4 +10,8 @@ public class SundaySchoolTransitionMessage {
 
     public static final String VIEW_ALL_SUNDAY_SCHOOL_TRANSITION = "Sunday School Transition Fetched Successfully";
 
+    public static final String SUNDAY_SCHOOL_TRANSITION_ID_NOT_FOUND = "Sunday School Transition Id Not Found";
+
+    public static final String STUDENT_EXISTS = "Student Record Already Exists";
+
 }

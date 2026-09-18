@@ -1,6 +1,6 @@
 package com.accountmanagement.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDateTime; 
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import com.accountmanagement.enums.UserType;

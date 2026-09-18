@@ -14,6 +14,7 @@ import com.accountmanagement.model.Member;
 import com.accountmanagement.model.User;
 import com.accountmanagement.repository.MemberRepository;
 import com.accountmanagement.request.MemberRequest;
+import com.accountmanagement.request.MemberUpdateRequest;
 import com.accountmanagement.utility.Apputility;
 
 @Service
@@ -41,7 +42,7 @@ public class MemberService {
         return savedMember;
     }
 
-    public Member updateMember(UUID id, MemberRequest memberRequest) {
+    public Member updateMember(UUID id, MemberUpdateRequest memberRequest) {
         Member member = findByMemberId(id);
         User user = getLoggedUser();
         Member updatedMember = memberMapper.toUpdateMember(member, memberRequest);

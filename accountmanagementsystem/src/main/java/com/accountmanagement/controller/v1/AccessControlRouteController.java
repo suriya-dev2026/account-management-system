@@ -17,7 +17,6 @@ import com.accountmanagement.model.AccessControlRoute;
 import com.accountmanagement.request.AccessControlRouteRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.AccessControlRouteService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -38,7 +37,7 @@ public class AccessControlRouteController {
         accessControlRouteRequest.sanitizeInput();
         accessControlRouteService.createRoute(accessControlRouteRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, AccessControlRouteMessage.ADD_ROUTE, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

@@ -35,13 +35,13 @@ public class AccessControlModulePresetController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addAccessControlModulePreset(
+    public ResponseEntity<ApiResponse> createAccessControlModulePreset(
             @Valid @RequestBody AccessControlModulePresetRequest accessControlModulePresetRequest) {
         accessControlModulePresetRequest.sanitizeInput();
-        accessControlModulePresetService.addAccessControlModulePreset(accessControlModulePresetRequest);
+        accessControlModulePresetService.createAccessControlModulePreset(accessControlModulePresetRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
                 AccessControlModulePresetMessage.ADD_ACCESS_CONTROL_MODULE_PRESET, 201);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
