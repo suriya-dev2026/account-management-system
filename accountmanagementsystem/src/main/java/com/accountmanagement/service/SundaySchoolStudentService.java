@@ -19,9 +19,7 @@ import com.accountmanagement.request.SundaySchoolStudentUpdateRequest;
 public class SundaySchoolStudentService {
 
     private final SundaySchoolStudentRepository sundaySchoolStudentRepository;
-
     private final MemberRepository memberRepository;
-
     private final SundaySchoolStudentMapper sundaySchoolStudentMapper;
 
     public SundaySchoolStudentService(SundaySchoolStudentRepository sundaySchoolStudentRepository,

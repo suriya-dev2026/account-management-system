@@ -1,6 +1,8 @@
 package com.accountmanagement.service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import com.accountmanagement.repository.OrganizationRepository;
 import com.accountmanagement.repository.OrganizationSettingRepository;
 import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.OrganizationUpdationRequest;
+import com.google.gson.Gson;
 
 @Service
 public class OrganizationService {
@@ -62,9 +65,11 @@ public class OrganizationService {
         Organization registeredOrganization = organizationRepository.save(organization);
         OrganizationSetting registeredOrganizationSetting = organizationMapper
                 .toRegisterOrganizatinSetting(registeredOrganization.getId(), organizationRequest);
-        organizationSettingRepository.save(registeredOrganizationSetting);
+        OrganizationSetting setting = organizationSettingRepository.save(registeredOrganizationSetting);
+        String updatedJson = addOrganizationJson(registeredOrganization, setting);
         organizationAuditLogService.log(organization.getCode(), null, "Organization",
-                registeredOrganization.getId().toString(), "Create Organization", null, null, "Registered Organization",
+                registeredOrganization.getId().toString(), "Create Organization", null, updatedJson,
+                OrganizationMessage.ADD_ORGANIZATION,
                 null);
         return registeredOrganization;
     }
@@ -72,16 +77,20 @@ public class OrganizationService {
     @Transactional
     public Organization updateOrganization(UUID id, OrganizationUpdationRequest organizationUpdateRequest) {
         Organization organization = findById(id);
+        OrganizationSetting organizationSetting = findByOrganizationId(id);
+        String existingJson = addOrganizationJson(organization, organizationSetting);
         Organization updatedOrganization = organizationMapper.toUpdateOrganization(organization,
                 organizationUpdateRequest);
-        organizationRepository.save(updatedOrganization);
-        OrganizationSetting organizationSetting = findByOrganizationId(id);
+        Organization savedUpdatedOrganization = organizationRepository.save(updatedOrganization);
         OrganizationSetting updatedOrganizationSetting = organizationMapper
                 .toUpdateOrganizationSetting(organizationSetting, organizationUpdateRequest);
-        organizationSettingRepository.save(updatedOrganizationSetting);
+        OrganizationSetting savedOrganizationSetting = organizationSettingRepository.save(updatedOrganizationSetting);
+        String updatedJson = addOrganizationJson(savedUpdatedOrganization, savedOrganizationSetting);
         organizationAuditLogService.log(organization.getCode(), null, "Organization",
-                updatedOrganization.getId().toString(), "Update Organization", null, null, null, null);
-        return organization;
+                updatedOrganization.getId().toString(), "Update Organization", existingJson, updatedJson,
+                OrganizationMessage.UPDATE_ORGANIZATION,
+                null);
+        return savedUpdatedOrganization;
     }
 
     public void deleteOrganizationById(UUID id) {
@@ -153,4 +162,58 @@ public class OrganizationService {
             throw new RecordNotFoundException(OrganizationMessage.CITY_ID_NOT_FOUND);
         }
     }
+
+    // public String addOrganizationJson(Organization savedOrganization,
+    // OrganizationSetting savedOrganizationSetting) {
+    // return "{"
+    // + "\"Id\":\"" + savedOrganization.getId() + "\","
+    // + "\"OrganizationCode\":\"" + savedOrganization.getCode() + "\","
+    // + "\"Name\":\"" + savedOrganization.getName() + "\","
+    // + "\"RegistrationNumber\":\"" + savedOrganization.getRegistrationNumber() +
+    // "\","
+    // + "\"Website\":\"" + savedOrganization.getWebsite() + "\","
+    // + "\"Address\":\"" + savedOrganization.getAddress() + "\","
+    // + "\"CountryId\":\"" + savedOrganization.getCountryId() + "\","
+    // + "\"StateId\":\"" + savedOrganization.getStateId() + "\","
+    // + "\"CityId\":\"" + savedOrganization.getCityId() + "\","
+    // + "\"PostalCode\":\"" + savedOrganization.getPostalcode() + "\","
+    // + "\"ContactName\":\"" + savedOrganization.getContactName() + "\","
+    // + "\"ContactEmail\":\"" + savedOrganization.getContactEmail() + "\","
+    // + "\"ContactNumber\":\"" + savedOrganization.getContactNumber() + "\","
+    // + "\"Status\":\"" + savedOrganization.getStatus() + "\","
+    // + "\"LogoUrl\":\"" + savedOrganizationSetting.getLogoUrl() + "\","
+    // + "\"FaviconUrl\":\"" + savedOrganizationSetting.getFaviconUrl() + "\","
+    // + "\"PrimaryColor\":\"" + savedOrganizationSetting.getPrimaryColor() + "\","
+    // + "\"Timezone\":\"" + savedOrganizationSetting.getTimeZone() + "\","
+    // + "\"Currency\":\"" + savedOrganizationSetting.getCurrency() + "\","
+    // + "\"Language\":\"" + savedOrganizationSetting.getLanguage() + "\""
+    // + "}";
+    // }
+    public String addOrganizationJson(
+            Organization savedOrganization,
+            OrganizationSetting savedOrganizationSetting) {
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("Id", savedOrganization.getId());
+        data.put("OrganizationCode", savedOrganization.getCode());
+        data.put("Name", savedOrganization.getName());
+        data.put("RegistrationNumber", savedOrganization.getRegistrationNumber());
+        data.put("Website", savedOrganization.getWebsite());
+        data.put("Address", savedOrganization.getAddress());
+        data.put("CountryId", savedOrganization.getCountryId());
+        data.put("StateId", savedOrganization.getStateId());
+        data.put("CityId", savedOrganization.getCityId());
+        data.put("PostalCode", savedOrganization.getPostalcode());
+        data.put("ContactName", savedOrganization.getContactName());
+        data.put("ContactEmail", savedOrganization.getContactEmail());
+        data.put("ContactNumber", savedOrganization.getContactNumber());
+        data.put("Status", savedOrganization.getStatus());
+        data.put("LogoUrl", savedOrganizationSetting.getLogoUrl());
+        data.put("FaviconUrl", savedOrganizationSetting.getFaviconUrl());
+        data.put("PrimaryColor", savedOrganizationSetting.getPrimaryColor());
+        data.put("Timezone", savedOrganizationSetting.getTimeZone());
+        data.put("Currency", savedOrganizationSetting.getCurrency());
+        data.put("Language", savedOrganizationSetting.getLanguage());
+        return new Gson().toJson(data);
+    }
+
 }

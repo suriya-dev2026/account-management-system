@@ -1,5 +1,6 @@
 package com.accountmanagement.service;
 
+import com.accountmanagement.controller.v1.OrganizationAuditLogController;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -16,8 +17,10 @@ import com.accountmanagement.mapper.SubscriptionOrganizationMapper;
 import com.accountmanagement.model.SubscriptionOrganization;
 import com.accountmanagement.model.SubscriptionPlan;
 import com.accountmanagement.model.User;
+import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.SubscriptionOrganizationRepository;
 import com.accountmanagement.repository.UserRepository;
+import com.accountmanagement.repository.UserVerificationRepository;
 import com.accountmanagement.request.SubscriptionOrganizationRequest;
 import com.accountmanagement.response.ApiResponse;
 
@@ -38,10 +41,13 @@ public class SubscriptionOrganizationService {
 
     private final UserRepository userRepository;
 
+    private final UserVerificationRepository userVerificationRepository;
+
     public SubscriptionOrganizationService(SubscriptionOrganizationRepository subscriptionOrganizationRepository,
             OrganizationService organizationService, SubscriptionPlanService subscriptionPlanService,
             SubscriptionOrganizationMapper subscriptionOrganizationMapper, UserService userService,
-            EmailQueueService emailQueueService, UserRepository userRepository) {
+            EmailQueueService emailQueueService, UserRepository userRepository,
+            UserVerificationRepository userVerificationRepository) {
         this.subscriptionOrganizationRepository = subscriptionOrganizationRepository;
         this.organizationService = organizationService;
         this.subscriptionPlanService = subscriptionPlanService;
@@ -49,6 +55,7 @@ public class SubscriptionOrganizationService {
         this.userService = userService;
         this.emailQueueService = emailQueueService;
         this.userRepository = userRepository;
+        this.userVerificationRepository = userVerificationRepository;
     }
 
     @Transactional
@@ -115,10 +122,23 @@ public class SubscriptionOrganizationService {
         subscription.setStatus(
                 SubscriptionOrganizationStatus.ACTIVE);
         SubscriptionOrganization savedSubscription = subscriptionOrganizationRepository.save(subscription);
-        System.out.println("FREE PLAN SAVED");
+        updateSubscriptionCompleted(organizationId);
         sendTemporaryCredentials(organizationId);
-        System.out.println("TEMPORARY CREDENTIALS CREATED");
         return savedSubscription;
+    }
+
+    public void updateSubscriptionCompleted(UUID organizationId) {
+        User user = userRepository
+                .findByOrganizationIdAndUserType(
+                        organizationId,
+                        UserType.SUPERADMIN)
+                .orElseThrow(() -> new RecordNotFoundException(
+                        "Superadmin user not found"));
+        UserVerification userVerification = userVerificationRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RecordNotFoundException(
+                        "User verification not found"));
+        userVerification.setIsSubscriptionCompleted(true);
+        userVerificationRepository.save(userVerification);
     }
 
     private void sendTemporaryCredentials(UUID organizationId) {

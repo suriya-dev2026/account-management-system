@@ -224,7 +224,7 @@ public class UserService {
         if (userSession.getRefreshKeyExpiration().isBefore(LocalDateTime.now())) {
             throw new RefreshKeyExpiredException("Refresh key expired.Please login again");
         }
-        if ("Logout".equalsIgnoreCase(userSession.getSessionStatus())) {
+        if (AppConstants.LOGOUT.equalsIgnoreCase(userSession.getSessionStatus())) {
             throw new InvalidSessionException("Please login again");
         }
         User user = userRepository.findById(userSession.getUserId())

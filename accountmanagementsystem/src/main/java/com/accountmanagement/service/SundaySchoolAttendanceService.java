@@ -27,7 +27,6 @@ public class SundaySchoolAttendanceService {
 
     @Transactional
     public List<SundaySchoolAttendance> saveAttendance(SundaySchoolAttendanceRequest request) {
-
         List<SundaySchoolAttendance> attendanceList = new ArrayList<>();
         Set<UUID> studentIds = new HashSet<>();
         for (AttendanceItemRequest item : request.getAttendanceList()) {

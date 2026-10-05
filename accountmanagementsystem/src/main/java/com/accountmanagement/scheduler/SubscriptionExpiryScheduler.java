@@ -4,11 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.accountmanagement.enums.SubscriptionOrganizationStatus;
 import com.accountmanagement.model.SubscriptionOrganization;
 import com.accountmanagement.repository.SubscriptionOrganizationRepository;
@@ -26,7 +24,7 @@ public class SubscriptionExpiryScheduler {
         this.subscriptionOrganizationService = subscriptionOrganizationService;
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 10 15 * * *")
     @Transactional
     public void checkSubscriptionExpiry() {
 
@@ -35,20 +33,13 @@ public class SubscriptionExpiryScheduler {
         List<SubscriptionOrganization> subscriptions = subscriptionOrganizationRepository
                 .findSubscriptionsExpiringWithinFiveDays(today, today.plusDays(5),
                         SubscriptionOrganizationStatus.ACTIVE);
-
         for (SubscriptionOrganization subscription : subscriptions) {
             long daysRemaining = ChronoUnit.DAYS.between(today, subscription.getEndDate());
-
             if (daysRemaining == 0) {
-
                 subscriptionOrganizationService.sendExpiredMail(subscription);
-
                 subscription.setStatus(SubscriptionOrganizationStatus.EXPIRED);
-
                 subscription.setUpdatedAt(LocalDateTime.now());
-
                 subscriptionOrganizationRepository.save(subscription);
-
             } else {
                 subscriptionOrganizationService.sendExpiryReminder(subscription, (int) daysRemaining);
             }

@@ -38,21 +38,24 @@ public class BroadcastDeliveryService {
         broadcastDelivery.setDeliveryStatus(DeliveryStatus.PENDING);
         broadcastDelivery.setSentTo(broadcastDeliveryRequest.getSentTo());
         Broadcast broadcast = findBroadcastById(broadcastDeliveryRequest.getBroadcastId());
+        BroadcastDelivery savedDelivery = broadcastDeliveryRepository.save(broadcastDelivery);
         emailQueueService.addToEmailQueue(broadcastDeliveryRequest.getUserId(), broadcastDeliveryRequest.getSentTo(),
                 broadcast.getMessage());
-        return broadcastDeliveryRepository.save(broadcastDelivery);
+        return savedDelivery;
     }
 
-    public void updateBroadcastDeliveryStatus(UUID userId, String sentTo,
-            DeliveryStatus deliveryStatus) {
-        BroadcastDelivery delivery = broadcastDeliveryRepository.findByUserIdAndSentTo(userId, sentTo)
-                .orElseThrow(() -> new RecordNotFoundException(BroadcastMessage.BROADCAST_DELIVERY_NOT_EXISTS));
-        delivery.setDeliveryStatus(deliveryStatus);
-        if (deliveryStatus == DeliveryStatus.SENT) {
-            delivery.setSentAt(LocalDate.now());
-        }
-        broadcastDeliveryRepository.save(delivery);
-    }
+    // public void updateBroadcastDeliveryStatus(UUID userId, String sentTo,
+    // DeliveryStatus deliveryStatus) {
+    // BroadcastDelivery delivery =
+    // broadcastDeliveryRepository.findByUserIdAndSentTo(userId, sentTo)
+    // .orElseThrow(() -> new
+    // RecordNotFoundException(BroadcastMessage.BROADCAST_DELIVERY_NOT_EXISTS));
+    // delivery.setDeliveryStatus(deliveryStatus);
+    // if (deliveryStatus == DeliveryStatus.SENT) {
+    // delivery.setSentAt(LocalDate.now());
+    // }
+    // broadcastDeliveryRepository.save(delivery);
+    // }
 
     public void validateBroadcastDelivery(BroadcastDeliveryRequest request) {
         boolean exists = broadcastDeliveryRepository.existsByBroadcastIdAndSentTo(request.getBroadcastId(),

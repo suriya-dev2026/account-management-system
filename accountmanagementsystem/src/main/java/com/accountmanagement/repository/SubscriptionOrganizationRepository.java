@@ -17,11 +17,8 @@ public interface SubscriptionOrganizationRepository extends JpaRepository<Subscr
         Optional<SubscriptionOrganization> findByOrganizationIdAndStatus(UUID organizationId,
                         SubscriptionOrganizationStatus status);
 
-        @Query("""
-                        SELECT s FROM SubscriptionOrganization s
-                        WHERE s.endDate BETWEEN :today AND :fiveDaysLater
-                        AND s.status = :status
-                        """)
+        @Query("SELECT s FROM SubscriptionOrganization s WHERE s.endDate " +
+                        "BETWEEN :today AND :fiveDaysLater AND s.status = :status")
         List<SubscriptionOrganization> findSubscriptionsExpiringWithinFiveDays(
                         @Param("today") LocalDate today,
                         @Param("fiveDaysLater") LocalDate fiveDaysLater,

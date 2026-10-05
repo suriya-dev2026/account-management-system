@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.UserMessage;
-import com.accountmanagement.enums.DeliveryStatus;
 import com.accountmanagement.exceptions.InvalidOtpException;
 import com.accountmanagement.exceptions.MaxOtpAttemptException;
 import com.accountmanagement.exceptions.OtpExpiredException;
@@ -58,17 +57,17 @@ public class OtpService {
             javaMailSender.send(message);
             emailQueue.setStatus(AppConstants.SENT);
             emailQueue.setSentAt(LocalDateTime.now());
-            broadcastDeliveryService.updateBroadcastDeliveryStatus(
-                    emailQueue.getUserId(),
-                    emailQueue.getToEmail(),
-                    DeliveryStatus.SENT);
+            // broadcastDeliveryService.updateBroadcastDeliveryStatus(
+            // emailQueue.getUserId(),
+            // emailQueue.getToEmail(),
+            // DeliveryStatus.SENT);
         } catch (Exception e) {
             e.printStackTrace();
             emailQueue.setStatus(AppConstants.FAILED);
-            broadcastDeliveryService.updateBroadcastDeliveryStatus(
-                    emailQueue.getUserId(),
-                    emailQueue.getToEmail(),
-                    DeliveryStatus.FAILED);
+            // broadcastDeliveryService.updateBroadcastDeliveryStatus(
+            // emailQueue.getUserId(),
+            // emailQueue.getToEmail(),
+            // DeliveryStatus.FAILED);
         } finally {
             emailQueueRepository.save(emailQueue);
         }

@@ -1506,18 +1506,6 @@ INSERT INTO subscription_plans (
         status
     )
 VALUES (
-        'FREETRIAL',
-        'Free Trial',
-        'Suitable for small churches and organizations.',
-        0.00,
-        'INR',
-        3,
-        50,
-        10,
-        3,
-        'ACTIVE'
-    ),
-    (
         'FREEPLAN',
         'Free Plan',
         'Suitable for small churches and organizations.',
@@ -1783,4 +1771,140 @@ CREATE TABLE staff_attendance (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(staff_id) REFERENCES staffs(id),
     FOREIGN KEY(organization_id) REFERENCES organizations(id)
+);
+CREATE TABLE accounting_account_types (
+    id SERIAL PRIMARY KEY,
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    type_name VARCHAR(50) UNIQUE NOT NULL
+);
+CREATE TABLE accounting_accounts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    account_code VARCHAR(20) NOT NULL,
+    account_name VARCHAR(100) NOT NULL,
+    account_type_id INTEGER NOT NULL REFERENCES accounting_account_types(id),
+    parent_account_id UUID REFERENCES accounting_accounts(id),
+    status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE accounting_journal_entries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tracking_id VARCHAR(50) UNIQUE NOT NULL,
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    entry_date DATE NOT NULL,
+    description TEXT,
+    status VARCHAR(20) DEFAULT 'POSTED' CHECK (status IN ('DRAFT', 'POSTED', 'CANCELLED')),
+    created_by UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE accounting_journal_transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    journal_entry_id UUID NOT NULL REFERENCES accounting_journal_entries(id),
+    journal_entry_tracking_id VARCHAR(50) NOT NULL,
+    account_id UUID NOT NULL REFERENCES accounting_accounts(id),
+    debit NUMERIC(12, 2) DEFAULT 0 CHECK (debit >= 0),
+    credit NUMERIC(12, 2) DEFAULT 0 CHECK (credit >= 0),
+    remarks TEXT,
+    status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE', 'CANCELLED')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT debit_credit_check CHECK (
+        (
+            debit = 0
+            AND credit > 0
+        )
+        OR (
+            credit = 0
+            AND debit > 0
+        )
+    )
+);
+CREATE TABLE organization_offering_types (
+    id SERIAL PRIMARY KEY,
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    account_id UUID NOT NULL REFERENCES accounting_accounts(id),
+    type_name VARCHAR(100) UNIQUE NOT NULL,
+    status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE organization_payment_methods (
+    id SERIAL PRIMARY KEY,
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    account_id UUID NOT NULL REFERENCES accounting_accounts(id),
+    method_name VARCHAR(50) UNIQUE NOT NULL,
+    category VARCHAR(30) DEFAULT 'OFFLINE' CHECK (
+        category IN (
+            'OFFLINE',
+            'ONLINE',
+            'CARD',
+            'WALLET',
+            'BANK',
+            'OTHER'
+        )
+    ),
+    status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE organization_offerings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    journal_entry_id UUID REFERENCES accounting_journal_entries(id),
+    journal_entry_tracking_id VARCHAR(50) NOT NULL,
+    offering_type_id INTEGER NOT NULL REFERENCES organization_offering_types(id),
+    member_id UUID REFERENCES members(id),
+    payment_transaction_id UUID,
+    payment_method_id INTEGER NOT NULL REFERENCES organization_payment_methods(id),
+    amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 0),
+    currency VARCHAR(10) DEFAULT 'INR',
+    bank_account_id UUID,
+    gateway_status VARCHAR(20) DEFAULT 'SUCCESS' CHECK (
+        gateway_status IN ('SUCCESS', 'FAILED', 'PENDING')
+    ),
+    received_date DATE NOT NULL,
+    remarks TEXT,
+    status VARCHAR(20) DEFAULT 'POSTED' CHECK (status IN ('POSTED', 'DRAFT', 'CANCELLED')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE organization_payment_transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    gateway VARCHAR(50) NOT NULL,
+    transaction_id VARCHAR(100) UNIQUE NOT NULL,
+    gateway_reference VARCHAR(100),
+    amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 0),
+    currency VARCHAR(10) DEFAULT 'INR',
+    response_json JSONB,
+    payment_time TIMESTAMP NOT NULL,
+    verified BOOLEAN DEFAULT FALSE,
+    status VARCHAR(20) DEFAULT 'PENDING' CHECK (
+        status IN ('PENDING', 'SUCCESS', 'FAILED', 'CANCELLED')
+    ),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE organization_offerings
+ADD CONSTRAINT fk_organization_offerings_payment_transaction FOREIGN KEY (payment_transaction_id) REFERENCES organization_payment_transactions(id);
+CREATE TABLE organization_expense_types (
+    id SERIAL PRIMARY KEY,
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    type_name VARCHAR(50) UNIQUE NOT NULL,
+    status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE'))
+);
+CREATE TABLE organization_expenses (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL REFERENCES organizations(id),
+    journal_entry_id UUID REFERENCES accounting_journal_entries(id),
+    journal_entry_tracking_id VARCHAR(50) NOT NULL,
+    expense_type_id integer NOT NULL REFERENCES organization_expense_types(id),
+    payment_method VARCHAR(50),
+    amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 0),
+    expense_date DATE NOT NULL,
+    remarks TEXT,
+    status VARCHAR(20) DEFAULT 'POSTED' CHECK (status IN ('POSTED', 'DRAFT', 'CANCELLED')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

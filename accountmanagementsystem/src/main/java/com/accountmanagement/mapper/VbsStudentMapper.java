@@ -9,7 +9,7 @@ import com.accountmanagement.request.VbsStudentUpdateRequest;
 @Component
 public class VbsStudentMapper {
 
-    public VbsStudent toAddVbsStudent(Member member, VbsStudentRequest request) {
+    public VbsStudent toCreateVbsStudent(Member member, VbsStudentRequest request) {
         VbsStudent vbsStudent = new VbsStudent();
         vbsStudent.setOrganizationId(request.getOrganizationId());
         vbsStudent.setVbsYearId(request.getVbsYearId());

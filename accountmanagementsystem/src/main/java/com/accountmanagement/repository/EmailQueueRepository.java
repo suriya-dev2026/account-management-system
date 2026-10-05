@@ -20,11 +20,11 @@ public interface EmailQueueRepository extends JpaRepository<EmailQueue, UUID> {
 
     @Modifying
     @Transactional
-    @Query(value = """
-            Delete from EmailQueue where id IN (
-            select id from email_queue where status = "sent" and sent_at < :cutoff
-            LIMIT 10)
-            """, nativeQuery = true)
+    @Query(value = "Delete from EmailQueue " +
+            "where id IN (" +
+            "select id from email_queue where status = 'sent' " +
+            "AND sent_at < :cutoff " +
+            "LIMIT 10)", nativeQuery = true)
     int deleteOldSentEmails(@Param("cutoff") LocalDateTime cutoff);
 
 }

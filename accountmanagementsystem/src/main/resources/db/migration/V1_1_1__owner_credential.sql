@@ -17,7 +17,7 @@ INSERT INTO organizations (
 VALUES (
         '8f3c2a91-6d47-4e82-9b15-3a7c6f1d2048',
         'ORG-00001',
-        'System Admin',
+        'SystemAdmin',
         'COOKIES12_45',
         'https://cookiesspace.com',
         'Nagercoil',
@@ -25,7 +25,7 @@ VALUES (
         82,
         483,
         629001,
-        'system owner',
+        'systemowner',
         'suriyasundarrajan340@gmail.com',
         '9876543210',
         'ACTIVE'

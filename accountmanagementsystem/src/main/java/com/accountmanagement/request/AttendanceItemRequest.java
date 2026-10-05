@@ -1,10 +1,8 @@
 package com.accountmanagement.request;
 
 import java.util.UUID;
-
 import com.accountmanagement.enums.AttendanceStatus;
 import com.accountmanagement.validations.ValidStudentId;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

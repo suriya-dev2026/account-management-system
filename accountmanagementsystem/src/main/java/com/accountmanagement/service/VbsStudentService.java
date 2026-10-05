@@ -40,7 +40,7 @@ public class VbsStudentService {
                     .orElseThrow(() -> new RecordNotFoundException("Member Id Not Found"));
             validateContactNumber(vbsStudentRequest);
         }
-        VbsStudent vbsStudent = vbsStudentMapper.toAddVbsStudent(member, vbsStudentRequest);
+        VbsStudent vbsStudent = vbsStudentMapper.toCreateVbsStudent(member, vbsStudentRequest);
         return vbsStudentRepository.save(vbsStudent);
     }
 
@@ -71,7 +71,7 @@ public class VbsStudentService {
             return;
         }
         contactNumber = contactNumber.trim();
-        boolean exists = vbsStudentRepository.existsByContactNumber(vbsStudentRequest.getContactNumber());
+        boolean exists = vbsStudentRepository.existsByContactNumber(contactNumber);
         if (exists) {
             throw new DuplicateRecordException("Contact Number Already Exists");
         }
