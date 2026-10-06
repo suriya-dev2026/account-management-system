@@ -3,6 +3,7 @@ package com.accountmanagement.request;
 import java.util.UUID;
 
 import com.accountmanagement.utility.Apputility;
+import com.accountmanagement.validations.ValidAccountId;
 import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidOrganizationId;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ public class OrganizationPaymentMethodRequest {
     private UUID organizationId;
 
     @NotNull(message = "Account Id Is Required")
+    @ValidAccountId(message = "Account Id Does Not Exists")
     private UUID accountId;
 
     @NotBlank(message = "Method Name Is Required")

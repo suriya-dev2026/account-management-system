@@ -27,6 +27,9 @@ public class AccountingBankAccount {
     @Column(name = "organization_id")
     private UUID organizationId;
 
+    @Column(name = "account_id")
+    private UUID accountId;
+
     @Column(name = "bank_account_type_id")
     private Integer bankAccountTypeId;
 

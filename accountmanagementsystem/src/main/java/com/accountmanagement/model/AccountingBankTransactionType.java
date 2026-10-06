@@ -2,6 +2,7 @@ package com.accountmanagement.model;
 
 import java.util.UUID;
 
+import com.accountmanagement.enums.Direction;
 import com.accountmanagement.model.listeners.AccountingBankTransactionTypeListener;
 
 import jakarta.persistence.Column;
@@ -28,6 +29,12 @@ public class AccountingBankTransactionType {
 
     @Column(name = "type_name")
     private String typeName;
+
+    @Column(name = "account_id")
+    private UUID accountId;
+
+    @Column(name = "direction")
+    private Direction direction;
 
     @Column(name = "status")
     private String status;

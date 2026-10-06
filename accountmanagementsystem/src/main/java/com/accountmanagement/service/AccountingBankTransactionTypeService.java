@@ -25,6 +25,8 @@ public class AccountingBankTransactionTypeService {
         validateTypeName(request.getOrganizationId(), request.getTypeName());
         AccountingBankTransactionType transactionType = new AccountingBankTransactionType();
         transactionType.setOrganizationId(request.getOrganizationId());
+        transactionType.setAccountId(request.getAccountId());
+        transactionType.setDirection(request.getDirection());
         transactionType.setTypeName(request.getTypeName());
         return accountingBankTransactionTypeRepository.save(transactionType);
     }
@@ -33,6 +35,8 @@ public class AccountingBankTransactionTypeService {
             AccountingBankTransactionTypeRequest request) {
         AccountingBankTransactionType transactionType = findAccountingBankTransactionTypeById(id);
         transactionType.setTypeName(request.getTypeName());
+        transactionType.setAccountId(request.getAccountId());
+        transactionType.setDirection(request.getDirection());
         return accountingBankTransactionTypeRepository.save(transactionType);
     }
 

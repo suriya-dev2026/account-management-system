@@ -1,8 +1,10 @@
 package com.accountmanagement.request;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import com.accountmanagement.utility.Apputility;
+import com.accountmanagement.validations.ValidAccountId;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
@@ -17,6 +19,9 @@ public class AccountingBankAccountUpdateRequest {
 
     @NotNull(message = "Bank Account Type Id Is Required")
     private Integer bankAccountTypeId;
+
+    @ValidAccountId(message = "Account Id Does Not Exists")
+    private UUID accountId;
 
     @NotBlank(message = "Bank name is required.")
     @Size(max = 100, message = "Bank name must not exceed 100 characters.")

@@ -1,4 +1,4 @@
-gitCREATE TABLE accounting_bank_account_types (
+CREATE TABLE accounting_bank_account_types (
     id SERIAL PRIMARY KEY,
     organization_id UUID NOT NULL REFERENCES organizations(id),
     type_name VARCHAR(50) UNIQUE NOT NULL,
@@ -8,6 +8,7 @@ CREATE TABLE accounting_bank_accounts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID NOT NULL REFERENCES organizations(id),
     bank_account_type_id INTEGER REFERENCES accounting_bank_account_types(id),
+    account_id UUID Not NULL REFERENCES accounting_accounts(id),
     bank_name VARCHAR(100) NOT NULL,
     branch VARCHAR(100),
     account_number VARCHAR(30) UNIQUE NOT NULL,
@@ -23,6 +24,8 @@ CREATE TABLE accounting_bank_transaction_types (
     id SERIAL PRIMARY KEY,
     organization_id UUID NOT NULL REFERENCES organizations(id),
     type_name VARCHAR(50) UNIQUE NOT NULL,
+    account_id UUID Not NULL REFERENCES accounting_accounts(id),
+    direction VARCHAR(50),
     status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE'))
 );
 CREATE TABLE accounting_bank_transactions (

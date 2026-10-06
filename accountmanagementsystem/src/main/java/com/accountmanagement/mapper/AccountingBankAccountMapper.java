@@ -13,6 +13,7 @@ public class AccountingBankAccountMapper {
         AccountingBankAccount accountingBankAccount = new AccountingBankAccount();
         accountingBankAccount.setOrganizationId(request.getOrganizationId());
         accountingBankAccount.setBankAccountTypeId(request.getBankAccountTypeId());
+        accountingBankAccount.setAccountId(request.getAccountId());
         accountingBankAccount.setBankName(request.getBankName());
         accountingBankAccount.setBranch(request.getBranch());
         accountingBankAccount.setAccountNumber(request.getAccountNumber());
@@ -26,6 +27,7 @@ public class AccountingBankAccountMapper {
     public AccountingBankAccount toUpdateAccountingBankAccount(AccountingBankAccount accountingBankAccount,
             AccountingBankAccountUpdateRequest request) {
         accountingBankAccount.setBankAccountTypeId(request.getBankAccountTypeId());
+        accountingBankAccount.setAccountId(request.getAccountId());
         accountingBankAccount.setBankName(request.getBankName());
         accountingBankAccount.setBranch(request.getBranch());
         accountingBankAccount.setAccountNumber(request.getAccountNumber());

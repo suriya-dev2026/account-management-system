@@ -23,6 +23,8 @@ public class AccountingBankAccountRequest {
     @NotNull(message = "Bank Account Type Id Is Required")
     private Integer bankAccountTypeId;
 
+    private UUID accountId;
+
     @NotBlank(message = "Bank name is required.")
     @Size(max = 100, message = "Bank name must not exceed 100 characters.")
     private String bankName;

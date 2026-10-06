@@ -14,10 +14,13 @@ import com.accountmanagement.model.BroadcastDelivery;
 import com.accountmanagement.request.BroadcastDeliveryRequest;
 import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.service.BroadcastDeliveryService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/v1/broadcast/delivery")
+@Tag(name = "BroadcastDeliveryController")
 public class BroadcastDeliveryController {
 
     private final BroadcastDeliveryService broadcastDeliveryService;
