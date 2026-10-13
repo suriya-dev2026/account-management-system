@@ -10,14 +10,13 @@ import com.accountmanagement.model.SundaySchoolTransition;
 import com.accountmanagement.repository.SundaySchoolTransitionRepository;
 import com.accountmanagement.request.SundaySchoolTransitionRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SundaySchoolTransitionService {
 
     private final SundaySchoolTransitionRepository sundaySchoolTransitionRepository;
-
-    public SundaySchoolTransitionService(SundaySchoolTransitionRepository sundaySchoolTransitionRepository) {
-        this.sundaySchoolTransitionRepository = sundaySchoolTransitionRepository;
-    }
 
     public SundaySchoolTransition addSundaySchoolTransition(
             SundaySchoolTransitionRequest sundaySchoolTransitionRequest) {

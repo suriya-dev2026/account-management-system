@@ -9,15 +9,13 @@ import com.accountmanagement.model.AccessControlRoutePresetAccess;
 import com.accountmanagement.repository.AccessControlRoutePresetAccessRepository;
 import com.accountmanagement.request.AccessControlRoutePresetAccessRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccessControlRoutePresetAccessService {
 
     private final AccessControlRoutePresetAccessRepository accessControlRoutePresetAccessRepository;
-
-    public AccessControlRoutePresetAccessService(
-            AccessControlRoutePresetAccessRepository accessControlRoutePresetAccessRepository) {
-        this.accessControlRoutePresetAccessRepository = accessControlRoutePresetAccessRepository;
-    }
 
     public AccessControlRoutePresetAccess addAccessControlRoutePresetAccess(
             AccessControlRoutePresetAccessRequest accessControlRoutePresetAccessRequest) {

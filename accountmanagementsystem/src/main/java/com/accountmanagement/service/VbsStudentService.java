@@ -17,7 +17,10 @@ import com.accountmanagement.repository.VbsStudentRepository;
 import com.accountmanagement.request.VbsStudentRequest;
 import com.accountmanagement.request.VbsStudentUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class VbsStudentService {
 
     private final VbsStudentMapper vbsStudentMapper;
@@ -25,13 +28,6 @@ public class VbsStudentService {
     private final VbsStudentRepository vbsStudentRepository;
 
     private final MemberRepository memberRepository;
-
-    public VbsStudentService(VbsStudentRepository vbsStudentRepository, MemberRepository memberRepository,
-            VbsStudentMapper vbsStudentMapper) {
-        this.vbsStudentRepository = vbsStudentRepository;
-        this.memberRepository = memberRepository;
-        this.vbsStudentMapper = vbsStudentMapper;
-    }
 
     public VbsStudent createVbsStudent(VbsStudentRequest vbsStudentRequest) {
         Member member = null;

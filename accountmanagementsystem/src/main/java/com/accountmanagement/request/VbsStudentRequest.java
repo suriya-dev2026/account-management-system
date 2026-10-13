@@ -39,7 +39,6 @@ public class VbsStudentRequest {
     @ValidInput(message = "Contact Number contains invalid characters")
     private String contactNumber;
 
-    @NotBlank(message = "Please Enter Contact Number")
     @ValidContactNumber(message = "Please Enter A Valid Contact Number")
     @ValidInput(message = "Contact Number Contains Invalid Characters")
     private String emergencyContactNumber;

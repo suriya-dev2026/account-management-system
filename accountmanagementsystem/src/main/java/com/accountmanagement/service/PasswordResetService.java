@@ -61,6 +61,11 @@ public class PasswordResetService {
     @Transactional
     public String forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         User user = userService.findByEmail(forgotPasswordRequest.getEmail());
+        long otpRequestCount = passwordResetRepository.countRecentPasswordResetRequests(user.getId());
+        if (otpRequestCount >= 3) {
+            throw new InvalidRequestException(
+                    "Password reset OTP limit exceeded. Please try again later.");
+        }
         String otp = otpService.generateOtp();
         emailQueueService.addToPasswordResetQueue(user.getId(), forgotPasswordRequest.getEmail(), otp);
         String hashedOtp = bCryptPasswordEncoder.encode(otp);

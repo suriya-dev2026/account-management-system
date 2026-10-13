@@ -12,14 +12,13 @@ import com.accountmanagement.repository.SundaySchoolTeacherRepository;
 import com.accountmanagement.request.SundaySchoolTeacherRequest;
 import com.accountmanagement.request.SundaySchoolTeacherUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SundaySchoolTeacherService {
 
     private final SundaySchoolTeacherRepository sundaySchoolTeacherRepository;
-
-    public SundaySchoolTeacherService(SundaySchoolTeacherRepository sundaySchoolTeacherRepository) {
-        this.sundaySchoolTeacherRepository = sundaySchoolTeacherRepository;
-    }
 
     public SundaySchoolTeacher addSundaySchoolTeacher(SundaySchoolTeacherRequest sundaySchoolTeacherRequest) {
         validateMemberAndClassId(sundaySchoolTeacherRequest.getMemberId(), sundaySchoolTeacherRequest.getClassId());

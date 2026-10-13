@@ -51,7 +51,7 @@ public class SubscriptionFeatureService {
         subscriptionFeatureRepository.save(subscriptionFeature);
     }
 
-    public List<SubscriptionFeature> viewAllSubscriptionFeature() {
+    public List<SubscriptionFeature> viewAllSubscriptionFeatures() {
         return subscriptionFeatureRepository.findAll();
     }
 

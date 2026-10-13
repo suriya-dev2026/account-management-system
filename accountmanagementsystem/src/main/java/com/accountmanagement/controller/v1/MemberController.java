@@ -13,27 +13,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.MemberCategoryMessage;
 import com.accountmanagement.constants.message.MemberMessage;
 import com.accountmanagement.model.Member;
+import com.accountmanagement.model.MemberCategory;
+import com.accountmanagement.request.MemberCategoryRequest;
 import com.accountmanagement.request.MemberRequest;
 import com.accountmanagement.request.MemberUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
+import com.accountmanagement.service.MemberCategoryService;
 import com.accountmanagement.service.MemberService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/v1/member")
 @Tag(name = "MemberController")
+@RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    MemberController(MemberService memberService) {
-        this.memberService = memberService;
+    private final MemberCategoryService memberCategoryService;
+
+    @PostMapping("/category/create")
+    public ResponseEntity<ApiResponse> createMemberCategory(
+            @Valid @RequestBody MemberCategoryRequest memberCategoryRequest) {
+        memberCategoryRequest.sanitizeInput();
+        memberCategoryService.createMemberCategory(memberCategoryRequest);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberCategoryMessage.ADD_MEMBER_CATEGORY, 201);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/add")
+    @PutMapping("/category/update/{id}")
+    public ResponseEntity<ApiResponse> updateMemberCategory(@PathVariable Integer id,
+            @Valid @RequestBody MemberCategoryRequest memberCategoryRequest) {
+        memberCategoryRequest.sanitizeInput();
+        memberCategoryService.updateMemberCategory(id, memberCategoryRequest);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberCategoryMessage.UPDATE_MEMBER_CATEGORY, 200);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/category/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteMemberCategoryById(@PathVariable Integer id) {
+        memberCategoryService.deleteMemberCateogoryById(id);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberCategoryMessage.DELETE_MEMBER_CATEGORY, 200);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/category/view")
+    public ResponseEntity<ApiResponse> viewAllMemberCategories() {
+        List<MemberCategory> memberCategory = memberCategoryService.viewAll();
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberCategoryMessage.MEMBER_CATEGORY, 200);
+        response.setData(memberCategory);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse> addMember(@Valid @RequestBody MemberRequest memberRequest) {
         memberRequest.sanitizeInput();
         memberService.addMember(memberRequest);
@@ -57,7 +94,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("")
+    @GetMapping("/view")
     public ResponseEntity<ApiResponse> viewAll() {
         List<Member> members = memberService.viewAll();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, MemberMessage.MEMBER, 200);

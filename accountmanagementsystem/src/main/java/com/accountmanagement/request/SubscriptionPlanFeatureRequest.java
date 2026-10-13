@@ -17,7 +17,6 @@ public class SubscriptionPlanFeatureRequest {
     private UUID planId;
 
     @NotNull(message = "Feature Id Required")
-
     private List<@ValidFeatureId(message = "Feature Id Does Not Exists") UUID> featureId;
 
 }

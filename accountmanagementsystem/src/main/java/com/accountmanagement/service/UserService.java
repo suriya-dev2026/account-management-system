@@ -41,7 +41,10 @@ import com.accountmanagement.response.ApiResponse;
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.utility.TokenUtility;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final RedisService redisService;
@@ -72,36 +75,13 @@ public class UserService {
 
     private final UserVerificationRepository userVerificationRepository;
 
-    UserService(OtpService otpService, BCryptPasswordEncoder bCryptPasswordEncoder, TokenUtility tokenUtility,
-            UserRepository userRepository, UserProfileRepository userProfileRepository,
-            UserLoginAuditLogService userLoginAuditLogService,
-            UserSessionService userSessionService, UserSessionRepository userSessionRepository, UserMapper userMapper,
-            EmailQueueService emailQueueService,
-            OrganizationRepository organizationRepository,
-            UserVerificationService userVerificationService, UserVerificationRepository userVerificationRepository,
-            RedisService redisService) {
-        this.otpService = otpService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.tokenUtility = tokenUtility;
-        this.userRepository = userRepository;
-        this.userProfileRepository = userProfileRepository;
-        this.userLoginAuditLogService = userLoginAuditLogService;
-        this.userSessionService = userSessionService;
-        this.userSessionRepository = userSessionRepository;
-        this.userMapper = userMapper;
-        this.emailQueueService = emailQueueService;
-        this.organizationRepository = organizationRepository;
-        this.userVerificationService = userVerificationService;
-        this.userVerificationRepository = userVerificationRepository;
-        this.redisService = redisService;
-    }
-
     @Transactional
     public String registerUser(UserRegistrationRequest request) {
         Organization organization = validateOrganization(request.getOrganizationId());
         validateUser(request);
         String email = getRegistrationEmail(request, organization);
-        User user = userMapper.toRegisterUser(request, email);
+        String temporaryPassword = Apputility.generateTemporaryPassword();
+        User user = userMapper.toRegisterUser(request, email, temporaryPassword);
         User savedUser = userRepository.save(user);
         UserProfile userProfile = userMapper.toRegisterUserProfile(savedUser.getId(), request);
         userProfileRepository.save(userProfile);
@@ -141,6 +121,7 @@ public class UserService {
         validatePassword(loginRequest.getPassword(), user, userVerification);
         resetFailedLoginAttempts(userVerification);
         validatePasswordResetStatus(userVerification);
+        userSessionService.validateOtpSendLimit(user.getId());
         String otp = otpService.generateOtp();
         userSessionService.createUserSession(user.getId(), otp);
         emailQueueService.addToLoginQueue(user.getId(),
@@ -190,19 +171,15 @@ public class UserService {
     @Transactional
     public void changeTemporaryPassword(ChangeTemporaryPasswordRequest request) {
         User user = getUserByResetToken(request.getResetToken());
-        if (!request.getNewPassword()
-                .equals(request.getConfirmPassword())) {
-            throw new BusinessException(
-                    UserMessage.PASSWORD_MISMATCH);
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException(UserMessage.PASSWORD_MISMATCH);
         }
-        user.setPassword(bCryptPasswordEncoder.encode(
-                request.getNewPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
         UserVerification verification = findByVerificationByUserId(user.getId());
         verification.setIsPasswordResetCompleted(true);
         userVerificationRepository.save(verification);
-        redisService.delete(
-                "PASSWORD-RESET:" + request.getResetToken());
+        redisService.delete("PASSWORD-RESET:" + request.getResetToken());
     }
 
     private User getUserByResetToken(String resetToken) {
@@ -413,13 +390,11 @@ public class UserService {
         userVerificationService.updateFailedLoginAttempt(userVerification);
         int attempts = userVerification.getFailedLoginAttempts();
         if (attempts >= 3) {
-            userLoginAuditLogService.createUserLog(user.getOrganizationId(),
-                    user.getId(), "Login", UserMessage.LOCKED);
+            userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "Login", UserMessage.LOCKED);
             throw new AccountLockException("Account locked due to 3 failed login attempts");
         }
         int remainingAttempts = 3 - attempts;
-        userLoginAuditLogService.createUserLog(user.getOrganizationId(),
-                user.getId(), "Login", "failed");
+        userLoginAuditLogService.createUserLog(user.getOrganizationId(), user.getId(), "Login", "failed");
         throw new InvalidCredentialsException(
                 "Invalid credentials. " + remainingAttempts + " attempt" + (remainingAttempts > 1 ? "s" : "")
                         + " remaining.");
@@ -472,18 +447,26 @@ public class UserService {
     @Transactional
     public void createTemporaryCredentials(UUID userId) {
         User user = findById(userId);
-        String temporaryPassword = Apputility.generateTemporaryPassword();
-        user.setPassword(bCryptPasswordEncoder.encode(temporaryPassword));
-        userRepository.save(user);
         String resetToken = UUID.randomUUID().toString().replaceAll("-", "");
         String redisKey = "PASSWORD-RESET:" + resetToken;
         redisService.save(redisKey, user.getId().toString(), 10, TimeUnit.MINUTES);
         String changePasswordLink = UserMessage.TEMPORARY_PASSWORD_CHANGE_LINK + resetToken;
+        validateTemporaryPasswordSendLimit(userId);
         emailQueueService.addTemporaryPasswordEmail(user.getId(), user.getEmail(),
                 user.getUserName(),
-                temporaryPassword, changePasswordLink);
+                user.getPassword(), changePasswordLink);
         UserVerification userVerification = findByVerificationByUserId(user.getId());
         userVerification.setIsPasswordResetCompleted(false);
         userVerificationRepository.save(userVerification);
+    }
+
+    public void validateTemporaryPasswordSendLimit(UUID userId) {
+        String key = "TEMP-PASSWORD-LIMIT:" + userId;
+        String countValue = redisService.get(key);
+        long requestCount = countValue == null ? 0 : Long.parseLong(countValue);
+        if (requestCount >= 3) {
+            throw new InvalidRequestException(
+                    "Temporary password email limit exceeded. Please try again after 10 minutes.");
+        }
     }
 }

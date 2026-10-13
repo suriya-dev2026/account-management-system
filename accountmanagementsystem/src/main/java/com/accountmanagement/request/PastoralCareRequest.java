@@ -32,7 +32,6 @@ public class PastoralCareRequest {
     @NotNull(message = "Visit Date Is Required")
     private LocalDate visitDate;
 
-    @NotBlank(message = "Visit Type Is Required")
     @ValidInput(message = "Visit Type Contains Invalid Characters")
     private String visitType;
 

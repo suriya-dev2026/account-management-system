@@ -9,14 +9,13 @@ import com.accountmanagement.model.VbsYear;
 import com.accountmanagement.repository.VbsYearRepository;
 import com.accountmanagement.request.VbsYearRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class VbsYearService {
 
     private final VbsYearRepository vbsYearRepository;
-
-    public VbsYearService(VbsYearRepository vbsYearRepository) {
-        this.vbsYearRepository = vbsYearRepository;
-    }
 
     public VbsYear createVbsYear(VbsYearRequest vbsYearRequest) {
         validateVbsYear(vbsYearRequest);

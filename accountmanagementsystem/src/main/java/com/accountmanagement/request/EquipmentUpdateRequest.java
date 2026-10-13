@@ -23,7 +23,6 @@ public class EquipmentUpdateRequest {
     @NotNull(message = "Category Id Is Required")
     private Integer categoryId;
 
-    @NotNull(message = "Purchase Date Is Required")
     private LocalDate purchaseDate;
 
     @DecimalMin(value = "0.01", message = "Purchase cost must be greater than 0")

@@ -13,62 +13,108 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
+import com.accountmanagement.constants.message.EquipmentCategoryMessage;
 import com.accountmanagement.constants.message.EquipmentMessage;
 import com.accountmanagement.model.Equipment;
+import com.accountmanagement.model.EquipmentCategory;
+import com.accountmanagement.request.EquipmentCategoryRequest;
+import com.accountmanagement.request.EquipmentCategoryUpdateRequest;
 import com.accountmanagement.request.EquipmentRequest;
 import com.accountmanagement.request.EquipmentUpdateRequest;
 import com.accountmanagement.response.ApiResponse;
+import com.accountmanagement.service.EquipmentCategoryService;
 import com.accountmanagement.service.EquipmentService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/v1/equipment")
 @Tag(name = "EquipmentController")
+@RequiredArgsConstructor
 public class EquipmentController {
 
-    private final EquipmentService equipmentService;
+        private final EquipmentService equipmentService;
 
-    public EquipmentController(EquipmentService equipmentService) {
-        this.equipmentService = equipmentService;
-    }
+        private final EquipmentCategoryService equipmentCategoryService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createEquipment(
-            @Valid @RequestBody EquipmentRequest equipmentRequest) {
-        equipmentRequest.sanitizeInput();
-        equipmentService.createEquipment(equipmentRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EquipmentMessage.CREATE_EQUIPMENT,
-                201);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+        @PostMapping("/create")
+        public ResponseEntity<ApiResponse> createEquipment(
+                        @Valid @RequestBody EquipmentRequest equipmentRequest) {
+                equipmentRequest.sanitizeInput();
+                equipmentService.createEquipment(equipmentRequest);
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EquipmentMessage.CREATE_EQUIPMENT,
+                                201);
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse> updateEquipmentById(@PathVariable UUID id,
-            @Valid @RequestBody EquipmentUpdateRequest equipmentUpdateRequest) {
-        equipmentUpdateRequest.sanitizeInput();
-        equipmentService.updateEquipment(id, equipmentUpdateRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EquipmentMessage.UPDATE_EQUIPMENT,
-                200);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+        @PutMapping("/update/{id}")
+        public ResponseEntity<ApiResponse> updateEquipmentById(@PathVariable UUID id,
+                        @Valid @RequestBody EquipmentUpdateRequest equipmentUpdateRequest) {
+                equipmentUpdateRequest.sanitizeInput();
+                equipmentService.updateEquipment(id, equipmentUpdateRequest);
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EquipmentMessage.UPDATE_EQUIPMENT,
+                                200);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse> deleteEquipmentById(@PathVariable UUID id) {
-        equipmentService.deleteEquipmentById(id);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EquipmentMessage.DELETE_EQUIPMENT,
-                200);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+        @DeleteMapping("/delete/{id}")
+        public ResponseEntity<ApiResponse> deleteEquipmentById(@PathVariable UUID id) {
+                equipmentService.deleteEquipmentById(id);
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS, EquipmentMessage.DELETE_EQUIPMENT,
+                                200);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse> viewAllEquipments() {
-        List<Equipment> equipment = equipmentService.viewAllEquipments();
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                EquipmentMessage.VIEW_ALL_EQUIPMENTS,
-                200);
-        response.setData(equipment);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+        @GetMapping("/view")
+        public ResponseEntity<ApiResponse> viewAllEquipments() {
+                List<Equipment> equipment = equipmentService.viewAllEquipments();
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                                EquipmentMessage.VIEW_ALL_EQUIPMENTS,
+                                200);
+                response.setData(equipment);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @PostMapping("/category/create")
+        public ResponseEntity<ApiResponse> createEquipmentCategory(
+                        @Valid @RequestBody EquipmentCategoryRequest equipmentCategoryRequest) {
+                equipmentCategoryRequest.sanitizeInput();
+                equipmentCategoryService.createEquipmentCategory(equipmentCategoryRequest);
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                                EquipmentCategoryMessage.CREATE_EQUIPMENT_CATEGORY,
+                                201);
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
+
+        @PutMapping("/category/update/{id}")
+        public ResponseEntity<ApiResponse> updateEquipmentCategoryById(@PathVariable Integer id,
+                        @Valid @RequestBody EquipmentCategoryUpdateRequest equipmentCategoryUpdateRequest) {
+                equipmentCategoryUpdateRequest.sanitizeInput();
+                equipmentCategoryService.updateEquipmentCategory(id, equipmentCategoryUpdateRequest);
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                                EquipmentCategoryMessage.UPDATE_EQUIPMENT_CATEGORY,
+                                200);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @DeleteMapping("/category/delete/{id}")
+        public ResponseEntity<ApiResponse> deleteEquipmentCategoryById(@PathVariable Integer id) {
+                equipmentCategoryService.deleteEquipmentCategoryById(id);
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                                EquipmentCategoryMessage.DELETE_EQUIPMENT_CATEGORY,
+                                200);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        @GetMapping("/category/view")
+        public ResponseEntity<ApiResponse> viewAllEquipmentCategories() {
+                List<EquipmentCategory> equipmentCategory = equipmentCategoryService.viewAllEquipmentCategory();
+                ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
+                                EquipmentCategoryMessage.VIEW_ALL_EQUIPMENT_CATEGORIES,
+                                200);
+                response.setData(equipmentCategory);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+        }
 }

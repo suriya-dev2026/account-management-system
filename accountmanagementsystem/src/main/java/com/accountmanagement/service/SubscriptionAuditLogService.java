@@ -9,14 +9,13 @@ import com.accountmanagement.enums.AuditLogAction;
 import com.accountmanagement.model.SubscriptionAuditLog;
 import com.accountmanagement.repository.SubscriptionAuditLogRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SubscriptionAuditLogService {
 
     private final SubscriptionAuditLogRepository subscriptionAuditLogRepository;
-
-    public SubscriptionAuditLogService(SubscriptionAuditLogRepository subscriptionAuditLogRepository) {
-        this.subscriptionAuditLogRepository = subscriptionAuditLogRepository;
-    }
 
     @Transactional
     public SubscriptionAuditLog createSubscriptionAuditLog(UUID organizationId, UUID planId, AuditLogAction action,

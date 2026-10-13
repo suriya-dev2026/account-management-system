@@ -10,14 +10,13 @@ import com.accountmanagement.model.AccessControlModulePreset;
 import com.accountmanagement.repository.AccessControlModulePresetRepository;
 import com.accountmanagement.request.AccessControlModulePresetRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccessControlModulePresetService {
 
     private final AccessControlModulePresetRepository accessControlModulePresetRepository;
-
-    public AccessControlModulePresetService(AccessControlModulePresetRepository accessControlModulePresetRepository) {
-        this.accessControlModulePresetRepository = accessControlModulePresetRepository;
-    }
 
     public AccessControlModulePreset createAccessControlModulePreset(
             AccessControlModulePresetRequest accessControlModulePresetRequest) {

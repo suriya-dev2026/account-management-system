@@ -10,17 +10,15 @@ import com.accountmanagement.model.VbsClass;
 import com.accountmanagement.repository.VbsClassRepository;
 import com.accountmanagement.request.VbsClassRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class VbsClassService {
 
     private final VbsClassRepository vbsClassRepository;
 
     private final VbsClassMapper vbsClassMapper;
-
-    public VbsClassService(VbsClassRepository vbsClassRepository, VbsClassMapper vbsClassMapper) {
-        this.vbsClassRepository = vbsClassRepository;
-        this.vbsClassMapper = vbsClassMapper;
-    }
 
     public VbsClass createVbsClass(VbsClassRequest vbsClassRequest) {
         validateClassName(vbsClassRequest);

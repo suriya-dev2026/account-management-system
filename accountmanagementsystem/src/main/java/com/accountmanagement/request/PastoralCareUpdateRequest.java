@@ -3,7 +3,6 @@ package com.accountmanagement.request;
 import java.time.LocalDate;
 import com.accountmanagement.utility.Apputility;
 import com.accountmanagement.validations.ValidInput;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -19,7 +18,6 @@ public class PastoralCareUpdateRequest {
     @NotNull(message = "Visit Date Is Required")
     private LocalDate visitDate;
 
-    @NotBlank(message = "Visit Type Is Required")
     @ValidInput(message = "Visit Type Contains Invalid Characters")
     private String visitType;
 

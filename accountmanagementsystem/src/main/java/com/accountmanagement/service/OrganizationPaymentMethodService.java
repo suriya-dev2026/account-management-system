@@ -11,14 +11,13 @@ import com.accountmanagement.model.OrganizationPaymentMethod;
 import com.accountmanagement.repository.OrganizationPaymentMethodRepository;
 import com.accountmanagement.request.OrganizationPaymentMethodRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class OrganizationPaymentMethodService {
 
     private final OrganizationPaymentMethodRepository organizationPaymentMethodRepository;
-
-    public OrganizationPaymentMethodService(OrganizationPaymentMethodRepository organizationPaymentMethodRepository) {
-        this.organizationPaymentMethodRepository = organizationPaymentMethodRepository;
-    }
 
     public OrganizationPaymentMethod createOrganizatonPaymentMethod(
             OrganizationPaymentMethodRequest organizationPaymentMethodRequest) {

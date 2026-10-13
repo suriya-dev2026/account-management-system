@@ -13,6 +13,7 @@ import com.accountmanagement.validations.ValidVbsClassId;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -31,14 +32,15 @@ public class VbsTeacherRequest {
     private Integer classId;
 
     @ValidInput(message = "Teacher Name Contains Invalid Characters")
+    @NotBlank(message = "Teacher Name Is Required")
     private String teacherName;
 
     @ValidInput(message = "Teacher Type Contains Invalid Characters")
+    @NotBlank(message = "Teacher Type Is Required")
     private String teacherType;
 
     private Gender gender;
 
-    @NotNull(message = "Age is required")
     @Min(value = 0, message = "Age cannot be negative")
     @Max(value = 100, message = "Age should not exceed 100")
     private Integer age;
@@ -46,7 +48,6 @@ public class VbsTeacherRequest {
     @ValidDate(message = "pleases enter a valid date. Birth date cannot be in the future")
     private LocalDate dateOfBirth;
 
-    @NotNull(message = "please enter date of join")
     @ValidDate(message = "pleases enter a valid date. Join date cannot be in the future")
     private LocalDate dateOfJoin;
 

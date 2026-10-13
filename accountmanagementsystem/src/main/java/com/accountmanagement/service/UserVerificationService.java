@@ -12,14 +12,13 @@ import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserVerification;
 import com.accountmanagement.repository.UserVerificationRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserVerificationService {
 
     private final UserVerificationRepository userVerificationRepository;
-
-    UserVerificationService(UserVerificationRepository userVerificationRepository) {
-        this.userVerificationRepository = userVerificationRepository;
-    }
 
     @Transactional
     public void completUserRegistration(UUID userId) {

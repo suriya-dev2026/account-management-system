@@ -20,8 +20,7 @@ public class SundaySchoolStudentUpdateRequest {
     @ValidInput(message = "Student Name Contains Invalid Characters")
     private String name;
 
-    @NotNull(message = "Age is required")
-    @Min(value = 0, message = "Age cannot be negative")
+    @Min(value = 0, message = "Age cannot be negativ e")
     @Max(value = 100, message = "Age should not exceed 100")
     private Integer age;
 
@@ -33,7 +32,6 @@ public class SundaySchoolStudentUpdateRequest {
     private UUID classId;
 
     @ValidTeacherId(message = "Teacher Id Does Not Exists")
-    @NotNull(message = "Teacher Id Is Required")
     private UUID teacherId;
 
     public void sanitizeInput() {

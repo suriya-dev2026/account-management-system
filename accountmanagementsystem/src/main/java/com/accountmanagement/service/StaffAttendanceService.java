@@ -14,14 +14,13 @@ import com.accountmanagement.request.StaffAttendanceList;
 import com.accountmanagement.request.StaffAttendanceRequest;
 import com.accountmanagement.request.StaffAttendanceUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class StaffAttendanceService {
 
     private final StaffAttendanceRepository staffAttendanceRepository;
-
-    public StaffAttendanceService(StaffAttendanceRepository staffAttendanceRepository) {
-        this.staffAttendanceRepository = staffAttendanceRepository;
-    }
 
     public List<StaffAttendance> createStaffAttendance(StaffAttendanceRequest request) {
         validateDuplicateStaffId(request.getAttendanceList());

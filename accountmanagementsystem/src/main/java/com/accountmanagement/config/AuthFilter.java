@@ -100,7 +100,6 @@ public class AuthFilter extends OncePerRequestFilter {
                 || path.equals("/auth/v1/resend/verification/email")
                 || path.equals("/auth/v1/user/verify/otp")
                 || path.equals("/auth/v1/user/change/temporary/password")
-                || path.startsWith("/auth/v1/user/send/temporary/password/")
                 || path.startsWith("/v1/user/refreshKey")
                 || path.equals("/v1/user/verify/reset/otp")
                 || path.startsWith("/v1/user/forgot/password")
@@ -113,7 +112,7 @@ public class AuthFilter extends OncePerRequestFilter {
     private void letProceedFurther(User user, String accessToken, FilterChain filterChain,
             HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getUserType().name()));
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, accessToken,
                 authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);

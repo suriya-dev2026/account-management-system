@@ -35,9 +35,11 @@ import com.accountmanagement.service.SubscriptionPaymentService;
 import com.accountmanagement.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "auth/v1")
+@RequiredArgsConstructor
 @Tag(name = "AuthController")
 public class AuthController {
 
@@ -49,21 +51,20 @@ public class AuthController {
 
     private final SubscriptionPaymentService subscriptionPaymentService;
 
-    public AuthController(OrganizationService organizationService, UserService userService,
-            SubscriptionOrganizationService subscriptionOrganizationService,
-            SubscriptionPaymentService subscriptionPaymentService) {
-        this.organizationService = organizationService;
-        this.userService = userService;
-        this.subscriptionOrganizationService = subscriptionOrganizationService;
-        this.subscriptionPaymentService = subscriptionPaymentService;
-    }
-
     @PostMapping("/organization/register")
     public ResponseEntity<ApiResponse> createOrganization(
             @Valid @RequestBody OrganizationRegistrationRequest organizationRequest) {
         organizationRequest.sanitizeInput();
         organizationService.registerOrganization(organizationRequest);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, OrganizationMessage.ADD_ORGANIZATION, 201);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/user/register")
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserRegistrationRequest userRequest) {
+        userRequest.sanitizeInput();
+        userService.registerUser(userRequest);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.SEND_EMAIL_VERIFICATION_LINK, 201);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -84,14 +85,6 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/user/register")
-    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserRegistrationRequest userRequest) {
-        userRequest.sanitizeInput();
-        userService.registerUser(userRequest);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.SEND_EMAIL_VERIFICATION_LINK, 201);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
     @GetMapping("/user/view/all")
     public ResponseEntity<ApiResponse> getAllUsers() {
         List<User> user = userService.getAllUsers();
@@ -107,7 +100,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/subscription/payment/add")
+    @PostMapping("/subscription/payment/create")
     public ResponseEntity<ApiResponse> createSubscriptionPayment(
             @Valid @RequestBody SubscriptionPaymentRequest subscriptionPaymentRequest) {
         SubscriptionPayment subscriptionPayment = subscriptionPaymentService
@@ -127,7 +120,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/user/send/temporary/password/{userId}")
+    @PostMapping("/user/send/temporary/credential/{userId}")
     public ResponseEntity<ApiResponse> resendCredential(@PathVariable UUID userId) {
         userService.createTemporaryCredentials(userId);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
@@ -156,15 +149,6 @@ public class AuthController {
             @Valid @RequestBody ChangeTemporaryPasswordRequest request) {
         userService.changeTemporaryPassword(request);
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, UserMessage.TEMPORARY_PASSWORD_CHANGED,
-                200);
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/user/send/temporary/password/{userId}")
-    public ResponseEntity<ApiResponse> resendTemporaryPassword(@PathVariable UUID userId) {
-        userService.createTemporaryCredentials(userId);
-        ApiResponse response = new ApiResponse(AppConstants.SUCCESS,
-                UserMessage.TEMPORARY_CREDENTIAL,
                 200);
         return ResponseEntity.ok(response);
     }

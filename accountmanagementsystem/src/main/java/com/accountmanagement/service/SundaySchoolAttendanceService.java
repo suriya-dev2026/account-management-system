@@ -16,14 +16,13 @@ import com.accountmanagement.request.AttendanceItemRequest;
 import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.SundaySchoolAttendanceRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SundaySchoolAttendanceService {
 
     private final SundaySchoolAttendanceRepository sundaySchoolAttendanceRepository;
-
-    public SundaySchoolAttendanceService(SundaySchoolAttendanceRepository sundaySchoolAttendanceRepository) {
-        this.sundaySchoolAttendanceRepository = sundaySchoolAttendanceRepository;
-    }
 
     @Transactional
     public List<SundaySchoolAttendance> saveAttendance(SundaySchoolAttendanceRequest request) {

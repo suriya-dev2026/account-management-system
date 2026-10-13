@@ -58,7 +58,7 @@ public class BulletinController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/view")
     public ResponseEntity<ApiResponse> viewAllBulletins() {
         List<Bulletin> bulletin = bulletinService.viewAllBulletins();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, BulletinMessage.VIEW_ALL_BULLETINS, 200);

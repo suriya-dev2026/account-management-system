@@ -19,8 +19,10 @@ import com.accountmanagement.repository.StaffRepository;
 import com.accountmanagement.repository.UserProfileRepository;
 import com.accountmanagement.request.StaffRequest;
 import com.accountmanagement.request.StaffUpdateRequest;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class StaffService {
 
     private final UserRepository userRepository;
@@ -30,14 +32,6 @@ public class StaffService {
     private final StaffRepository staffRepository;
 
     private final StaffMapper staffMapper;
-
-    public StaffService(StaffRepository staffRepository, StaffMapper staffMapper, UserRepository userRepository,
-            UserProfileRepository userProfileRepository) {
-        this.staffRepository = staffRepository;
-        this.staffMapper = staffMapper;
-        this.userRepository = userRepository;
-        this.userProfileRepository = userProfileRepository;
-    }
 
     public Staff createStaff(StaffRequest staffRequest) {
         User user = null;

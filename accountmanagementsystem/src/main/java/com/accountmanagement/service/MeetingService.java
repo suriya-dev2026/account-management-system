@@ -9,18 +9,15 @@ import com.accountmanagement.repository.MeetingRepository;
 import com.accountmanagement.request.MeetingRequest;
 import com.accountmanagement.request.MeetingUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
 
     private final MeetingMapper meetingMapper;
-
-    public MeetingService(MeetingRepository meetingRepository, MeetingMapper meetingMapper) {
-        this.meetingRepository = meetingRepository;
-        this.meetingMapper = meetingMapper;
-    }
 
     public Meeting createMeeting(MeetingRequest meetingRequest) {
         Meeting meeting = meetingMapper.toCreateMeeting(meetingRequest);

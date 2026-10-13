@@ -27,7 +27,10 @@ import com.accountmanagement.repository.UserRepository;
 import com.accountmanagement.request.PaymentSuccessRequest;
 import com.accountmanagement.request.SubscriptionPaymentRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SubscriptionPaymentService {
 
     private final UserService userService;
@@ -49,25 +52,6 @@ public class SubscriptionPaymentService {
     private final UserVerificationService userVerificationService;
 
     private final UserRepository userRepository;
-
-    public SubscriptionPaymentService(SubscriptionPaymentRepository subscriptionPaymentRepository,
-            SubscriptionOrganizationService subscriptionOrganizationService,
-            SubscriptionPlanService subscriptionPlanService,
-            SubscriptionOrganizationRepository subscriptionOrganizationRepository,
-            SubscriptionPaymentMapper subscriptionPaymentMapper, SubscriptionUsageService subscriptionUsageService,
-            SubscriptionAuditLogService subscriptionAuditLogService, UserVerificationService userVerificationService,
-            UserRepository userRepository, UserService userService) {
-        this.subscriptionPaymentRepository = subscriptionPaymentRepository;
-        this.subscriptionOrganizationService = subscriptionOrganizationService;
-        this.subscriptionPlanService = subscriptionPlanService;
-        this.subscriptionOrganizationRepository = subscriptionOrganizationRepository;
-        this.subscriptionPaymentMapper = subscriptionPaymentMapper;
-        this.subscriptionUsageService = subscriptionUsageService;
-        this.subscriptionAuditLogService = subscriptionAuditLogService;
-        this.userVerificationService = userVerificationService;
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
 
     @Transactional
     public SubscriptionPayment createSubscriptionPayment(SubscriptionPaymentRequest request) {

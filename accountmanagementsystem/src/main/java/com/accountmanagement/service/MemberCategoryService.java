@@ -15,7 +15,10 @@ import com.accountmanagement.repository.MemberCategoryRepository;
 import com.accountmanagement.request.MemberCategoryRequest;
 import com.accountmanagement.utility.Apputility;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MemberCategoryService {
 
     private final UserLoginAuditLogService userLoginAuditLogService;
@@ -24,15 +27,7 @@ public class MemberCategoryService {
 
     private final MemberCategoryMapper memberCategoryMapper;
 
-    MemberCategoryService(MemberCategoryRepository memberCategoryRepository,
-            MemberCategoryMapper memberCategoryMapper, UserLoginAuditLogService userLoginAuditLogService) {
-        this.memberCategoryRepository = memberCategoryRepository;
-        this.memberCategoryMapper = memberCategoryMapper;
-        this.userLoginAuditLogService = userLoginAuditLogService;
-
-    }
-
-    public MemberCategory addMemberCategory(MemberCategoryRequest memberCategoryRequest) {
+    public MemberCategory createMemberCategory(MemberCategoryRequest memberCategoryRequest) {
         validateMemberCategory(memberCategoryRequest.getCategory());
         MemberCategory memberCategory = memberCategoryMapper.toCreateMemberCategory(memberCategoryRequest);
         MemberCategory savedMemberCategory = memberCategoryRepository.save(memberCategory);

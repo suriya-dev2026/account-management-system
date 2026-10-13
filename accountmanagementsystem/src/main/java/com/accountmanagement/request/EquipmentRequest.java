@@ -32,7 +32,6 @@ public class EquipmentRequest {
 
     private String serialNo;
 
-    @NotNull(message = "Purchase Date Is Required")
     private LocalDate purchaseDate;
 
     @DecimalMin(value = "0.01", message = "Purchase cost must be greater than 0")

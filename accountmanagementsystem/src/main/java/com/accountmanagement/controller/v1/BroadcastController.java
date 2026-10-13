@@ -15,23 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.accountmanagement.constants.AppConstants;
 import com.accountmanagement.constants.message.BroadcastMessage;
 import com.accountmanagement.model.Broadcast;
+import com.accountmanagement.model.BroadcastDelivery;
+import com.accountmanagement.request.BroadcastDeliveryRequest;
 import com.accountmanagement.request.BroadcastRequest;
 import com.accountmanagement.response.ApiResponse;
+import com.accountmanagement.service.BroadcastDeliveryService;
 import com.accountmanagement.service.BroadcastService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/v1/broadcast")
 @Tag(name = "BroadcastController")
+@RequiredArgsConstructor
 public class BroadcastController {
 
     private final BroadcastService broadcastService;
 
-    public BroadcastController(BroadcastService broadcastService) {
-        this.broadcastService = broadcastService;
-    }
+    private final BroadcastDeliveryService broadcastDeliveryService;
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createBroadcast(@Valid @RequestBody BroadcastRequest broadcastRequest) {
@@ -57,11 +60,27 @@ public class BroadcastController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/view")
     public ResponseEntity<ApiResponse> viewAllBroadcast() {
         List<Broadcast> broadcast = broadcastService.viewAllBroadcasts();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, BroadcastMessage.VIEW_ALL_BROADCAST, 200);
         response.setData(broadcast);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/delivery/create")
+    public ResponseEntity<ApiResponse> createBroadcastDelivery(
+            @Valid @RequestBody BroadcastDeliveryRequest broadcastDeliveryRequest) {
+        broadcastDeliveryService.createBroadcastDelivery(broadcastDeliveryRequest);
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, BroadcastMessage.CREATE_BROADCAST_DELIVERY, 201);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/delivery/view")
+    public ResponseEntity<ApiResponse> viewAllBroadcastDelivery() {
+        List<BroadcastDelivery> broadcastDelivery = broadcastDeliveryService.viewAllBroadcastDelivery();
+        ApiResponse response = new ApiResponse(AppConstants.SUCCESS, BroadcastMessage.VIEW_ALL_BROADCAST_DELIVERY, 200);
+        response.setData(broadcastDelivery);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

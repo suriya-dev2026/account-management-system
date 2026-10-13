@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.accountmanagement.constants.message.OrganizationOfferingTypeMessage;
 import com.accountmanagement.constants.message.OrganizationPaymentMethodMessage;
 import com.accountmanagement.enums.GatewayStatus;
-import com.accountmanagement.exceptions.InvalidSessionException;
+import com.accountmanagement.exceptions.InvalidInputException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccountingAccount;
 import com.accountmanagement.model.AccountingJournalEntry;
@@ -69,7 +69,7 @@ public class OrganizationOfferingService {
 
         private void validateAmount(BigDecimal amount) {
                 if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-                        throw new InvalidSessionException("Amount must be greater than zero.");
+                        throw new InvalidInputException("Amount must be greater than zero.");
                 }
         }
 

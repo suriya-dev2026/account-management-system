@@ -29,7 +29,8 @@ public class TokenUtility {
     private String claimsIssuer;
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(signingKey.getBytes());
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode(signingKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public Boolean isTokenExpired(String jwt) {
@@ -64,7 +65,6 @@ public class TokenUtility {
         if (accessToken == null || accessToken.trim().isEmpty()) {
             throw new BadCredentialsException("Authorization token is required");
         }
-
         Claims claims = Jwts.parser()
                 .verifyWith((SecretKey) getSigningKey())
                 .requireIssuer(claimsIssuer)

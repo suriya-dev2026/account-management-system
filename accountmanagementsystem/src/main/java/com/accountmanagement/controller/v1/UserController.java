@@ -21,20 +21,17 @@ import com.accountmanagement.service.PasswordResetService;
 import com.accountmanagement.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/v1/user")
 @Tag(name = "UserController")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     private final PasswordResetService passwordResetService;
-
-    UserController(UserService userService, PasswordResetService passwordResetService) {
-        this.userService = userService;
-        this.passwordResetService = passwordResetService;
-    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable UUID id,

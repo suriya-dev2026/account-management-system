@@ -19,7 +19,10 @@ import com.accountmanagement.model.EmailQueue;
 import com.accountmanagement.model.UserSession;
 import com.accountmanagement.repository.UserSessionRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class OtpService {
 
     private final EmailQueueRepository emailQueueRepository;
@@ -33,16 +36,6 @@ public class OtpService {
     private final JavaMailSender javaMailSender;
 
     private final BroadcastDeliveryService broadcastDeliveryService;
-
-    OtpService(BCryptPasswordEncoder bCryptPasswordEncoder,
-            UserSessionRepository userSessionRepository, JavaMailSender javaMailSender,
-            EmailQueueRepository emailQueueRepository, BroadcastDeliveryService broadcastDeliveryService) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.userSessionRepository = userSessionRepository;
-        this.javaMailSender = javaMailSender;
-        this.emailQueueRepository = emailQueueRepository;
-        this.broadcastDeliveryService = broadcastDeliveryService;
-    }
 
     public String generateOtp() {
         int otp = 100000 + random.nextInt(900000);

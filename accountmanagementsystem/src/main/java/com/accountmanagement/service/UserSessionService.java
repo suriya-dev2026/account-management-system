@@ -1,26 +1,27 @@
 package com.accountmanagement.service;
 
 import com.accountmanagement.repository.UserSessionRepository;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+
+import com.accountmanagement.exceptions.InvalidRequestException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.UserSession;
 
 @Service
+@RequiredArgsConstructor
 public class UserSessionService {
 
     private final UserSessionRepository userSessionRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    UserSessionService(UserSessionRepository userSessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userSessionRepository = userSessionRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
 
     public UserSession createUserSession(UUID userId, String otp) {
         UserSession userSession = new UserSession();
@@ -34,9 +35,15 @@ public class UserSessionService {
         userSession.setIsValidToken(false);
         UserSession saved = userSessionRepository.save(userSession);
         return saved;
-
     }
 
+    public void validateOtpSendLimit(UUID userId) {
+        long otpRequestCount = userSessionRepository.countRecentOtpRequests(userId);
+        if (otpRequestCount >= 3) {
+            throw new InvalidRequestException(
+                    "OTP limit exceeded. Please try again after 10 minutes.");
+        }
+    }
     // @Transactional
     // public void updateOtp(UUID userId, String otp) {
 

@@ -14,14 +14,13 @@ import com.accountmanagement.request.AttendanceUpdateRequest;
 import com.accountmanagement.request.VbsAttendanceList;
 import com.accountmanagement.request.VbsAttendanceRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class VbsAttendanceService {
 
     public final VbsAttendanceRepository vbsAttendanceRepository;
-
-    public VbsAttendanceService(VbsAttendanceRepository vbsAttendanceRepository) {
-        this.vbsAttendanceRepository = vbsAttendanceRepository;
-    }
 
     public List<VbsAttendance> createVbsAttendance(VbsAttendanceRequest request) {
         List<VbsAttendance> attendanceList = new ArrayList<>();

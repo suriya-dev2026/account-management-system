@@ -23,7 +23,10 @@ import com.accountmanagement.request.OrganizationRegistrationRequest;
 import com.accountmanagement.request.OrganizationUpdationRequest;
 import com.google.gson.Gson;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class OrganizationService {
 
     private final OrganizationRepository organizationRepository;
@@ -41,21 +44,6 @@ public class OrganizationService {
     private final JdbcTemplate jdbcTemplate;
 
     private final OrganizationAuditLogService organizationAuditLogService;
-
-    OrganizationService(OrganizationRepository organizationRepository, OrganizationMapper organizationMapper,
-            MasterCountryRepository masterCountryRepository, MasterStateRepository masterStateRepository,
-            MasterCityRepository masterCityRepository,
-            JdbcTemplate jdbcTemplate, OrganizationSettingRepository organizationSettingRepository,
-            OrganizationAuditLogService organizationAuditLogService) {
-        this.organizationRepository = organizationRepository;
-        this.organizationMapper = organizationMapper;
-        this.jdbcTemplate = jdbcTemplate;
-        this.masterCountryRepository = masterCountryRepository;
-        this.masterStateRepository = masterStateRepository;
-        this.masterCityRepository = masterCityRepository;
-        this.organizationSettingRepository = organizationSettingRepository;
-        this.organizationAuditLogService = organizationAuditLogService;
-    }
 
     @Transactional
     public Organization registerOrganization(OrganizationRegistrationRequest organizationRequest) {

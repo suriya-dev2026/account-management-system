@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 import com.accountmanagement.model.SubscriptionUsage;
 import com.accountmanagement.repository.SubscriptionUsageRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SubscriptionUsageService {
 
     private final SubscriptionUsageRepository subscriptionUsageRepository;
-
-    public SubscriptionUsageService(SubscriptionUsageRepository subscriptionUsageRepository) {
-        this.subscriptionUsageRepository = subscriptionUsageRepository;
-    }
 
     public SubscriptionUsage createSubscriptionUsage(UUID subscriptionOrganizationId) {
         SubscriptionUsage usage = new SubscriptionUsage();

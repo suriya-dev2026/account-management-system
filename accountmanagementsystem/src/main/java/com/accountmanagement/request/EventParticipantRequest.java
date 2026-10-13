@@ -8,8 +8,6 @@ import com.accountmanagement.validations.ValidEventId;
 import com.accountmanagement.validations.ValidInput;
 import com.accountmanagement.validations.ValidMemberId;
 import com.accountmanagement.validations.ValidOrganizationId;
-
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -27,22 +25,18 @@ public class EventParticipantRequest {
     @ValidMemberId(message = "Member Id Does Not Exists")
     private UUID memberId;
 
-    @NotBlank(message = "Full Name Is Required")
     @ValidInput(message = "Full Name Contains Invalid Character")
     private String fullName;
 
-    @NotNull(message = "Date Of Birth is Required")
     @ValidDate(message = "Invalid Date. Date Of Birth Cannot Be Future Date")
     private LocalDate dateOfBirth;
 
     @ValidInput(message = "School Grade Contains Invalid Character")
     private String schoolGrade;
 
-    @NotBlank(message = "Address Is Required")
     @ValidInput(message = "Address Contains Invalid Characters")
     private String address;
 
-    @NotBlank(message = "Contact Number Is Required")
     @ValidInput(message = "Contact Number Contains Invalid Characters")
     private String contactNumber;
 

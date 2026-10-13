@@ -1,6 +1,5 @@
 package com.accountmanagement.service;
 
-import com.accountmanagement.controller.v1.OrganizationAuditLogController;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -77,27 +76,19 @@ public class SubscriptionOrganizationService {
     private void validateExistingSubscription(UUID organizationId) {
         LocalDate today = LocalDate.now();
         subscriptionOrganizationRepository
-                .findByOrganizationIdAndStatus(
-                        organizationId,
-                        SubscriptionOrganizationStatus.ACTIVE)
+                .findByOrganizationIdAndStatus(organizationId, SubscriptionOrganizationStatus.ACTIVE)
                 .ifPresent(subscription -> {
                     if (subscription.getEndDate() != null
                             && !subscription.getEndDate().isBefore(today)) {
-
-                        throw new DuplicateRecordException(
-                                "Organization already has an active subscription");
+                        throw new DuplicateRecordException("Organization already has an active subscription");
                     }
-                    subscription.setStatus(
-                            SubscriptionOrganizationStatus.EXPIRED);
+                    subscription.setStatus(SubscriptionOrganizationStatus.EXPIRED);
                     subscriptionOrganizationRepository.save(subscription);
                 });
         subscriptionOrganizationRepository
-                .findByOrganizationIdAndStatus(
-                        organizationId,
-                        SubscriptionOrganizationStatus.PENDING)
+                .findByOrganizationIdAndStatus(organizationId, SubscriptionOrganizationStatus.PENDING)
                 .ifPresent(subscription -> {
-                    throw new DuplicateRecordException(
-                            "Organization already selected a subscription plan");
+                    throw new DuplicateRecordException("Organization already selected a subscription plan");
                 });
     }
 
@@ -111,16 +102,12 @@ public class SubscriptionOrganizationService {
         return "FREEPLAN".equalsIgnoreCase(plan.getCode());
     }
 
-    private SubscriptionOrganization activateFreePlan(SubscriptionOrganization subscription,
-            UUID organizationId) {
+    private SubscriptionOrganization activateFreePlan(SubscriptionOrganization subscription, UUID organizationId) {
         LocalDate startDate = LocalDate.now();
-        LocalDate endDate = calculateEndDate(
-                startDate,
-                subscription.getBillingCycle());
+        LocalDate endDate = calculateEndDate(startDate, subscription.getBillingCycle());
         subscription.setStartDate(startDate);
         subscription.setEndDate(endDate);
-        subscription.setStatus(
-                SubscriptionOrganizationStatus.ACTIVE);
+        subscription.setStatus(SubscriptionOrganizationStatus.ACTIVE);
         SubscriptionOrganization savedSubscription = subscriptionOrganizationRepository.save(subscription);
         updateSubscriptionCompleted(organizationId);
         sendTemporaryCredentials(organizationId);
@@ -128,10 +115,7 @@ public class SubscriptionOrganizationService {
     }
 
     public void updateSubscriptionCompleted(UUID organizationId) {
-        User user = userRepository
-                .findByOrganizationIdAndUserType(
-                        organizationId,
-                        UserType.SUPERADMIN)
+        User user = userRepository.findByOrganizationIdAndUserType(organizationId, UserType.SUPERADMIN)
                 .orElseThrow(() -> new RecordNotFoundException(
                         "Superadmin user not found"));
         UserVerification userVerification = userVerificationRepository.findByUserId(user.getId())
@@ -142,19 +126,14 @@ public class SubscriptionOrganizationService {
     }
 
     private void sendTemporaryCredentials(UUID organizationId) {
-        User user = userRepository
-                .findByOrganizationIdAndUserType(
-                        organizationId,
-                        UserType.SUPERADMIN)
-                .orElseThrow(() -> new RecordNotFoundException(
-                        "Superadmin user not found"));
+        User user = userRepository.findByOrganizationIdAndUserType(organizationId, UserType.SUPERADMIN)
+                .orElseThrow(() -> new RecordNotFoundException("Superadmin user not found"));
         userService.createTemporaryCredentials(user.getId());
     }
 
     private SubscriptionOrganization createPendingSubscription(
             SubscriptionOrganization subscription) {
-        subscription.setStatus(
-                SubscriptionOrganizationStatus.PENDING);
+        subscription.setStatus(SubscriptionOrganizationStatus.PENDING);
         return subscriptionOrganizationRepository.save(subscription);
     }
 
@@ -183,7 +162,6 @@ public class SubscriptionOrganizationService {
     @Transactional
     public void sendExpiryReminder(SubscriptionOrganization subscription, int daysBefore) {
         User user = userService.findByOrganizationIdAndUserType(subscription.getOrganizationId(), UserType.SUPERADMIN);
-
         if (user == null) {
             return;
         }
@@ -197,7 +175,6 @@ public class SubscriptionOrganizationService {
                 .replace("{{userName}}", user.getUserName())
                 .replace("{{expiryMessage}}", expiryMessage)
                 .replace("{{expiryDate}}", subscription.getEndDate().toString());
-
         emailQueueService.addToEmailQueue(user.getId(), user.getEmail(), body);
     }
 

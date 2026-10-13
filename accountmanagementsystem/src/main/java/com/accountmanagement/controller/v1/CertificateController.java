@@ -57,7 +57,7 @@ public class CertificateController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/view")
     public ResponseEntity<ApiResponse> viewAllCertificates() {
         List<Certificate> certificate = certificateService.viewAllCertificates();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, CertificateMessage.VIEW_ALL_CERTIFICATES, 200);

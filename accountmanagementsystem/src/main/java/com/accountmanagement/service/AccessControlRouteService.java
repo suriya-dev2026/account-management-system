@@ -11,18 +11,15 @@ import com.accountmanagement.model.AccessControlRoute;
 import com.accountmanagement.repository.AccessControlRouteRepository;
 import com.accountmanagement.request.AccessControlRouteRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccessControlRouteService {
 
     private final AccessControlRouteRepository accessControlRouteRepository;
 
     private final AccessControlRouteMapper accessControlRouteMapper;
-
-    public AccessControlRouteService(AccessControlRouteRepository accessControlRouteRepository,
-            AccessControlRouteMapper accessControlRouteMapper) {
-        this.accessControlRouteRepository = accessControlRouteRepository;
-        this.accessControlRouteMapper = accessControlRouteMapper;
-    }
 
     public AccessControlRoute createRoute(AccessControlRouteRequest accessControlRouteRequest) {
         validateAccessControlRoute(accessControlRouteRequest);

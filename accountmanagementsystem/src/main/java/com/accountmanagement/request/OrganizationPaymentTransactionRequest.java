@@ -27,7 +27,6 @@ public class OrganizationPaymentTransactionRequest {
     @Digits(integer = 10, fraction = 2, message = "Amount must have maximum 10 integer digits and 2 decimal digits.")
     private BigDecimal amount;
 
-    @NotBlank(message = "Currency is required.")
     @Size(max = 10, message = "Currency must not exceed 10 characters.")
     @ValidCurrency(message = "Currency must be a valid 3-letter ISO code (e.g. INR, USD, EUR)")
     private String currency;

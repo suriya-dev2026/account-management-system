@@ -12,14 +12,13 @@ import com.accountmanagement.model.AccountingAccountType;
 import com.accountmanagement.repository.AccountingAccountTypeRepository;
 import com.accountmanagement.request.AccountingAccountTypeRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccountingAccountTypeService {
 
     private final AccountingAccountTypeRepository accountingAccountTypeRepository;
-
-    public AccountingAccountTypeService(AccountingAccountTypeRepository accountingAccountTypeRepository) {
-        this.accountingAccountTypeRepository = accountingAccountTypeRepository;
-    }
 
     public AccountingAccountType createAccountingAccountType(AccountingAccountTypeRequest accountTypeRequest) {
         validateTypeName(accountTypeRequest.getOrganizationId(),

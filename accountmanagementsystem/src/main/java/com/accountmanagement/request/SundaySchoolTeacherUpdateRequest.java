@@ -15,6 +15,5 @@ public class SundaySchoolTeacherUpdateRequest {
     private UUID classId;
 
     @ValidDate(message = "Invalid Date Format")
-    @NotNull(message = "Date OF Join Is Required")
     private LocalDate dateOfJoin;
 }

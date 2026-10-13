@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.accountmanagement.constants.message.AccountingBankAccountMessage;
 import com.accountmanagement.constants.message.AccountingBankTransactionTypeMessage;
 import com.accountmanagement.enums.Direction;
+import com.accountmanagement.exceptions.InvalidInputException;
 import com.accountmanagement.exceptions.InvalidSessionException;
 import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.AccountingAccount;
@@ -84,7 +85,7 @@ public class AccountingBankTransactionService {
     private void validateAmount(BigDecimal amount) {
         if (amount == null ||
                 amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidSessionException(
+            throw new InvalidInputException(
                     "Amount must be greater than zero.");
         }
     }

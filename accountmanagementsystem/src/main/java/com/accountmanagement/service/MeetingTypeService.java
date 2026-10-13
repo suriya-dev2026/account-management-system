@@ -9,14 +9,13 @@ import com.accountmanagement.model.MeetingType;
 import com.accountmanagement.repository.MeetingTypeRepository;
 import com.accountmanagement.request.MeetingTypeRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MeetingTypeService {
 
     private final MeetingTypeRepository meetingTypeRepository;
-
-    public MeetingTypeService(MeetingTypeRepository meetingTypeRepository) {
-        this.meetingTypeRepository = meetingTypeRepository;
-    }
 
     public MeetingType createMeetingType(MeetingTypeRequest meetingTypeRequest) {
         validateCategory(meetingTypeRequest.getCategory());

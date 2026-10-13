@@ -3,6 +3,7 @@ package com.accountmanagement.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.accountmanagement.constants.AppConstants;
@@ -17,7 +18,10 @@ import com.accountmanagement.request.MemberRequest;
 import com.accountmanagement.request.MemberUpdateRequest;
 import com.accountmanagement.utility.Apputility;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -25,13 +29,6 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     private final UserLoginAuditLogService userLoginAuditLogService;
-
-    MemberService(MemberRepository memberRepository, MemberMapper memberMapper,
-            UserLoginAuditLogService userLoginAuditLogService) {
-        this.memberRepository = memberRepository;
-        this.memberMapper = memberMapper;
-        this.userLoginAuditLogService = userLoginAuditLogService;
-    }
 
     public Member addMember(MemberRequest memberRequest) {
         validateMember(memberRequest);

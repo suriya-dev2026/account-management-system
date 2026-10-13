@@ -10,16 +10,12 @@ import com.accountmanagement.request.UserUpdationRequest;
 @Component
 public class UserMapper {
 
-    // private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    // public UserMapper(BCryptPasswordEncoder bCryptPasswordEncoder) {
-    // this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    // }
-
-    public User toRegisterUser(UserRegistrationRequest userRegistrationRequest, String email) {
+    public User toRegisterUser(UserRegistrationRequest userRegistrationRequest, String email,
+            String temporaryPassword) {
         User user = new User();
         user.setOrganizationId(userRegistrationRequest.getOrganizationId());
         user.setUserName(userRegistrationRequest.getUserName());
+        user.setPassword(temporaryPassword);
         user.setEmail(email);
         user.setContactNumber(userRegistrationRequest.getContactNumber());
         user.setUserType(userRegistrationRequest.getUserType());

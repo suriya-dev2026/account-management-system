@@ -13,6 +13,7 @@ import lombok.Data;
 
 @Data
 @ValidVbsDate(message = "Invalid Date")
+
 public class VbsYearRequest {
 
     @ValidOrganizationId(message = "Organization Id Does Not Exists")

@@ -1,3 +1,4 @@
+
 package com.accountmanagement.service;
 
 import java.util.List;
@@ -9,14 +10,13 @@ import com.accountmanagement.model.OrganizationOfferingType;
 import com.accountmanagement.repository.OrganizationOfferingTypeRepository;
 import com.accountmanagement.request.OrganizationOfferingTypeRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class OrganizationOfferingTypeService {
 
     private final OrganizationOfferingTypeRepository organizationOfferingTypeRepository;
-
-    public OrganizationOfferingTypeService(OrganizationOfferingTypeRepository organizationOfferingTypeRepository) {
-        this.organizationOfferingTypeRepository = organizationOfferingTypeRepository;
-    }
 
     public OrganizationOfferingType createOrganizationOfferingType(
             OrganizationOfferingTypeRequest organizationOfferingTypeRequest) {

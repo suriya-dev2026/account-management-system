@@ -12,14 +12,13 @@ import com.accountmanagement.model.AccessControlUserRole;
 import com.accountmanagement.repository.AccessControlUserRoleRepository;
 import com.accountmanagement.request.AccessControlUserRoleRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccessControlUserRoleService {
 
     private final AccessControlUserRoleRepository accessControlUserRoleRepository;
-
-    public AccessControlUserRoleService(AccessControlUserRoleRepository accessControlUserRoleRepository) {
-        this.accessControlUserRoleRepository = accessControlUserRoleRepository;
-    }
 
     public AccessControlUserRole createAccessControlUserRole(
             AccessControlUserRoleRequest accessControlUserRoleRequest) {

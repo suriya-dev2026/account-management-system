@@ -14,7 +14,10 @@ import com.accountmanagement.repository.SubscriptionPlanRepository;
 import com.accountmanagement.request.SubscriptionPlanFeatureRequest;
 import com.accountmanagement.request.UpdateSubscriptionPlanFeatureRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SubscriptionPlanFeatureService {
 
     private final SubscriptionPlanFeatureRepository subscriptionPlanFeatureRepository;
@@ -22,14 +25,6 @@ public class SubscriptionPlanFeatureService {
     private final SubscriptionPlanRepository subscriptionPlanRepository;
 
     private final SubscriptionFeatureRepository subscriptionFeatureRepository;
-
-    public SubscriptionPlanFeatureService(SubscriptionPlanFeatureRepository subscriptionPlanFeatureRepository,
-            SubscriptionPlanRepository subscriptionPlanRepository,
-            SubscriptionFeatureRepository subscriptionFeatureRepository) {
-        this.subscriptionPlanFeatureRepository = subscriptionPlanFeatureRepository;
-        this.subscriptionPlanRepository = subscriptionPlanRepository;
-        this.subscriptionFeatureRepository = subscriptionFeatureRepository;
-    }
 
     @Transactional
     public String addSubscriptionPlanFeature(SubscriptionPlanFeatureRequest subscriptionPlanFeatureRequest) {

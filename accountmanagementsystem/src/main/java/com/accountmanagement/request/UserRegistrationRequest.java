@@ -40,10 +40,6 @@ public class UserRegistrationRequest {
         @ValidInput(message = "Input contains invalid characters")
         private String contactNumber;
 
-        // @ValidPassword(message = "Password must contain uppercase, lowercase, number,
-        // special character and be 8-20 characters long")
-        // private String password;
-
         @NotBlank(message = "Please enter first name")
         @Size(min = AppConstants.minNameLength, max = AppConstants.maxNameLength, message = "first name must be between "
                         + AppConstants.minNameLength + " and " + AppConstants.maxNameLength + " characters")

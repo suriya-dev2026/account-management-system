@@ -12,14 +12,13 @@ import com.accountmanagement.repository.SundaySchoolClassRepository;
 import com.accountmanagement.request.SundaySchoolClassRequest;
 import com.accountmanagement.request.SundaySchoolClassUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SundaySchoolClassService {
 
     private final SundaySchoolClassRepository sundaySchoolClassRepository;
-
-    public SundaySchoolClassService(SundaySchoolClassRepository sundaySchoolClassRepository) {
-        this.sundaySchoolClassRepository = sundaySchoolClassRepository;
-    }
 
     public SundaySchoolClass addSundaySchoolClass(SundaySchoolClassRequest sundaySchoolClassRequest) {
         validateSundaySchoolClass(sundaySchoolClassRequest);

@@ -9,20 +9,20 @@ import com.accountmanagement.exceptions.RecordNotFoundException;
 import com.accountmanagement.model.SubscriptionPlan;
 import com.accountmanagement.repository.SubscriptionPlanRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SubscriptionPlanService {
 
     private final SubscriptionPlanRepository subscriptionPlanRepository;
-
-    public SubscriptionPlanService(SubscriptionPlanRepository subscriptionPlanRepository) {
-        this.subscriptionPlanRepository = subscriptionPlanRepository;
-    }
 
     public List<SubscriptionPlan> viewAllSubscriptionPlan() {
         return subscriptionPlanRepository.findAll();
     }
 
-    public SubscriptionPlan findBySubscriptionPlanId(UUID id){
-        return subscriptionPlanRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("Subscription plan id not found"));
+    public SubscriptionPlan findBySubscriptionPlanId(UUID id) {
+        return subscriptionPlanRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Subscription plan id not found"));
     }
 }

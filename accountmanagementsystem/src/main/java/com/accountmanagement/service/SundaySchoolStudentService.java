@@ -15,19 +15,15 @@ import com.accountmanagement.repository.SundaySchoolStudentRepository;
 import com.accountmanagement.request.SundaySchoolStudentRequest;
 import com.accountmanagement.request.SundaySchoolStudentUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SundaySchoolStudentService {
 
     private final SundaySchoolStudentRepository sundaySchoolStudentRepository;
     private final MemberRepository memberRepository;
     private final SundaySchoolStudentMapper sundaySchoolStudentMapper;
-
-    public SundaySchoolStudentService(SundaySchoolStudentRepository sundaySchoolStudentRepository,
-            MemberRepository memberRepository, SundaySchoolStudentMapper sundaySchoolStudentMapper) {
-        this.sundaySchoolStudentRepository = sundaySchoolStudentRepository;
-        this.memberRepository = memberRepository;
-        this.sundaySchoolStudentMapper = sundaySchoolStudentMapper;
-    }
 
     public SundaySchoolStudent addSundaySchoolStudent(SundaySchoolStudentRequest sundaySchoolStudentRequest) {
         Member member = null;

@@ -9,15 +9,13 @@ import com.accountmanagement.model.AccessControlRolePresetAccess;
 import com.accountmanagement.repository.AccessControlRolePresetAccessRepository;
 import com.accountmanagement.request.AccessControlRolePresetAccessRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccessControlRolePresetAccessService {
 
     private final AccessControlRolePresetAccessRepository accessControlRolePresetAccessRepository;
-
-    public AccessControlRolePresetAccessService(
-            AccessControlRolePresetAccessRepository accessControlRolePresetAccessRepository) {
-        this.accessControlRolePresetAccessRepository = accessControlRolePresetAccessRepository;
-    }
 
     public AccessControlRolePresetAccess createAccessControlRolePresetAccess(
             AccessControlRolePresetAccessRequest accessControlRolePresetAccessRequest) {

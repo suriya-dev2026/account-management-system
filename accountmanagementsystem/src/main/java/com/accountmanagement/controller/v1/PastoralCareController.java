@@ -22,17 +22,15 @@ import com.accountmanagement.service.PastoralCareService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/v1/pastoral/care")
 @Tag(name = "PastoralCareController")
+@RequiredArgsConstructor
 public class PastoralCareController {
 
     private final PastoralCareService pastoralCareService;
-
-    public PastoralCareController(PastoralCareService pastoralCareService) {
-        this.pastoralCareService = pastoralCareService;
-    }
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createPastoralCare(@Valid @RequestBody PastoralCareRequest pastoralCareRequest) {
@@ -58,7 +56,7 @@ public class PastoralCareController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/view")
     public ResponseEntity<ApiResponse> viewAllPastoralCare() {
         List<PastoralCare> pastoralCare = pastoralCareService.viewAllPastoralCare();
         ApiResponse response = new ApiResponse(AppConstants.SUCCESS, PastoralCareMessage.VIEW_ALL_PASTORAL_CARE, 200);

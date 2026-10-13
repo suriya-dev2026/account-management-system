@@ -17,18 +17,15 @@ import com.accountmanagement.repository.AccountingAccountRepository;
 import com.accountmanagement.repository.AccountingAccountTypeRepository;
 import com.accountmanagement.request.AccountingAccountRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AccountingAccountService {
 
     private final AccountingAccountRepository accountingAccountRepository;
 
     private final AccountingAccountTypeRepository accountingAccountTypeRepository;
-
-    public AccountingAccountService(AccountingAccountRepository accountingAccountRepository,
-            AccountingAccountTypeRepository accountingAccountTypeRepository) {
-        this.accountingAccountRepository = accountingAccountRepository;
-        this.accountingAccountTypeRepository = accountingAccountTypeRepository;
-    }
 
     public AccountingAccount createAccountingAccount(AccountingAccountRequest accountingAccountRequest) {
         validateAccountType(accountingAccountRequest.getAccountTypeId());

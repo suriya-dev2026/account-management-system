@@ -16,7 +16,10 @@ import com.accountmanagement.repository.PastoralCareRepository;
 import com.accountmanagement.request.PastoralCareRequest;
 import com.accountmanagement.request.PastoralCareUpdateRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PastoralCareService {
 
     private final PastoralCareRepository pastoralCareRepository;
@@ -24,13 +27,6 @@ public class PastoralCareService {
     private final PastoralCareMapper pastoralCareMapper;
 
     private final MemberRepository memberRepository;
-
-    public PastoralCareService(PastoralCareRepository pastoralCareRepository, PastoralCareMapper pastoralCareMapper,
-            MemberRepository memberRepository) {
-        this.pastoralCareRepository = pastoralCareRepository;
-        this.pastoralCareMapper = pastoralCareMapper;
-        this.memberRepository = memberRepository;
-    }
 
     public PastoralCare createPastoralCare(PastoralCareRequest pastoralCareRequest) {
         validatePastoralCare(pastoralCareRequest);

@@ -30,7 +30,6 @@ public class SundaySchoolStudentRequest {
     @ValidInput(message = "Gender Contains Invalid Characters")
     private String gender;
 
-    @NotNull(message = "Age is required")
     @Min(value = 0, message = "Age cannot be negative")
     @Max(value = 100, message = "Age should not exceed 100")
     private Integer age;
